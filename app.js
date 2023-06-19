@@ -1,15 +1,22 @@
-const express = require('express')
+const express = require( 'express' );
+const path = require( 'path' );
 
 const app = express();
 
 // Getting Routers from the router folder
-const shopRouter = require( './routers/shopRouter')
+const shopRouter = require( './routers/shopRouter' );
+
+
+// Setting view engine ( EJS )
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
 
 
-app.use ( shopRouter )
+// Using routers 
+app.use ( shopRouter );
 
 
 app.listen( 3000, () => {
-    console.log("Server started successfully");
+    console.log( "Server started successfully" );
 })
