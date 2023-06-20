@@ -1,6 +1,16 @@
 
 <%- include('../includes/register/loginHead.ejs') %>
 
+<!--================Signup Navbar Area =================-->
+
+<div class="navbar" style="position: fixed;top: 0;left: 0;right: 0;background-color: #f8f8f8;z-index: 999;display: flex;justify-content: center;padding: 25px 10px;">
+    <div class="logo" style="max-width: 100%; height: auto;">
+        <a href=""><img src="/user/img/logo.png" alt=""></a>
+    </div>
+</div>
+
+
+<!--================Signup Box Area =================-->
 <section class="login_box_area section-margin">
   <div class="container">
     <div class="row">
@@ -150,7 +160,7 @@
             style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);"
             for=""
           >
-            Fields should not be empty
+            Fields should not be empty  
           </label>
         `;
         var form = document.querySelector('#register_form');

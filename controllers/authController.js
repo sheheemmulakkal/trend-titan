@@ -1,12 +1,49 @@
 const userSchema = require( '../models/userModel') 
-const bcrypt = require( 'bcrypt' )
+const bcrypt = require( 'bcryptjs' )
 
 module.exports = {
 
     // Getting user login page
     getUserLogin : ( req, res ) => {
 
-        res.render( 'auth/userLogin' )
+        res.render( 'auth/userLogin', {
+            err:false
+        })
+
+    },
+
+    // User Loging in 
+    doUserLogin : async ( req, res ) => {
+
+        try {
+
+            userData = await userSchema.findOne( { email : req.body.email } )
+
+            if( userData && userData.isAdmin !== 1 ) {
+
+                const password = await bcrypt.compare( req.body.password, userData.password)
+
+
+                if( password ) {
+                    res.redirect( '/' )
+
+                } else {
+                    res.render( 'auth/userLogin', {
+                        err: 'Incorrect Password'
+                    } )
+                }
+
+            } else {
+
+                res.render( 'auth/userLogin', {
+                    err: 'Incorrect Username'
+                } )
+
+            }
+
+        } catch ( err ) {
+            console.log( err.message );
+        }
 
     },
 
@@ -17,11 +54,10 @@ module.exports = {
     },
 
     // User Signing Up
-    doUserSignup : async( req, res ) => {
+    doUserSignup : async ( req, res ) => {
 
         try {
 
-            console.log(req.body);
 
             const userData = await userSchema.findOne( {email : req.body.email} )
             

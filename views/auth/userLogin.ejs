@@ -1,6 +1,17 @@
 <%- include('../includes/register/loginHead.ejs') %>
 
+
+<!--================Login Navbar Area =================-->
+
+<div class="navbar" style="position: fixed;top: 0;left: 0;right: 0;background-color: #f8f8f8;z-index: 999;display: flex;justify-content: center;padding: 25px 10px;">
+    <div class="logo" style="max-width: 100%; height: auto;">
+        <a href=""><img src="/user/img/logo.png" alt=""></a>
+    </div>
+</div>
+
+
 <!--================Login Box Area =================-->
+
 <section class="login_box_area section-margin">
     <div class="container">
         <div class="row">
@@ -16,10 +27,22 @@
                 
                 <div class="login_form_inner">
                     
-                        <a href="./index.html"><img src="user/img/logo.png" alt=""></a>
+                        
                     
+                    <!-- <a href="./index.html"><img style="margin-top: -5rem;" src="/user/img/logo.png" alt=""></a> -->
                     <h3>Log in to enter</h3>
-                    <form class="row login_form" action="#/" id="contactForm" >
+                    <form class="row login_form" method="POST" action="/login" id="contactForm" >
+
+                        <!-- error message ( Invalid username or password ) -->
+                        <% if( err) { %>
+                            <div class="col-md-12 form-group">
+                              <label   
+                              style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);" 
+                              for=""><%= err %></label>
+                            </div>
+                            <% } else { %>
+                                <% } %>
+
                         <div class="col-md-12 form-group">
                             <input type="email" class="form-control" id="email" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
                         </div>
