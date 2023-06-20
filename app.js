@@ -5,6 +5,9 @@ const app = express();
 
 // Getting Routers from the router folder
 const shopRouter = require( './routers/shopRouter' );
+const authRouter = require( './routers/authRouter');
+const userRouter = require( './routers/userRouter')
+
 
 
 // Setting view engine ( EJS )
@@ -17,8 +20,9 @@ app.use( express.static( path.join( __dirname, 'public' ) ) )
 
 
 // Using routers 
+app.use ( authRouter );
 app.use ( shopRouter );
-
+app.use ( '/user', userRouter );
 
 
 app.listen( 3000, () => {
