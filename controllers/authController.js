@@ -89,6 +89,48 @@ module.exports = {
         }catch( err ) {
             console.log(err.message);
         }
-    } 
+    },
+
+    // Getting admin login page
+    getAdminLogin :  ( req, res ) => {
+
+        res.render ( 'auth/adminLogin', {
+            err : false
+        })
+
+    },
+
+    // Admin loging in 
+    doAdminLogin : async ( req, res ) => {
+
+        try {
+
+            console.log(req.body);
+            const userData = await userSchema.findOne( { email : req.body.email } )
+
+            console.log(userData);
+            if( userData && userData.isAdmin == 1 ) {
+                console.log('hiii');
+                const password = await bcrypt.compare( req.body.password, userData.password )
+                console.log(password);
+                if( password ) {
+                    res.redirect( '/' )
+                } else {
+                    res.render('auth/adminLogin', {
+                        err : 'Incorrect Password'
+                    })
+                }
+            } else {
+
+                res.render( 'auth/adminLogin', {
+                    err: 'Incorrect Email'
+                } )
+            }
+
+        } catch ( error ) {
+            console.log(error.message);
+        }
+
+    }
 
 }

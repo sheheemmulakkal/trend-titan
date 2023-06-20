@@ -8,6 +8,7 @@ const app = express();
 // Getting Routers from the router folder
 const shopRouter = require( './routers/shopRouter' );
 const authRouter = require( './routers/authRouter');
+const adminRouter = require( './routers/adminRouter');
 const userRouter = require( './routers/userRouter');
 
 // Using body parser
@@ -25,6 +26,7 @@ app.use( express.static( path.join( __dirname, 'public' ) ) )
 // Using routers 
 app.use ( authRouter );
 app.use ( shopRouter );
+app.use ( '/admin', adminRouter );
 app.use ( '/user', userRouter );
 
 
