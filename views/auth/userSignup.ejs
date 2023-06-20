@@ -15,29 +15,64 @@
       <div class="col-12">
         <div class="login_form_inner register_form_inner">
           <h3>Create an account</h3>
-          <form class="row login_form" action="#/" id="register_form">
+          <form class="row login_form" method="POST" action="/signup" id="register_form">
+
+            <% if( err) { %>
+            <div class="col-md-12 form-group">
+              <label   
+              style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);" 
+              for=""><%= err %></label>
+            </div>
+            <% } else { %>
+                <% } %>
+            
             <div class="col-md-12 form-group">
               <input
                 type="text"
                 class="form-control"
-                id="name"
-                name="name"
-                placeholder="Username"
+                id="firstName"
+                name="firstName"
+                placeholder="First Name"
                 onfocus="this.placeholder = ''"
-                onblur="this.placeholder = 'Username'"
+                onblur="this.placeholder = 'First Name'"
               />
             </div>
             <div class="col-md-12 form-group">
               <input
                 type="text"
                 class="form-control"
-                id="email"
-                name="email"
-                placeholder="Email Address"
+                id="lastName"
+                name="lastName"
+                placeholder="Last Name"
                 onfocus="this.placeholder = ''"
-                onblur="this.placeholder = 'Email Address'"
+                onblur="this.placeholder = 'Last Name'"
               />
             </div>
+
+            <div class="col-md-12 form-group">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="Email Address"
+                  onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Email Address'"
+                />
+            </div>
+
+            <div class="col-md-12 form-group">
+              <input
+                type="number"
+                class="form-control"
+                id="mobile"
+                name="mobile"
+                placeholder="Mobile"
+                onfocus="this.placeholder = ''"
+                onblur="this.placeholder = 'Mobile'"
+              />
+            </div>
+            
             <div class="col-md-12 form-group">
               <input
                 type="text"
@@ -62,8 +97,6 @@
             </div>
             <div class="col-md-12 form-group">
               <div class="creat_account">
-                <input type="checkbox" id="f-option2" name="selector" />
-                <label for="f-option2">Keep me logged in</label>
               </div>
             </div>
             <div class="col-md-12 form-group">
@@ -83,5 +116,157 @@
     </div>
   </div>
 </section>
+
+<!-- Validation 
+=====================================================
+-->
+
+<script>
+    document.querySelector('#register_form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from submitting
+  
+      // Get form input values
+      var firstName = document.getElementById('firstName').value.trim();
+      var lastName = document.getElementById('lastName').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var mobile = document.getElementById('mobile').value.trim();
+      var password = document.getElementById('password').value;
+      var confirmPassword = document.getElementById('confirmPassword').value;
+  
+      // Remove any existing error messages
+      var errorMessages = document.querySelectorAll('.error-message');
+      errorMessages.forEach(function(errorMessage) {
+        errorMessage.remove();
+      });
+  
+      var hasError = false; // Track if there is any error
+  
+      if (firstName === '' || lastName === '' || email === '' || mobile === '') {
+        // Fields are empty, display an error message
+        var emptyFieldsErrorMessage = document.createElement('div');
+        emptyFieldsErrorMessage.className = 'col-md-12 form-group error-message';
+        emptyFieldsErrorMessage.innerHTML = `
+          <label   
+            style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);"
+            for=""
+          >
+            Fields should not be empty
+          </label>
+        `;
+        var form = document.querySelector('#register_form');
+        form.insertBefore(emptyFieldsErrorMessage, form.firstChild);
+        hasError = true;
+      } else {
+        // Regular expression for letters only validation
+        var lettersOnlyRegex = /^[A-Za-z]+$/;
+  
+        if (!lettersOnlyRegex.test(firstName) || !lettersOnlyRegex.test(lastName)) {
+          // First name or last name contains invalid characters, display an error message
+          var nameErrorMessage = document.createElement('div');
+          nameErrorMessage.className = 'col-md-12 form-group error-message';
+          nameErrorMessage.innerHTML = `
+            <label   
+              style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);"
+              for="firstName"
+            >
+              First name and last name should only contain letters
+            </label>
+          `;
+          var form = document.querySelector('#register_form');
+          form.insertBefore(nameErrorMessage, form.firstChild);
+          hasError = true;
+        } else {
+          // Regular expression for email validation
+          var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+          if (!emailRegex.test(email)) {
+            // Email is invalid, display an error message
+            var emailErrorMessage = document.createElement('div');
+            emailErrorMessage.className = 'col-md-12 form-group error-message';
+            emailErrorMessage.innerHTML = `
+              <label   
+                style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);"
+                for="email"
+              >
+                Invalid email address
+              </label>
+            `;
+            var form = document.querySelector('#register_form');
+            form.insertBefore(emailErrorMessage, form.firstChild);
+            hasError = true;
+          } else {
+            // Regular expression for mobile number validation
+            var mobileRegex = /^\d{10}$/;
+  
+            if (!mobileRegex.test(mobile)) {
+              // Mobile number is invalid, display an error message
+              var mobileErrorMessage = document.createElement('div');
+              mobileErrorMessage.className = 'col-md-12 form-group error-message';
+              mobileErrorMessage.innerHTML = `
+                <label   
+                  style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);"
+                  for="mobile"
+                >
+                  Mobile number should be 10 digits
+                </label>
+              `;
+              var form = document.querySelector('#register_form');
+              form.insertBefore(mobileErrorMessage, form.firstChild);
+              hasError = true;
+            } else {
+              // Regular expression for password validation
+              var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  
+              if (!passwordRegex.test(password)) {
+                // Password is invalid, display an error message
+                var passwordErrorMessage = document.createElement('div');
+                passwordErrorMessage.className = 'col-md-12 form-group error-message';
+                passwordErrorMessage.innerHTML = `
+                  <label   
+                    style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);"
+                    for="password"
+                  >
+                    Password should contain at least 8 characters, including uppercase letters, lowercase letters, numbers, and symbols
+                  </label>
+                `;
+                var form = document.querySelector('#register_form');
+                form.insertBefore(passwordErrorMessage, form.firstChild);
+                hasError = true;
+              }
+  
+              if (password !== confirmPassword) {
+                // Passwords don't match, display an error message
+                var confirmPasswordErrorMessage = document.createElement('div');
+                confirmPasswordErrorMessage.className = 'col-md-12 form-group error-message';
+                confirmPasswordErrorMessage.innerHTML = `
+                  <label   
+                    style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);"
+                    for="confirmPassword"
+                  >
+                    Passwords do not match
+                  </label>
+                `;
+                var form = document.querySelector('#register_form');
+                form.insertBefore(confirmPasswordErrorMessage, form.firstChild);
+                hasError = true;
+              }
+            }
+          }
+        }
+      }
+  
+      if (!hasError) {
+        // No errors, proceed with form submission
+        this.submit();
+      }
+    });
+  </script>
+  
+  
+  
+  
+  
+  
+  
 
 <%- include('../includes/register/loginEnd.ejs') %>
