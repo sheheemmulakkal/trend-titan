@@ -35,6 +35,7 @@ app.set('views', 'views');
 app.use( express.static( path.join( __dirname, 'public' ) ) )
 
 
+
 // Using routers 
 app.use ( authRouter );
 app.use ( shopRouter );

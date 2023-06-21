@@ -27,9 +27,9 @@ module.exports = {
                 if( password ) {
 
                     req.session.user = userData
-                    req.session.userLogin = true
+                    req.session.isLoggedin = true
 
-                    res.redirect( '/' )
+                    res.redirect( '/shop' )
 
                 } else {
                     res.render( 'auth/userLogin', {
@@ -86,7 +86,7 @@ module.exports = {
 
                 const result = await user.save()
 
-                res.redirect( '/' )
+                res.redirect( '/shop' )
 
             }
 
@@ -118,7 +118,9 @@ module.exports = {
                 if( password ) {
 
                     req.session.admin = adminData
-                    res.redirect( '/' )
+                    req.session.adminLoggedin = true
+
+                    res.redirect( '/admin' )
 
                 } else {
 
