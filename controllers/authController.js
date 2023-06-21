@@ -94,6 +94,9 @@ module.exports = {
 
                 const result = await user.save()
 
+                    req.session.user = userData
+                    req.session.isLoggedin = true
+
                 res.redirect( '/shop' )
 
             }
@@ -117,7 +120,6 @@ module.exports = {
 
         try {
 
-            console.log(req.body);
             const adminData = await userSchema.findOne( { email : req.body.email } )
 
             if( adminData && adminData.isAdmin == 1 ) {
@@ -148,6 +150,12 @@ module.exports = {
             console.log(error.message);
         }
 
+    },
+
+    doAdminLogout : ( req, res ) => {
+
+        req.session.destroy()
+        res.redirect ( '/admin/login' )
     }
 
 }

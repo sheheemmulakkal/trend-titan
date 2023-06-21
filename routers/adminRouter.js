@@ -10,6 +10,10 @@ router.get( '/login', isAuth.adminLoggedOut,  authController.getAdminLogin )
 
 router.post( '/login', isAuth.adminLoggedOut, authController.doAdminLogin )
 
+router.get( '/logout', isAuth.adminAuth, authController.doAdminLogout )
+
+router.get( '/userList', isAuth.adminAuth, adminController.getUserList )
+
 router.get( '/', isAuth.adminAuth, adminController.getAdminHome )
 
 module.exports = router

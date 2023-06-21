@@ -1,0 +1,62 @@
+
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+
+<div class="row mt-5">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Order Status</h4>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> First name </th>
+                  <th> Last name </th>
+                  <th> Email </th>
+                  <th> Mobile </th>
+                  <th> Joined Date </th>
+                  <!-- <th> Start Date </th> -->
+                  <th> Status </th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <% for ( let user of userList ) { %>
+                <tr>
+                  
+                  <td>
+                    <!-- <img src="assets/images/faces/face1.jpg" alt="image" /> -->
+                    <span class="pl-2"> <%= user.firstName %> </span>
+                  </td>
+                  <td> <%= user.lastName %> </td>
+                  <td> <%= user.email %> </td>
+                  <td> <%= user.mobile %> </td>
+                  <!-- <td> Credit card </td> -->
+                  <td> <%= moment(user.joinedDate).format(shortDateFormat) %> </td>
+                  <td>
+                    <div class="badge badge-outline-success">Active</div>
+                    <!-- <div class="badge badge-outline-danger">Approved</div> -->
+                  </td>
+                </tr>
+                <% } %>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  <%- include('../includes/admin/adminFooter.ejs') %>

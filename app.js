@@ -3,6 +3,9 @@ const path = require( 'path' );
 const mongoose = require( 'mongoose' );
 const bodyParser = require( 'body-parser' )
 const session = require( 'express-session')
+const nocache = require( 'nocache' )
+const moment = require( 'moment' )
+
 
 const app = express();
 
@@ -15,6 +18,8 @@ const userRouter = require( './routers/userRouter');
 // Using body parser
 app.use( bodyParser.urlencoded( {extended : false} ) )
 
+// Using nocache
+app.use( nocache() )
 
 // Session
 app.use( session ({
@@ -25,12 +30,20 @@ app.use( session ({
 
 }))
 
+// Date format
+const shortDateFormat = "MMM Do YY"
+
+// Middle ware for moment date
+app.locals.moment = moment;
+app.locals.shortDateFormat = shortDateFormat;
+
 
 // Setting local variable
 app.use( ( req, res, next ) => {
     res.locals.userLoggedin = req.session.isLoggedin
     next()
 })
+
 
 
 // Setting view engine ( EJS )

@@ -32,6 +32,16 @@ const userSchema = Schema({
     isAdmin : {
         type : Number,
         default : 0
+    },
+
+    isBlocked : {
+        type : Boolean,
+        required : false
+    },
+
+    joinedDate : {
+        type : Date,
+        default : Date.now
     }
 
 })
