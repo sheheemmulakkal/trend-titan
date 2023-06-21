@@ -25,6 +25,10 @@ module.exports = {
 
 
                 if( password ) {
+
+                    req.session.user = userData
+                    req.session.userLogin = true
+
                     res.redirect( '/' )
 
                 } else {
@@ -106,20 +110,23 @@ module.exports = {
         try {
 
             console.log(req.body);
-            const userData = await userSchema.findOne( { email : req.body.email } )
+            const adminData = await userSchema.findOne( { email : req.body.email } )
 
-            console.log(userData);
-            if( userData && userData.isAdmin == 1 ) {
-                console.log('hiii');
-                const password = await bcrypt.compare( req.body.password, userData.password )
-                console.log(password);
+            if( adminData && adminData.isAdmin == 1 ) {
+                const password = await bcrypt.compare( req.body.password, adminData.password )
+
                 if( password ) {
+
+                    req.session.admin = adminData
                     res.redirect( '/' )
+
                 } else {
+
                     res.render('auth/adminLogin', {
                         err : 'Incorrect Password'
                     })
                 }
+
             } else {
 
                 res.render( 'auth/adminLogin', {

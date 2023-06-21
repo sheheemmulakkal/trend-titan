@@ -2,6 +2,7 @@ const express = require( 'express' );
 const path = require( 'path' );
 const mongoose = require( 'mongoose' );
 const bodyParser = require( 'body-parser' )
+const session = require( 'express-session')
 
 const app = express();
 
@@ -13,6 +14,17 @@ const userRouter = require( './routers/userRouter');
 
 // Using body parser
 app.use( bodyParser.urlencoded( {extended : false} ) )
+
+
+// Session
+app.use( session ({
+
+    resave : false,
+    secret : 'key',
+    saveUninitialized: false
+
+}))
+
 
 // Setting view engine ( EJS )
 app.set('view engine', 'ejs');
