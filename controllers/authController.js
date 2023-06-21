@@ -51,6 +51,14 @@ module.exports = {
 
     },
 
+    // UserLogout
+    doUserLogout : ( req, res ) => {
+
+        req.session.destroy()
+        res.redirect( '/login' )
+    },
+    
+
     // Getting user signup page
     getUserSignup : ( req, res ) => {
 

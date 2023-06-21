@@ -26,10 +26,17 @@ app.use( session ({
 }))
 
 
+// Setting local variable
+app.use( ( req, res, next ) => {
+    res.locals.userLoggedin = req.session.isLoggedin
+    next()
+})
+
+
 // Setting view engine ( EJS )
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-
+ 
 
 // Setting static public folder
 app.use( express.static( path.join( __dirname, 'public' ) ) )
