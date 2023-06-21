@@ -1,4 +1,4 @@
-const dateFormat = require( 'date-fns' )
+
 const userSchema = require( '../models/userModel')
 
 module.exports = {

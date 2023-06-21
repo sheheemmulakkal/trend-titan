@@ -18,8 +18,8 @@ module.exports = {
         try {
 
             userData = await userSchema.findOne( { email : req.body.email } )
-
-            if( userData && userData.isAdmin !== 1 ) {
+            console.log(userData);
+            if( userData && userData.isAdmin !== 1 && userData.isBlocked === false ) {
 
                 const password = await bcrypt.compare( req.body.password, userData.password)
 
@@ -36,6 +36,25 @@ module.exports = {
                         err: 'Incorrect Password'
                     } )
                 }
+
+            } else if( userData.isBlocked ) {
+
+                const password = await bcrypt.compare( req.body.password, userData.password)
+
+                if( password ) {
+
+                    res.render( 'auth/userLogin', {
+                        err: 'Blocked user'
+                    } )
+
+                } else {
+
+                    res.render( 'auth/userLogin', {
+                        err: 'Incorrect password'
+                    } )
+
+                }
+                 
 
             } else {
 
@@ -92,7 +111,7 @@ module.exports = {
                     password : password
                 })
 
-                const result = await user.save()
+                const userData = await user.save()
 
                     req.session.user = userData
                     req.session.isLoggedin = true

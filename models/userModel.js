@@ -36,7 +36,7 @@ const userSchema = Schema({
 
     isBlocked : {
         type : Boolean,
-        required : false
+        default : false
     },
 
     joinedDate : {

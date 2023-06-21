@@ -38,8 +38,11 @@
                   <!-- <td> Credit card </td> -->
                   <td> <%= moment(user.joinedDate).format(shortDateFormat) %> </td>
                   <td>
+                    <% if ( user.isBlocked === false ) { %>
                     <div class="badge badge-outline-success">Active</div>
-                    <!-- <div class="badge badge-outline-danger">Approved</div> -->
+                    <% } else { %>
+                        <div class="badge badge-outline-danger">Blocked</div>
+                    <% }    %>
                   </td>
                 </tr>
                 <% } %>

@@ -14,6 +14,7 @@ const shopRouter = require( './routers/shopRouter' );
 const authRouter = require( './routers/authRouter');
 const adminRouter = require( './routers/adminRouter');
 const userRouter = require( './routers/userRouter');
+const errorRouter = require( './routers/errorRouter')
 
 // Using body parser
 app.use( bodyParser.urlencoded( {extended : false} ) )
@@ -61,11 +62,12 @@ app.use ( authRouter );
 app.use ( shopRouter );
 app.use ( '/admin', adminRouter );
 app.use ( '/user', userRouter );
+app.use ( errorRouter );
 
 
 
 // Database and server connection
-mongoose.connect(
+mongoose.connect( 
     'mongodb://127.0.0.1:27017/male-fashion'
 )
 .then(

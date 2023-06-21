@@ -20,7 +20,7 @@ module.exports = {
 
     userLoggedout : ( req, res, next ) => {
 
-        if( req.session.user ) {
+        if( req.session.isLoggedin ) {
             return res.redirect( '/' ) 
         }
 
