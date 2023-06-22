@@ -60,9 +60,6 @@ module.exports = {
                     }
                 }
 
-
-                 
-
             } else {
 
                 res.render( 'auth/userLogin', {
