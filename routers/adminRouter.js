@@ -16,4 +16,6 @@ router.get( '/userList', isAuth.adminAuth, adminController.getUserList )
 
 router.get( '/', isAuth.adminAuth, adminController.getAdminHome )
 
-module.exports = router
+router.get( '/block-user/:id', isAuth.adminAuth, adminController.blockUser )
+
+module.exports = router 
