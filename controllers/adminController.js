@@ -35,6 +35,22 @@ module.exports = {
             console.log(error.message);
         }
        
+    },
+
+    unBlockUser : async ( req, res ) => {
+
+        try {
+            
+            const userId = req.params.id
+            const userData = await userSchema.findById(userId)
+
+            const unblock = await userData.updateOne({ $set : {isBlocked : false}})
+
+            res.redirect( '/admin/userList' )
+
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
 

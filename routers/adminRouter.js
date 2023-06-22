@@ -18,4 +18,6 @@ router.get( '/', isAuth.adminAuth, adminController.getAdminHome )
 
 router.get( '/block-user/:id', isAuth.adminAuth, adminController.blockUser )
 
+router.get( '/unblock-user/:id', isAuth.adminAuth, adminController.unBlockUser )
+
 module.exports = router 
