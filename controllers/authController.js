@@ -19,41 +19,48 @@ module.exports = {
 
             userData = await userSchema.findOne( { email : req.body.email } )
             console.log(userData);
-            if( userData && userData.isAdmin !== 1 && userData.isBlocked === false ) {
+            if( userData && userData.isAdmin !== 1 ) {
 
-                const password = await bcrypt.compare( req.body.password, userData.password)
+                // Checking is user is blocked
+                    if( userData.isBlocked === false ) {
+
+                    const password = await bcrypt.compare( req.body.password, userData.password)
 
 
-                if( password ) {
+                    if( password ) {
 
-                    req.session.user = userData
-                    req.session.isLoggedin = true
+                        req.session.user = userData
+                        req.session.isLoggedin = true
 
-                    res.redirect( '/shop' )
+                        res.redirect( '/shop' )
 
-                } else {
-                    res.render( 'auth/userLogin', {
-                        err: 'Incorrect Password'
-                    } )
-                }
-
-            } else if( userData.isBlocked ) {
-
-                const password = await bcrypt.compare( req.body.password, userData.password)
-
-                if( password ) {
-
-                    res.render( 'auth/userLogin', {
-                        err: 'Blocked user'
-                    } )
+                    } else {
+                        res.render( 'auth/userLogin', {
+                            err: 'Incorrect Password'
+                        } )
+                    }
 
                 } else {
 
-                    res.render( 'auth/userLogin', {
-                        err: 'Incorrect password'
-                    } )
+                    
+                    const password = await bcrypt.compare( req.body.password, userData.password)
 
+                    if( password ) {
+
+                        res.render( 'auth/userLogin', {
+                            err: 'Blocked user'
+                        } )
+
+                    } else {
+
+                        res.render( 'auth/userLogin', {
+                            err: 'Incorrect password'
+                        } )
+
+                    }
                 }
+
+
                  
 
             } else {
