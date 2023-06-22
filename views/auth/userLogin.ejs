@@ -23,12 +23,12 @@
                     
                     <!-- <a href="./index.html"><img style="margin-top: -5rem;" src="/user/img/logo.png" alt=""></a> -->
                     <h3>Log in to enter</h3>
-                    <form class="row login_form" method="POST" action="/login" id="register_form" >
+                    <form class="row login_form" method="POST" action="/login" id="register_form" onsubmit="return userLogin()" >
 
                         <!-- error message ( Invalid username or password ) -->
                         <% if( err) { %>
-                            <div class="col-md-12 form-group">
-                              <label   
+                            <div class="col-md-12 form-group" >
+                              <label id="errDiv"  
                               style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);" 
                               for=""><%= err %></label>
                             </div>
@@ -71,12 +71,85 @@
 
 
 <script>
+
+function userLogin(){
+
+    console.log(1);
+    
+    // Get form input values
+    var email = document.getElementById('email').value.trim();
+    var password = document.getElementById('password').value.trim();
+    
+    var error = document.getElementById( 'errDiv' )
+    
+    
+    
+    if (email === '' || password === '') {
+          console.log(2);
+          // Fields are empty, display an error message
+          error.innerHTML = 'Fields Should not be empty'
+          return false
+        } 
+        
+        console.log(3);
+        
+        // Regular expression for email validation
+        
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            console.log(4);
+            error.innerHTML = 'Enter valid email'
+            return false
+        }
+        
+        console.log(5);
+        return true
+        }
+  </script>
+
+<%- include('../includes/register/loginEnd.ejs') %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <script>
     document.querySelector('#register_form').addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent the form from submitting
+
+
   
       // Get form input values
       var email = document.getElementById('email').value.trim();
       var password = document.getElementById('password').value.trim();
+
+      var error = document.getElementById( 'errDiv' )
   
       // Remove any existing error messages
       var errorMessages = document.querySelectorAll('.error-message');
@@ -129,6 +202,4 @@
         this.submit();
       }
     });
-  </script>
-
-<%- include('../includes/register/loginEnd.ejs') %>
+  </script> -->

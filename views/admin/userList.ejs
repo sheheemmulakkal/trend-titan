@@ -39,7 +39,7 @@
                   <td> <%= moment(user.joinedDate).format(shortDateFormat) %> </td>
                   <td>
                     <% if ( user.isBlocked === false ) { %>
-                        <div><a class="badge badge-outline-success" href="/admin/block-user">Active</a></div>
+                        <div><a class="badge badge-outline-success" href="/admin/block-user/:<%= user._id %>">Active</a></div>
                     <% } else { %>
                         <div><a class="badge badge-outline-danger" href="/admin/unblock-user">Blocked</a></div>
                     <% }    %>
