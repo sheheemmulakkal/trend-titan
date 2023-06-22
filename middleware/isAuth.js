@@ -3,7 +3,7 @@ module.exports = {
     userAuth : ( req, res, next ) => {
 
         if( !req.session.isLoggedin ) {
-            return res.redirect( '/login' ) 
+            return res.redirect( '/login' )  
         }
 
         next()
