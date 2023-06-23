@@ -1,6 +1,7 @@
 const userSchema = require( '../models/userModel') 
 const bcrypt = require( 'bcryptjs' )
 
+
 module.exports = {
 
     // Getting user login page
@@ -59,6 +60,9 @@ module.exports = {
 
                     }
                 }
+
+
+                 
 
             } else {
 

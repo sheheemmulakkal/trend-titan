@@ -73,36 +73,31 @@
 <script>
 
 function userLogin(){
+  
+      // Get form input values
+      var email = document.getElementById('email').value.trim();
+      var password = document.getElementById('password').value.trim();
 
-    console.log(1);
-    
-    // Get form input values
-    var email = document.getElementById('email').value.trim();
-    var password = document.getElementById('password').value.trim();
-    
-    var error = document.getElementById( 'errDiv' )
-    
-    
-    
-    if (email === '' || password === '') {
-          console.log(2);
-          // Fields are empty, display an error message
-          error.innerHTML = 'Fields Should not be empty'
-          return false
-        } 
+      var error = document.getElementById( 'errDiv' )
+
+
+  
+      if (email === '' || password === '') {
+        // Fields are empty, display an error message
+        error.innerHTML = 'Fields Should not be empty'
+        return false
+      } 
+
+      
+      // Regular expression for email validation
+      
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
         
-        console.log(3);
-        
-        // Regular expression for email validation
-        
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            console.log(4);
-            error.innerHTML = 'Enter valid email'
-            return false
+        error.innerHTML = 'Enter valid email'
+        return false
         }
-        
-        console.log(5);
+
         return true
         }
   </script>
