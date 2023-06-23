@@ -1,16 +1,7 @@
 const userSchema = require( '../models/userModel') 
+const verificationController = require( './verificationControllers')
 const bcrypt = require( 'bcryptjs' )
-const nodemailer = require( 'nodemailer' )
 
-
-const transporter = nodemailer.createTransport({
-    service : 'gmail',
-    auth : {
-        user : 'shaimonsheheem5@gmail.com',
-        pass : 'gvyvfoagdfzrqtnh'
-    }
-
-});
 
 
 
@@ -138,12 +129,7 @@ module.exports = {
                     req.session.user = userData
                     req.session.isLoggedin = true
 
-                    transporter.sendMail({
-                        to : req.body.email,
-                        from : 'shaimonsheheem5@gmail.com',
-                        subject : 'Successfully registered',
-                        html : ` <h1> hey ${req.body.lastName}, You successfully signed up!</h1>`
-                    })
+                    verificationController.sendEmail(req.body.email, req.body.lastName)
 
                 res.redirect( '/shop' )
 
