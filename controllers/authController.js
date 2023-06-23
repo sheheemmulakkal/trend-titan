@@ -1,5 +1,17 @@
 const userSchema = require( '../models/userModel') 
 const bcrypt = require( 'bcryptjs' )
+const nodemailer = require( 'nodemailer' )
+
+
+const transporter = nodemailer.createTransport({
+    service : 'gmail',
+    auth : {
+        user : 'shaimonsheheem5@gmail.com',
+        pass : 'gvyvfoagdfzrqtnh'
+    }
+
+});
+
 
 
 module.exports = {
@@ -32,6 +44,8 @@ module.exports = {
 
                         req.session.user = userData
                         req.session.isLoggedin = true
+
+                        
 
                         res.redirect( '/shop' )
 
@@ -124,6 +138,13 @@ module.exports = {
                     req.session.user = userData
                     req.session.isLoggedin = true
 
+                    transporter.sendMail({
+                        to : req.body.email,
+                        from : 'shaimonsheheem5@gmail.com',
+                        subject : 'Successfully registered',
+                        html : ` <h1> hey ${req.body.lastName}, You successfully signed up!</h1>`
+                    })
+
                 res.redirect( '/shop' )
 
             }
@@ -156,7 +177,7 @@ module.exports = {
 
                     req.session.admin = adminData
                     req.session.adminLoggedin = true
-                    
+
                     console.log(req.session.admin);
 
                     res.redirect( '/admin' )
