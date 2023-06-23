@@ -154,6 +154,11 @@ module.exports = {
         }
     },
 
+    //Signup OTP verification page getting
+    getSignupOtp : ( req, res ) => {
+        res.render('auth/signup-otp')
+    },
+
     // Getting admin login page
     getAdminLogin :  ( req, res ) => {
 

@@ -1,64 +1,52 @@
-<%- include('../includes/register/loginHead.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+<style>
+    body{background-color:rgb(224, 200, 200)}.height-100{height:100vh}.card{width:400px;border:none;height:300px;box-shadow: 0px 5px 20px 0px #d2dae3;z-index:1;display:flex;justify-content:center;align-items:center}.card h6{color:red;font-size:20px}.inputs input{width:40px;height:40px}input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button{-webkit-appearance: none;-moz-appearance: none;appearance: none;margin: 0}.card-2{background-color:#fff;padding:10px;width:350px;height:100px;bottom:-50px;left:20px;position:absolute;border-radius:5px}.card-2 .content{margin-top:50px}.card-2 .content a{color:red}.form-control:focus{box-shadow:none;border:2px solid red}.validate{border-radius:20px;height:40px;background-color:red;border:1px solid red;width:140px}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
 
-<section class="login_box_area section-margin">
-    <div class="container">
-        <div class="row">
-            <!-- <div class="col-lg-6">
-                <div class="login_box_img">
-                    <div class="hover">
-                        <h4>New to our website?</h4>
-                        <a class="button button-account" href="register.html">Create an Account</a>
-                    </div>
-                </div>
-            </div> -->
-            <div class="col-12">
-                
-                <div class="login_form_inner">
-                    
-                        
-                    
-                    <!-- <a href="./index.html"><img style="margin-top: -5rem;" src="/user/img/logo.png" alt=""></a> -->
-                    <h3>Log in to enter</h3>
-                    <form class="row login_form" method="POST" action="/login" id="register_form" onsubmit="return userLogin()" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Male-Fashion</title>
+</head>
 
-                        <!-- error message ( Invalid username or password ) -->
-                        <% if( err) { %>
-                            <div class="col-md-12 form-group" >
-                              <label id="errDiv"  
-                              style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);" 
-                              for=""><%= err %></label>
-                            </div>
-                            <% } else { %>
-                                <% } %>
+<body>
+    
 
-                        <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="email" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="password" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <div class="creat_account">
-                            </div>
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <button
-                                type="submit"
-                                value="submit"
-                                class="button button-register w-100"
-                            >
-                                Login
-                            </button>
-                            <a href="#">Forgot Password?</a>
-                        </div>
-                    </form>
-                    <P>Don't have an account? <a href="/signup">Signup</a></P>
-                    <br>
-                </div>
+
+<div class="container height-100 d-flex justify-content-center align-items-center">
+    <div class="position-relative">
+        <div class="card p-2 text-center">
+            <h6>Please enter the one time password <br> to verify your account</h6>
+            <div> <span>A code has been sent to</span> <small>{{email}}</small>
             </div>
+            <form action="/checkotp" method="POST">
+                <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
+                    <input class="m-2 text-center form-control rounded" type="text" name="val1" id="first"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val2" id="second"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val3" id="third"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val4" id="fourth"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val5" id="fifth"
+                        maxlength="1" />
+                    <input class="m-2 text-center form-control rounded" type="text" name="val6" id="sixth"
+                        maxlength="1" />
+                </div>
+                <div class="mt-4"> <input type="submit" value="Validate" class="btn btn-danger px-4 validate"></div>
+        </div>
+        </form>
+        <div class="text-center mt-4">
+            <span><i class="bi bi-stopwatch-fill fs-4 "></i></span>
+          <span class="d-block mobile-text text-danger fw-bold fs-3 " id="countdown"></span>
+          <a href="/resendotp"><span class="d-block  mobile-text" id="resend"></span></a>
         </div>
     </div>
-</section>
-
-
-<%- include('../includes/register/loginEnd.ejs') %>
+</div>
+</body>
+</html>

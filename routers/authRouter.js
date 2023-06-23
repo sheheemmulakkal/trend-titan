@@ -13,6 +13,8 @@ router.get( '/signup', isAuth.userLoggedout, authController.getUserSignup )
 
 router.post( '/signup', isAuth.userLoggedout, authController.doUserSignup )
 
+router.get( '/otp-verification', isAuth.userLoggedout, authController.getSignupOtp )
+
 router.get( '/logout', isAuth.userAuth, authController.doUserLogout )
 
 
