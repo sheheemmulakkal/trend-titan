@@ -27,18 +27,31 @@ module.exports = {
 
                 // Checking is user is blocked
                     if( userData.isBlocked === false ) {
-
                     const password = await bcrypt.compare( req.body.password, userData.password)
 
 
                     if( password ) {
 
-                        req.session.user = userData
-                        req.session.isLoggedin = true
+                        if( userData.isVerified ) {
 
-                        
+                            req.session.user = userData
+                            req.session.isLoggedin = true
 
-                        res.redirect( '/shop' )
+                            res.redirect( '/shop' )
+
+                        } else {
+                            const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
+                            // console.log(otp);
+                            console.log(newOtp);
+
+                            const otpUpdate = await userSchema.updateOne({email : req.body.email},{
+                                $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
+                            })
+                            console.log(otpUpdate);
+
+                            res.redirect( '/otp-verification')
+
+                        }
 
                     } else {
                         res.render( 'auth/userLogin', {
@@ -102,7 +115,6 @@ module.exports = {
 
         try {
 
-
             const userData = await userSchema.findOne( {email : req.body.email} )
             
             if( userData ) {
@@ -111,27 +123,31 @@ module.exports = {
                     err: "User already exist"
                 })
 
-            } else {
+            } else { 
 
-                
-                const password = await bcrypt.hash( req.body.password, 12)
+                    // req.session.user = userData
+                    // req.session.isLoggedin = true
+
+                    const otp = verificationController.sendEmail(req.body.email, req.body.lastName)
+                    // const generatedTime = 
+
+                    const password = await bcrypt.hash( req.body.password, 12)
 
                 const user = new userSchema( {
                     firstName : req.body.firstName,
                     lastName : req.body.lastName,
                     email : req.body.email,
                     mobile : req.body.mobile,
-                    password : password
+                    password : password,
+                    token : {
+                        otp : otp,
+                        generatedTime : new Date()
+                    }
                 })
 
                 const userData = await user.save()
 
-                    req.session.user = userData
-                    req.session.isLoggedin = true
-
-                    verificationController.sendEmail(req.body.email, req.body.lastName)
-
-                res.redirect( '/shop' )
+                res.redirect( '/otp-verification' )
 
             }
 
@@ -140,8 +156,16 @@ module.exports = {
         }
     },
 
+    // Signup Verification
+
+    signupVerification : ( req,res ) => {
+        console.log(req.body);
+        res.redirect('/')
+    },
+
     //Signup OTP verification page getting
     getSignupOtp : ( req, res ) => {
+
         res.render('auth/signup-otp')
     },
 

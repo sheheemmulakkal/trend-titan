@@ -36,6 +36,8 @@ module.exports = {
             html : ` <h1> hey ${lastName}, Your OTP is ${otp}</h1>`
         })
 
+        return otp
+
     }
 
     

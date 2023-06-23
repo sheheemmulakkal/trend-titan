@@ -15,6 +15,8 @@ router.post( '/signup', isAuth.userLoggedout, authController.doUserSignup )
 
 router.get( '/otp-verification', isAuth.userLoggedout, authController.getSignupOtp )
 
+router.post( '/otp-verification', isAuth.userLoggedout, authController.signupVerification )
+
 router.get( '/logout', isAuth.userAuth, authController.doUserLogout )
 
 

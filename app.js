@@ -14,7 +14,8 @@ const shopRouter = require( './routers/shopRouter' );
 const authRouter = require( './routers/authRouter');
 const adminRouter = require( './routers/adminRouter');
 const userRouter = require( './routers/userRouter');
-const errorRouter = require( './routers/errorRouter')
+const errorRouter = require( './routers/errorRouter');
+const { log } = require('console');
 
 // Using body parser
 app.use( bodyParser.urlencoded( {extended : false} ) )
@@ -39,6 +40,15 @@ app.locals.moment = moment;
 app.locals.shortDateFormat = shortDateFormat;
 
 
+let two = '2023-06-23T15:27:38.469Z'
+let one = new Date()
+
+let old = new Date()
+console.log( old);
+console.log((one - new Date('2023-06-23T15:35:08.624Z')) /1000/60); 
+
+
+ 
 // Setting local variable
 app.use( ( req, res, next ) => {
     res.locals.userLoggedin = req.session.isLoggedin

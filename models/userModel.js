@@ -34,6 +34,22 @@ const userSchema = Schema({
         default : 0
     },
 
+    isVerified : {
+        type : Boolean,
+        default : false
+    },
+
+    token : {
+        
+        otp : {
+            type : Number
+            
+        },
+        generatedTime : {
+            type : Date
+        }
+    },
+
     isBlocked : {
         type : Boolean,
         default : false
