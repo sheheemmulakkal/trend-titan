@@ -6,7 +6,9 @@ module.exports = {
 
     getAdminHome : ( req, res ) => {
 
-        res.render( 'admin/dashboard' )
+        res.render( 'admin/dashboard', {
+            admin : req.session.admin
+        } )
     },
 
     getUserList : async( req, res ) => {
@@ -15,7 +17,10 @@ module.exports = {
 
         // console.log(userList);
 
-        res.render( 'admin/userList', {userList : userList} )
+        res.render( 'admin/userList', {
+            userList : userList,
+            admin : req.session.admin
+        } )
 
     },
 

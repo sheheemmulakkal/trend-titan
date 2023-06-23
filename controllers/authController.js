@@ -156,6 +156,8 @@ module.exports = {
 
                     req.session.admin = adminData
                     req.session.adminLoggedin = true
+                    
+                    console.log(req.session.admin);
 
                     res.redirect( '/admin' )
 
