@@ -25,15 +25,15 @@ function generateOtp () {
 
 module.exports = {
 
-    sendEmail : (email, lastName) => {
+    sendEmail : (email) => {
 
         const otp = generateOtp()
 
         transporter.sendMail({
             to : email,
             from : 'shaimonsheheem5@gmail.com',
-            subject : 'Successfully registered',
-            html : ` <h1> hey ${lastName}, Your OTP is ${otp}</h1>`
+            subject : 'OTP verification',
+            html : ` <h1> hey, Your OTP is ${otp}</h1>`
         })
 
         return otp

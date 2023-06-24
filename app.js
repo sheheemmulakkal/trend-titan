@@ -40,12 +40,6 @@ app.locals.moment = moment;
 app.locals.shortDateFormat = shortDateFormat;
 
 
-let two = '2023-06-23T15:27:38.469Z'
-let one = new Date()
-
-let old = new Date()
-console.log( old);
-console.log((one - new Date('2023-06-23T15:35:08.624Z')) /1000/60); 
 
 
  

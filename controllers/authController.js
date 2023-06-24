@@ -41,17 +41,20 @@ module.exports = {
 
                         } else {
                             const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
-                            // console.log(otp);
                             console.log(newOtp);
 
                             const otpUpdate = await userSchema.updateOne({email : req.body.email},{
                                 $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
                             })
+                            console.log(1);
                             console.log(otpUpdate);
+                            req.session.unVerfiedMail = req.body.email
 
                             res.redirect( '/otp-verification')
 
                         }
+
+                        // For Incorrect password
 
                     } else {
                         res.render( 'auth/userLogin', {
@@ -66,11 +69,15 @@ module.exports = {
 
                     if( password ) {
 
+                        // If user is blocked
+
                         res.render( 'auth/userLogin', {
                             err: 'Blocked user'
                         } )
 
                     } else {
+
+                        // FOr incorrect password 
 
                         res.render( 'auth/userLogin', {
                             err: 'Incorrect password'
@@ -79,9 +86,7 @@ module.exports = {
                     }
                 }
 
-
-                 
-
+                // Incorrect Username
             } else {
 
                 res.render( 'auth/userLogin', {
@@ -125,11 +130,9 @@ module.exports = {
 
             } else { 
 
-                    // req.session.user = userData
-                    // req.session.isLoggedin = true
+                    
 
                     const otp = verificationController.sendEmail(req.body.email, req.body.lastName)
-                    // const generatedTime = 
 
                     const password = await bcrypt.hash( req.body.password, 12)
 
@@ -147,6 +150,8 @@ module.exports = {
 
                 const userData = await user.save()
 
+                req.session.unVerfiedMail = req.body.email
+
                 res.redirect( '/otp-verification' )
 
             }
@@ -158,9 +163,54 @@ module.exports = {
 
     // Signup Verification
 
-    signupVerification : ( req,res ) => {
-        console.log(req.body);
-        res.redirect('/')
+    signupVerification : async ( req,res ) => {
+
+       try {
+
+        const enterTime = new Date()
+
+        // console.log(req.body);
+        let { val1, val2, val3, val4, val5, val6 } = req.body
+        userOtp = val1 + val2 + val3 + val4 + val5 + val6
+        
+        // console.log(req.session.unVerfiedMail);
+
+        // Checking otp in database
+        const otpCheck = await userSchema.findOne({email: req.session.unVerfiedMail, 'token.otp' : userOtp })
+
+        // If Otp matched
+        if( otpCheck ) { 
+
+            //Calculating the expire of the OTP
+            const timeDiff =  (new Date(enterTime) - otpCheck.token.generatedTime) / 1000 / 60
+            if( timeDiff <= 60 ) {
+
+                // If expiry time is valid setting isVerified as true
+                const verify = await userSchema.updateOne({ email : otpCheck.email } , { $set : {isVerified : true} })
+
+                req.session.user = otpCheck
+                req.session.isLoggedin = true
+                req.session.unVerfiedMail = null
+
+               res.redirect('/shop')
+
+
+               // If TimedOut
+            } else {
+                console.log('timout');
+                res.redirect( '/otp-verification' )
+            }
+
+            // If not OTP in database
+        } else {
+            console.log('otp not matched');
+            res.redirect('/otp-verification')
+        }
+        
+       } catch (error) {
+        console.log(error.messge);
+       }
+
     },
 
     //Signup OTP verification page getting
