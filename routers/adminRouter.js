@@ -2,6 +2,8 @@ const express = require( 'express' )
 
 const authController = require( '../controllers/authController' )
 const adminController = require( '../controllers/adminController')
+const productController = require( '../controllers/productController')
+const categoryController = require('../controllers/categoryController')
 const isAuth = require ( '../middleware/isAuth')
 
 const router = express.Router()
@@ -20,21 +22,21 @@ router.get( '/block-user/:id', isAuth.adminAuth, adminController.blockUser )
 
 router.get( '/unblock-user/:id', isAuth.adminAuth, adminController.unBlockUser )
 
-router.get( '/category', isAuth.adminAuth, adminController.getCategory )
+router.get( '/category', isAuth.adminAuth, categoryController.getCategory )
 
-router.post( '/add-category', isAuth.adminAuth, adminController.addCategory )
+router.post( '/add-category', isAuth.adminAuth, categoryController.addCategory )
 
-router.get( '/edit-category/:id', isAuth.adminAuth, adminController.getEditCategory )
+router.get( '/edit-category/:id', isAuth.adminAuth, categoryController.getEditCategory )
 
-router.get( '/list-category/:id', isAuth.adminAuth, adminController.listCategory )
+router.get( '/list-category/:id', isAuth.adminAuth, categoryController.listCategory )
 
-router.get( '/unlist-category/:id', isAuth.adminAuth, adminController.unlistCategory )
+router.get( '/unlist-category/:id', isAuth.adminAuth, categoryController.unlistCategory )
 
-router.get( '/products', isAuth.adminAuth, adminController.getProductsList )
+router.get( '/products', isAuth.adminAuth, productController.getProductsList )
 
-router.get( '/add-products', isAuth.adminAuth, adminController.getAddProducts )
+router.get( '/add-products', isAuth.adminAuth, productController.getAddProducts )
 
-router.post( '/add-products', isAuth.adminAuth, adminController.addProducts )
+router.post( '/add-products', isAuth.adminAuth, productController.addProducts )
 
 
 module.exports = router 
