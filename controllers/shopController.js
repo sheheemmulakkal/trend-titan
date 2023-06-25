@@ -1,5 +1,6 @@
 
 const productSchema = require('../models/productModel')
+const categorySchema = require( '../models/categoryModel')
 
 
 module.exports = {
@@ -7,18 +8,60 @@ module.exports = {
     // Home page GET
     getHome : async( req, res ) => {
 
-        const products = await productSchema.find({status : true})
-        console.log(products);
+        try {
 
-        res.render( 'shop/home',{
-            products : products
-        } )
+            const products = await productSchema.find({status : true})
+            // console.log(products); 
+
+            res.render( 'shop/home',{
+                products : products
+            } )
+            
+        } catch (error) {
+            console.log(error.message);
+        }
 
     },
 
     // Shop page GET
-    getShop : ( req, res ) => {
-        res.render('shop/shop')
+    getShop : async( req, res ) => {
+
+        try {
+
+            const products = await productSchema.find({status: true})
+            const category = await categorySchema.find({status: true})
+            const brands = await productSchema.distinct('brand')
+            console.log(brands); 
+            console.log(category); 
+
+            res.render('shop/shop',{
+                products  : products,
+                category : category,
+                brands : brands
+            })
+              
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    // Single product GET
+    getSingleProduct : async( req, res ) => {
+
+        try {
+            
+            const product = await productSchema.find({_id : req.params.id, status : true }).populate('category')
+            const related = await productSchema.find({status : true}).limit(4)
+            console.log(product);
+            res.render('shop/single-product',{
+                product : product,
+                related : related
+            })
+
+        } catch (error) {
+            console.log(error.message);
+        }
+
     }
 
 }

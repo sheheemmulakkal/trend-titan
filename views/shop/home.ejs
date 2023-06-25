@@ -16,7 +16,7 @@
                             <h2>Fall - Winter Collections 2030</h2>
                             <p>A specialist label creating luxury essentials. Ethically crafted with an unwavering
                             commitment to exceptional quality.</p>
-                            <a href="#" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                            <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
                             <div class="hero__social">
                                 <a href="#"><i class="fa fa-facebook"></i></a>
                                 <a href="#"><i class="fa fa-twitter"></i></a>
@@ -117,16 +117,10 @@
                 <div class="product__item">
                     
 
-
+                    <a href="/products/<%= product._id %>">
                         <div class="product__item__pic set-bg" data-setbg="/images/product-images/<%= product.image[0] %>">
-                            <span class="label">New</span>
-                            <ul class="product__hover">
-                                <li><a href="#"><img src="/user/img/icon/heart.png" alt=""></a></li>
-                                <li><a href="#"><img src="/user/img/icon/compare.png" alt=""> <span>Compare</span></a></li>
-                                <li><a href="#"><img src="/user/img/icon/search.png" alt=""></a></li>
-                            </ul>
                         </div>
-                  
+                    </a>
 
                     <div class="product__item__text">
                         <h6><%= product.name %></h6>

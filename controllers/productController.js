@@ -42,7 +42,7 @@ module.exports = {
             })
 
             const result = await product.save()
-            console.log(result);
+            // console.log(result);
             res.redirect('/admin/add-products')
 
         } catch(error){

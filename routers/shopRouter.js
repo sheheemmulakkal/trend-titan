@@ -9,7 +9,9 @@ const router = express.Router();
 // Routers
 router.get( '/', shopController.getHome )
 
-router.get( '/shop', isAuth.userAuth, shopController.getShop )
+router.get( '/shop', shopController.getShop )
+
+router.get( '/products/:id', shopController.getSingleProduct)
 
 
 
