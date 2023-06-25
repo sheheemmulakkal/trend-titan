@@ -1,0 +1,39 @@
+<script>
+    const errorContainer = document.getElementById('errorContainer');
+    const productForm = document.getElementById('productForm');
+
+    productForm.addEventListener('submit', (event) => {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+
+        const name = document.getElementById('exampleInputName1').value.trim();
+        const description = document.getElementById('exampleInputEmail3').value.trim();
+        const brand = document.getElementById('exampleInputEmail3').value.trim();
+        const quantity = document.getElementById('exampleInputPassword4').value.trim();
+        const price = document.getElementById('exampleInputPassword4').value.trim();
+        const fileInput = document.getElementById('images')
+        const filePath = fileInput.value
+        const image = document.querySelector('input[type="file"]').files;
+
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+
+        if (!name || !description || !brand || !quantity || !price || image.length === 0) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'All fields are required.';
+            errorContainer.style.display = 'block';
+        } else if (isNaN(quantity) || isNaN(price)) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'Quantity and price should be numbers.';
+            errorContainer.style.display = 'block';
+        } else if (image.length < 1 || image.length > 4) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'Please select between 1 and 4 images.';
+            errorContainer.style.display = 'block';
+        } else if (!allowedExtensions.exec(filePath)){
+            event.preventDefault();
+            errorContainer.innerHTML = 'Please upload file having extensions .jpeg/.jpg/.png/.gif only.'
+            errorContainer.style.display = 'block'
+        }
+    });
+</script>

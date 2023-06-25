@@ -35,6 +35,11 @@ const productSchema = Schema({
         required : true
     },
 
+    image : {
+        type : Array,
+        required : true
+    }, 
+
     status : {
         type : Boolean,
         default : true

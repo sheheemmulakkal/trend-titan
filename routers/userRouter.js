@@ -5,4 +5,4 @@
 
  router.get( '/profile', userController.getUserProfile )
 
- module.exports = router 
+ module.exports = router  

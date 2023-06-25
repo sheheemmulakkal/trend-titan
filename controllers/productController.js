@@ -24,11 +24,18 @@ module.exports = {
 
     addProducts : async ( req, res ) => {
         try {
-            
+
+            const img = []
+            for( let items of req.files) {
+                img.push(items.filename)
+            }
+
+            console.log(img);
             const product = new productSchema( {
                 name : req.body.name,
                 description : req.body.description,
                 brand : req.body.brand,
+                image : img,
                 category : req.body.id,
                 quantity : req.body.quantity,
                 price : req.body.price
@@ -47,21 +54,17 @@ module.exports = {
 
         try {
 
-            // const products = await productSchema.find()
             const products = await productSchema.find().populate('category')
-            // console.log(categories);
 
-            
             res.render('admin/products',{
                 admin : req.session.admin,
                 products : products
             })
 
-        } catch (error) {
+        } catch (error) { 
             console.log(error.message);
         }
 
-        
     }
 
 }
