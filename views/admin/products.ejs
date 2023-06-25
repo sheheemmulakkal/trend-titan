@@ -20,30 +20,31 @@
                   <th> Name </th>
                   <th> Description </th>
                   <th> Brand Name </th>
-                  <th> Price </th>
                   <th> Quantity </th>
                   <th> Category </th>
+                  <th> Price </th>
                 </tr>
               </thead>
               <tbody>
 
-                <tr>
-                  
-                  <td>
-                    <span class="pl-2"> Name </span>
-                  </td>
-                  <td> Description </td>
-                  <td> Brand Name </td>
-                  <td> Price </td>
-                  <td> Quantity </td>
-                  <td> else </td>
-                  <td>
-                        <div class="row">
-                            <div><a class="badge badge-outline-success" href="">Active</a></div>
-                            <div><a class="badge badge-outline-danger" href="">Blocked</a></div>
-                        </div>
-                  </td>
-                </tr>
+                <% for ( let product of products ) { %>
+                    <tr>
+                        <td>
+                          <span class="pl-2"> <%= product.name %> </span>
+                        </td>
+                        <td> <%= product.description %> </td>
+                        <td> <%= product.brand %> </td>
+                        <td> <%= product.quantity %> </td>
+                        <td> <%= product.category.category %> </td>
+                        <td> <%= product.price %> </td>
+                        <td>
+                              <div class="row">
+                                  <div><a class="badge badge-outline-primary mr-2" href="/admin/edit-product/<%= product._id %>">Edit</a></div>
+                                  <div><a class="badge badge-outline-danger" href="/admin/delete-product/<%= product._id %>">Delete</a></div>
+                              </div>
+                        </td>
+                      </tr>
+                <% } %>
 
               </tbody>
             </table>

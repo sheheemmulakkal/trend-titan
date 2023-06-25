@@ -34,5 +34,7 @@ router.get( '/products', isAuth.adminAuth, adminController.getProductsList )
 
 router.get( '/add-products', isAuth.adminAuth, adminController.getAddProducts )
 
+router.post( '/add-products', isAuth.adminAuth, adminController.addProducts )
+
 
 module.exports = router 
