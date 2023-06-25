@@ -44,6 +44,7 @@ const productSchema = Schema({
         type : Boolean,
         default : true
     }
+    
 })
 
 

@@ -32,15 +32,38 @@
                         <td>
                           <span class="pl-2"> <%= product.name %> </span>
                         </td>
-                        <td> <%= product.description %> </td>
+
+                        <td class="description-cell">
+                            <div class="description-content">
+                              <%= product.description %>
+                            </div>
+                            <button class="toggle-description">Show More</button>
+                        </td>
+                          
                         <td> <%= product.brand %> </td>
                         <td> <%= product.quantity %> </td>
                         <td> <%= product.category.category %> </td>
                         <td> <%= product.price %> </td>
                         <td>
                               <div class="row">
-                                  <div><a class="badge badge-outline-primary mr-2" href="/admin/edit-product/<%= product._id %>">Edit</a></div>
-                                  <div><a class="badge badge-outline-danger" href="/admin/delete-product/<%= product._id %>">Delete</a></div>
+                                  <div><a class="badge badge-outline-primary mr-2" href="/admin/edit-product/<%= product._id %>"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                  </svg></a></div>
+
+                                 <% if( product.status ) { %>
+                                  <div><a id="delete" class="badge badge-outline-danger" href="/admin/delete-product/<%= product._id %>"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                  </svg></a></div>
+                                 <% } else { %>
+                                    <div><a id="restore" class="badge badge-outline-success" href="/admin/restore-product/<%= product._id %>"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                      </svg></a></div> 
+                                 <% } %>
+
+
                               </div>
                         </td>
                       </tr>
@@ -59,6 +82,56 @@
 </div>
 </div>
 
+<style>
+    .description-cell .description-content {
+  max-width: 200px; /* Adjust the value as per your preference */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description-cell.collapsed .description-content {
+  max-width: none;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.description-cell .toggle-description {
+  background: none;
+  border: none;
+  margin-top: 8px;
+  color: rgb(97, 255, 108);
+  cursor: pointer;
+  padding: 0;
+}
+
+</style>
+
+<script>
+    // Get all toggle buttons
+const toggleButtons = document.querySelectorAll('.toggle-description');
+const toggleDelete = document.getElementById('delete')
+
+// Add event listener to each toggle button
+toggleButtons.forEach((button) => {
+  button.addEventListener('click', function () {
+    // Find the parent description cell
+    const descriptionCell = this.closest('.description-cell');
+
+    // Toggle the 'collapsed' class on the description cell
+    descriptionCell.classList.toggle('collapsed');
+
+    // Update the button text
+    if (descriptionCell.classList.contains('collapsed')) {
+      this.textContent = 'Show less';
+    } else {
+      this.textContent = 'Show more';
+    }
+  });
+});
+
+</script>
 
 
   <%- include('../includes/admin/adminFooter.ejs') %>

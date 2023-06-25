@@ -55,9 +55,11 @@ module.exports = {
         try {
 
             const products = await productSchema.find().populate('category')
+            // console.log(products)
 
             res.render('admin/products',{
                 admin : req.session.admin,
+                
                 products : products
             })
 
@@ -65,6 +67,30 @@ module.exports = {
             console.log(error.message);
         }
 
+    },
+
+    deleteProduct : async( req, res ) => {
+
+        try {
+
+            const product = await productSchema.updateOne({ _id : req.params.id},{ $set :{ status : false}})
+            res.redirect('/admin/products')
+            
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    restoreProduct : async( req, res ) => {
+
+        try {
+
+            const product = await productSchema.updateOne({ _id : req.params.id},{ $set :{ status : true}})
+            res.redirect('/admin/products')
+            
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
 }

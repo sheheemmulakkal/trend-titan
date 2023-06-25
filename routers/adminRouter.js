@@ -58,5 +58,9 @@ router.get( '/add-products', isAuth.adminAuth, productController.getAddProducts 
 
 router.post( '/add-products', isAuth.adminAuth, upload.array('image',4), productController.addProducts )
 
+router.get( '/delete-product/:id', isAuth.adminAuth, productController.deleteProduct )
+
+router.get( '/restore-product/:id', isAuth.adminAuth, productController.restoreProduct )
+
 
 module.exports = router 

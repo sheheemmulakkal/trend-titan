@@ -1,9 +1,18 @@
 
+const productSchema = require('../models/productModel')
+
+
 module.exports = {
 
     // Home page GET
-    getHome : ( req, res ) => {
-        res.render( 'shop/home' )
+    getHome : async( req, res ) => {
+
+        const products = await productSchema.find({status : true})
+        console.log(products);
+
+        res.render( 'shop/home',{
+            products : products
+        } )
 
     },
 
