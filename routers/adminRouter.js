@@ -20,4 +20,19 @@ router.get( '/block-user/:id', isAuth.adminAuth, adminController.blockUser )
 
 router.get( '/unblock-user/:id', isAuth.adminAuth, adminController.unBlockUser )
 
+router.get( '/category', isAuth.adminAuth, adminController.getCategory )
+
+router.post( '/add-category', isAuth.adminAuth, adminController.addCategory )
+
+router.get( '/edit-category/:id', isAuth.adminAuth, adminController.getEditCategory )
+
+router.get( '/list-category/:id', isAuth.adminAuth, adminController.listCategory )
+
+router.get( '/unlist-category/:id', isAuth.adminAuth, adminController.unlistCategory )
+
+router.get( '/products', isAuth.adminAuth, adminController.getProductsList )
+
+router.get( '/add-products', isAuth.adminAuth, adminController.getAddProducts )
+
+
 module.exports = router 

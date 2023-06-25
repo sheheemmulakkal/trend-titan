@@ -120,8 +120,10 @@ module.exports = {
 
         try {
 
+            // Checking is there any existing user
             const userData = await userSchema.findOne( {email : req.body.email} )
             
+            // If existing user
             if( userData ) {
 
                 return res.render( 'auth/userSignup', {
@@ -130,23 +132,21 @@ module.exports = {
 
             } else { 
 
-                    
-
-                    const otp = verificationController.sendEmail(req.body.email, req.body.lastName)
+                    const otp = verificationController.sendEmail(req.body.email)    
 
                     const password = await bcrypt.hash( req.body.password, 12)
 
-                const user = new userSchema( {
-                    firstName : req.body.firstName,
-                    lastName : req.body.lastName,
-                    email : req.body.email,
-                    mobile : req.body.mobile,
-                    password : password,
-                    token : {
-                        otp : otp,
-                        generatedTime : new Date()
-                    }
-                })
+                    const user = new userSchema( {
+                        firstName : req.body.firstName,
+                        lastName : req.body.lastName,
+                        email : req.body.email,
+                        mobile : req.body.mobile,
+                        password : password,
+                        token : {
+                            otp : otp,
+                            generatedTime : new Date()
+                        }
+                    })
 
                 const userData = await user.save()
 
