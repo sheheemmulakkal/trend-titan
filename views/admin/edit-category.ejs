@@ -12,9 +12,10 @@
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title">Edit category</h4>
-                <form class="forms-sample" action="/admin/edit-category" method="POST" id="container">
+                <form class="forms-sample" action="/admin/edit-category" method="POST" id="category">
+                  <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
                   <div class="form-group">
-                    <input type="text" name="category" class="form-control" value="<%= category.category %>" id="container-field" placeholder="Add category">
+                    <input type="text" name="category" class="form-control" value="<%= category.category %>" id="category-field" placeholder="Add category">
                     <input type="hidden" value="<%= category._id %>" name="categoryId">
                   </div>
                   <button type="submit" class="btn btn-primary mr-2">Add</button>    
