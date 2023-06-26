@@ -7,25 +7,18 @@
 <section class="login_box_area section-margin">
     <div class="container">
         <div class="row">
-            <!-- <div class="col-lg-6">
-                <div class="login_box_img">
-                    <div class="hover">
-                        <h4>New to our website?</h4>
-                        <a class="button button-account" href="register.html">Create an Account</a>
-                    </div>
-                </div>
-            </div> -->
+            
             <div class="col-12">
                 
                 <div class="login_form_inner">
                     
                         
                     
-                    <!-- <a href="./index.html"><img style="margin-top: -5rem;" src="/user/img/logo.png" alt=""></a> -->
                     <h3>Log in to enter</h3>
-                    <form class="row login_form" method="POST" action="/login" id="register_form" onsubmit="return userLogin()" >
+                    <form class="row login_form" method="POST" action="/login" id="register_form"  >
 
                         <!-- error message ( Invalid username or password ) -->
+                        <!-- <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> -->
                         <% if( err) { %>
                             <div class="col-md-12 form-group" >
                               <label id="errDiv"  
@@ -70,38 +63,7 @@
 
 
 
-<script>
-
-function userLogin(){
-  
-      // Get form input values
-      var email = document.getElementById('email').value.trim();
-      var password = document.getElementById('password').value.trim();
-
-      var error = document.getElementById( 'errDiv' )
-
-
-  
-      if (email === '' || password === '') {
-        // Fields are empty, display an error message
-        error.innerHTML = 'Fields Should not be empty'
-        return false
-      } 
-
-      
-      // Regular expression for email validation
-      
-      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        
-        error.innerHTML = 'Enter valid email'
-        return false
-        }
-
-        return true
-        }
-  </script>
-
+<%- include('../includes/validations/userLoginV.ejs') %>
 <%- include('../includes/register/loginEnd.ejs') %>
 
 
