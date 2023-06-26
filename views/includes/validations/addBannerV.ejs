@@ -1,0 +1,29 @@
+<script>
+    const errorContainer = document.getElementById('errorContainer');
+    const productForm = document.getElementById('productForm');
+
+    productForm.addEventListener('submit', (event) => {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+
+        const mainHead = document.getElementById('mainHead').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const type = document.getElementById('type').value.trim();
+        const fileInput = document.getElementById('images')
+        const filePath = fileInput.value
+        const image = document.querySelector('input[type="file"]').files;
+
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+
+        if (!mainHead || !description || !type || image.length === 0) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'All fields are required.';
+            errorContainer.style.display = 'block';
+        } else if (!allowedExtensions.exec(filePath)){
+            event.preventDefault();
+            errorContainer.innerHTML = 'Please upload file having extensions .jpeg/.jpg/.png/.gif only.'
+            errorContainer.style.display = 'block'
+        }
+    });
+</script>
