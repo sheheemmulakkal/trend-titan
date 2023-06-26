@@ -17,6 +17,7 @@
             <table class="table">
               <thead>
                 <tr>
+                  <th>  </th>
                   <th> Name </th>
                   <th> Description </th>
                   <th> Brand Name </th>
@@ -29,6 +30,9 @@
 
                 <% for ( let product of products ) { %>
                     <tr>
+                        <td style="width: 150px;height: auto; border-radius: 0;">
+                            <img style="width:'150px'; height: auto;border-radius: 0;"  src="/images/product-images/<%= product.image[0] %>" alt="">
+                        </td>
                         <td>
                           <span class="pl-2"> <%= product.name %> </span>
                         </td>
@@ -107,6 +111,9 @@
   color: rgb(97, 255, 108);
   cursor: pointer;
   padding: 0;
+}
+.table th img, .jsgrid .jsgrid-table th img, .table td img, .jsgrid .jsgrid-table td img {
+    width: 150px;
 }
 
 </style>

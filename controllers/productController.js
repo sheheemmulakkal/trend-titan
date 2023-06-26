@@ -120,14 +120,12 @@ module.exports = {
         try {
 
             if( req.files ) {
-                // console.log(req.files);
                 const existingProduct = await productSchema.findById(req.body.productId)
                 const images = existingProduct.image
                 req.files.forEach(element => {
                     images.push(element.filename)
                 });
                 var img = images
-                // console.log(img);
             }
     
             const update = await productSchema.updateOne( {_id : req.body.productId},

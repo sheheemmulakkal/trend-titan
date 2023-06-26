@@ -79,5 +79,10 @@ router.get( '/edit-banner/:id', isAuth.adminAuth, bannerController.getEditBanner
 
 router.post( '/edit-banner', isAuth.adminAuth, upload.single('image'), bannerController.updateBanner )
 
+router.get( '/delete-banner/:id', isAuth.adminAuth, bannerController.deleteBanner )
+
+router.get( '/restore-banner/:id', isAuth.adminAuth, bannerController.restoreBanner )
+
+
 
 module.exports = router 

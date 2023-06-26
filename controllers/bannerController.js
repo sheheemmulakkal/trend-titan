@@ -73,14 +73,35 @@ module.exports = {
                 console.log('hii');
                 updatedBanner.image = req.file.filename
             }
-    
             const result = await bannerSchema.updateOne({ _id : req.body.bannerId},{
                 $set :  updatedBanner 
             })
             res.redirect( '/admin/banner' )
-            
+
         } catch (error) {
             console.log(error.message);
       }
+    },
+
+    deleteBanner : async ( req, res ) => {
+        try {
+
+            const deletetBanner = await bannerSchema.updateOne({ _id : req.params.id },{ status : false })
+            res.redirect('/admin/banner')
+            
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    restoreBanner : async ( req, res ) => {
+        try {
+
+            const restoreBanner = await bannerSchema.updateOne({ _id : req.params.id },{ status : true })
+            res.redirect('/admin/banner')
+            
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 }
