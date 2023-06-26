@@ -1,0 +1,17 @@
+<script>
+    const errorContainer = document.getElementById('errorContainer');
+    const productForm = document.getElementById('category');
+
+    productForm.addEventListener('submit', (event) => {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+
+        const category = document.getElementById('category-field').value.trim();
+
+        if (!category) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'All fields are required.';
+            errorContainer.style.display = 'block';
+        }
+    });
+</script> 

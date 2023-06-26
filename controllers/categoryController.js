@@ -83,11 +83,25 @@ module.exports = {
             console.log(category);
             res.render('admin/edit-category',{
                 admin : req.session.admin,
-                value : category.category
+                category : category
             })
 
         } catch (error) {
             console.log(error.message);
         }
     },
+
+    editCategory : async ( req, res ) => {
+
+        try {
+
+            const update = await categorySchema.updateOne( { _id : req.body.categoryId },{
+                category : req.body.category
+            }) 
+            res.redirect('/admin/category')
+            
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 }

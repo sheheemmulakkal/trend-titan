@@ -12,9 +12,10 @@
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title">Edit category</h4>
-                <form class="forms-sample" action="/admin/edit-category" method="POST">
+                <form class="forms-sample" action="/admin/edit-category" method="POST" id="container">
                   <div class="form-group">
-                    <input type="text" name="category" class="form-control" value="<%= value %>" id="exampleInputName1" placeholder="Add category">
+                    <input type="text" name="category" class="form-control" value="<%= category.category %>" id="container-field" placeholder="Add category">
+                    <input type="hidden" value="<%= category._id %>" name="categoryId">
                   </div>
                   <button type="submit" class="btn btn-primary mr-2">Add</button>    
                   <button type="submit" class="btn  mr-2"><a class="btn btn-outline-danger" href="/admin/category">Cancel</a></button>
@@ -31,6 +32,8 @@
 
 </div>
 </div>
+
+<%- include('../includes/validations/addCategoryV.ejs') %>
 
 
 <%- include('../includes/admin/adminFooter.ejs') %>

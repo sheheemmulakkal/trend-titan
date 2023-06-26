@@ -12,9 +12,10 @@
             <div class="card">
               <div class="card-body">
                 <h4 class="card-title">Add category</h4>
-                <form class="forms-sample" action="/admin/add-category" method="POST">
+                <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
+                <form class="forms-sample" action="/admin/add-category" method="POST" id="category">
                   <div class="form-group">
-                    <input type="text" name="category" class="form-control" id="exampleInputName1" placeholder="Add category">
+                    <input type="text" name="category" class="form-control" id="category-field" placeholder="Add category" required>
                   </div>
                   <button type="submit" class="btn btn-primary mr-2">Add</button>    
                 </form>
@@ -72,5 +73,6 @@
 </div>
 </div>
 
+<%- include('../includes/validations/addCategoryV.ejs') %>
 
 <%- include('../includes/admin/adminFooter.ejs') %>

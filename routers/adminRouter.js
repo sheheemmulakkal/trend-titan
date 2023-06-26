@@ -49,6 +49,8 @@ router.post( '/add-category', isAuth.adminAuth, categoryController.addCategory )
 
 router.get( '/edit-category/:id', isAuth.adminAuth, categoryController.getEditCategory )
 
+router.post( '/edit-category', isAuth.adminAuth, categoryController.editCategory )
+
 router.get( '/list-category/:id', isAuth.adminAuth, categoryController.listCategory )
 
 router.get( '/unlist-category/:id', isAuth.adminAuth, categoryController.unlistCategory )
