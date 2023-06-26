@@ -1,6 +1,7 @@
 
 const productSchema = require('../models/productModel')
 const categorySchema = require( '../models/categoryModel')
+const bannerSchema = require( '../models/bannerModel')
 
 
 module.exports = {
@@ -10,11 +11,13 @@ module.exports = {
 
         try {
 
+            const banners = await bannerSchema.find({status : true})
             const products = await productSchema.find({status : true})
             // console.log(products); 
 
             res.render( 'shop/home',{
-                products : products
+                products : products,
+                banners : banners
             } )
             
         } catch (error) {

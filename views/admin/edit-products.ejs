@@ -1,0 +1,133 @@
+
+
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+
+
+<div class="main-panel">
+    <div class="content-wrapper">
+
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Edit products</h4>
+                <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
+
+                <form id="productForm" class="forms-sample" action="/admin/edit-product" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Product Name</label>
+                        <input type="text" class="form-control" value="<%= product.name %>" id="exampleInputName1" name="name" placeholder="Product Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail3">Description</label>
+                        <input type="text" class="form-control" value="<%= product.description %>" id="exampleInputEmail3" name="description" placeholder="Description" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail3">Brand Name</label>
+                        <input type="text" class="form-control"  value="<%= product.brand %>" id="exampleInputEmail3" name="brand" placeholder="Brand Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail3">Category</label>
+                        <select class="form-control" name="id" required>
+                            <option selected value="<%= product.category._id %>"><%= product.category.category %></option>
+                            <% for( let category of categories ) { %>  
+                            <option value="<%= category._id %>"><%= category.category %></option>
+                            <% } %>  
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label for="exampleInputPassword4">Quantity</label>
+                            <input type="number" class="form-control" value="<%= product.quantity %>" id="exampleInputPassword4" name="quantity" placeholder="Quantity" required>
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="exampleInputPassword4">Price</label>
+                            <input type="number" class="form-control" value="<%= product.price %>" id="exampleInputPassword4" name="price" placeholder="Price" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image</label>
+                        <div class="input-group col-xs-12">
+                            <input id="images" type="file" name="image" multiple class="form-control btn btn-primary" placeholder="Upload Image" >
+                            <span class="input-group-append"></span>
+                        </div>
+                    </div>
+                    <input type="hidden" value="<%= product._id %>" name="productId" id="">
+                    <div class="row">
+                        <% for( let img of product.image ) { %>
+                            <div class="edit-images" style="display: flex; flex-direction: column; justify-content: center; ">
+                                <div><img src="/images/product-images/<%= img %>" style="width: auto; height: 100px; margin-inline: 10px; border: 1px solid rgb(193, 193, 193); border-radius: 15px;" alt="Product Images"></div>
+                                <div class="mx-auto"><a id="delete" class="badge danger" href="/admin/delete-image?id=<%= product._id %>&imageId=<%= img %>"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                  </svg></a></div>
+                            </div>
+                        <% } %>
+                        
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mr-2 mt-4">Submit</button>
+                    <button type="submit" class="btn  mr-2 mt-4"><a class="btn btn-outline-danger" href="/admin/products">Cancel</a></button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<input type="hidden" name="" value="<%= product.image.length %>" id="imgLength">
+
+
+
+
+
+<!-- Validation -->
+<script>
+
+    const imgLength = document.getElementById('imgLength').value
+    imgPossible = 4 - imgLength 
+    console.log(imgLength);
+    const errorContainer = document.getElementById('errorContainer');
+    const productForm = document.getElementById('productForm');
+
+    productForm.addEventListener('submit', (event) => {
+        errorContainer.style.display = 'none';
+        errorContainer.innerHTML = '';
+
+        const name = document.getElementById('exampleInputName1').value.trim();
+        const description = document.getElementById('exampleInputEmail3').value.trim();
+        const brand = document.getElementById('exampleInputEmail3').value.trim();
+        const quantity = document.getElementById('exampleInputPassword4').value.trim();
+        const price = document.getElementById('exampleInputPassword4').value.trim();
+        const fileInput = document.getElementById('images')
+        const filePath = fileInput.value
+        const image = document.querySelector('input[type="file"]').files;
+
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+
+        if (!name || !description || !brand || !quantity || !price ) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'All fields are required.';
+            errorContainer.style.display = 'block';
+        } else if (isNaN(quantity) || isNaN(price)) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'Quantity and price should be numbers.';
+            errorContainer.style.display = 'block';
+        } else if ( (imgPossible === 4 && image.length === 0) || image.length > imgPossible) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'Please select between 1 and 4 images.';
+            errorContainer.style.display = 'block';
+        } else if (image.length !== 0 && !allowedExtensions.exec(filePath)){
+            event.preventDefault();
+            errorContainer.innerHTML = 'Please upload file having extensions .jpeg/.jpg/.png/.gif only.'
+            errorContainer.style.display = 'block'
+        }
+    });
+</script>
+
+
+<%- include('../includes/admin/adminFooter.ejs') %>

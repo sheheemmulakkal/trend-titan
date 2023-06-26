@@ -5,6 +5,7 @@ const authController = require( '../controllers/authController' )
 const adminController = require( '../controllers/adminController')
 const productController = require( '../controllers/productController')
 const categoryController = require('../controllers/categoryController')
+const bannerController = require( '../controllers/bannerController')
 const isAuth = require ( '../middleware/isAuth')
 
 const multer = require('multer')
@@ -61,6 +62,18 @@ router.post( '/add-products', isAuth.adminAuth, upload.array('image',4), product
 router.get( '/delete-product/:id', isAuth.adminAuth, productController.deleteProduct )
 
 router.get( '/restore-product/:id', isAuth.adminAuth, productController.restoreProduct )
+
+router.get( '/edit-product/:id', isAuth.adminAuth, productController.getEditProdut )
+
+router.post( '/edit-product', isAuth.adminAuth, upload.array('image',4), productController.editProduct )
+
+router.get( '/delete-image', isAuth.adminAuth, productController.deleteImage )
+
+router.get( '/banner', isAuth.adminAuth, bannerController.getBannerManagement )
+
+router.get( '/add-banner', isAuth.adminAuth, bannerController.getAddBanner )
+
+router.post( '/add-banner', isAuth.adminAuth, upload.single('image'), bannerController.addingBanner )
 
 
 module.exports = router 

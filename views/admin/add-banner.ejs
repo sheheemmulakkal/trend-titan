@@ -1,0 +1,50 @@
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Add Banner</h4>
+                <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
+
+                <form id="productForm" class="forms-sample" action="/admin/add-banner" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Banner Head</label>
+                        <input type="text" class="form-control" id="exampleInputName1" name="mainHead" placeholder="Banner Head" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail3">Description</label>
+                        <input type="text" class="form-control" id="exampleInputEmail3" name="description" placeholder="Description" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail3">Type</label>
+                        <input type="text" class="form-control" id="exampleInputEmail3" name="type" placeholder="Type" required>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label>Image</label>
+                        <div class="input-group col-xs-12">
+                            <input id="images" type="file" name="image" class="form-control btn btn-primary" placeholder="Upload Image" required>
+                            <span class="input-group-append"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+<!-- Validation -->
+
+
+<%- include('../includes/admin/adminFooter.ejs') %>

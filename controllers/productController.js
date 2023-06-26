@@ -11,7 +11,6 @@ module.exports = {
         try {
 
             const categories = await categorySchema.find({status:true})
-            
             res.render( 'admin/add-products',{
                 admin : req.session.admin,
                 categories : categories
@@ -29,8 +28,6 @@ module.exports = {
             for( let items of req.files) {
                 img.push(items.filename)
             }
-
-            console.log(img);
             const product = new productSchema( {
                 name : req.body.name,
                 description : req.body.description,
@@ -40,9 +37,7 @@ module.exports = {
                 quantity : req.body.quantity,
                 price : req.body.price
             })
-
             const result = await product.save()
-            // console.log(result);
             res.redirect('/admin/add-products')
 
         } catch(error){
@@ -55,11 +50,8 @@ module.exports = {
         try {
 
             const products = await productSchema.find().populate('category')
-            // console.log(products)
-
             res.render('admin/products',{
                 admin : req.session.admin,
-                
                 products : products
             })
 
@@ -73,7 +65,7 @@ module.exports = {
 
         try {
 
-            const product = await productSchema.updateOne({ _id : req.params.id},{ $set :{ status : false}})
+            const product = await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : false}})
             res.redirect('/admin/products')
             
         } catch (error) {
@@ -85,12 +77,79 @@ module.exports = {
 
         try {
 
-            const product = await productSchema.updateOne({ _id : req.params.id},{ $set :{ status : true}})
+            const product = await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : true} })
             res.redirect('/admin/products')
             
         } catch (error) {
             console.log(error.message);
         }
+    },
+
+    getEditProdut : async( req, res ) => {
+
+        const product = await productSchema.findOne({ _id : req.params.id }).populate('category')
+        const category = await categorySchema.find()
+
+        res.render( 'admin/edit-products', {
+            product : product,
+            categories : category,
+            admin : req.session.admin
+        } )
+
+    },
+
+
+
+    deleteImage : async ( req, res ) => {
+        try {
+
+            const id = req.query.id
+            const image = req.query.imageId
+            const deleteImage = await productSchema.updateOne({_id : id},{ $pull : {image : image}})
+
+
+            res.redirect(`/admin/edit-product/${id}`)
+            
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    editProduct : async( req, res ) => {
+
+        try {
+
+            if( req.files ) {
+                // console.log(req.files);
+                const existingProduct = await productSchema.findById(req.body.productId)
+                const images = existingProduct.image
+                req.files.forEach(element => {
+                    images.push(element.filename)
+                });
+                var img = images
+                // console.log(img);
+            }
+    
+            const update = await productSchema.updateOne( {_id : req.body.productId},
+                {
+                    $set : {
+                        name : req.body.name,
+                        description : req.body.description,
+                        brand : req.body.brand,
+                        category : req.body.id,
+                        quantity : req.body.quantity,
+                        price : req.body.price,
+                        image : img
+                    }
+                })
+    
+            res.redirect( '/admin/products')
+            
+        } catch (error) {
+            console.log(error.message);
+        }
     }
+
+
 
 }
