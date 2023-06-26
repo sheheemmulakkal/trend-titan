@@ -13,15 +13,15 @@
                 <form id="productForm" class="forms-sample" action="/admin/edit-banner" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="exampleInputName1">Banner Head</label>
-                        <input type="text" class="form-control" value="<%= banner.mainHead %>" id="exampleInputName1" name="mainHead" placeholder="Banner Head" required>
+                        <input type="text" class="form-control" value="<%= banner.mainHead %>" id="mainHead" name="mainHead" placeholder="Banner Head" required>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail3">Description</label>
-                        <input type="text" class="form-control" value="<%= banner.description %>" id="exampleInputEmail3" name="description" placeholder="Description" required>
+                        <input type="text" class="form-control" value="<%= banner.description %>" id="description" name="description" placeholder="Description" required>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail3">Type</label>
-                        <input type="text" class="form-control" value="<%= banner.typeHead %>" id="exampleInputEmail3" name="type" placeholder="Type" required>
+                        <input type="text" class="form-control" value="<%= banner.typeHead %>" id="type" name="type" placeholder="Type" required>
                     </div>
                     <input type="hidden" name="bannerId" value="<%= banner._id %>" id="">
                     
@@ -48,6 +48,8 @@
 
 
 <!-- Validation -->
+<%- include('../includes/validations/editBannerV.ejs') %>
+
 
 
 <%- include('../includes/admin/adminFooter.ejs') %>
