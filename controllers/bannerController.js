@@ -37,14 +37,50 @@ module.exports = {
                 description : req.body.description,
                 image : req.file.filename
             })
-
             await banner.save()
-
             res.redirect( '/admin/banner' )
             
         } catch (error) {
             console.log(error.message);
         }
+    },
 
+    getEditBanner : async( req, res ) => {
+
+        try {
+            
+            const banner = await bannerSchema.findById(req.params.id)
+            res.render( 'admin/edit-banner',{
+                banner : banner,
+                admin : req.session.admin
+            } ) 
+
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    updateBanner : async ( req, res ) => {
+
+        try {
+
+            const updatedBanner = {
+                mainHead : req.body.mainHead,
+                typeHead : req.body.type,
+                description : req.body.description
+            }
+            if( req.file ){
+                console.log('hii');
+                updatedBanner.image = req.file.filename
+            }
+    
+            const result = await bannerSchema.updateOne({ _id : req.body.bannerId},{
+                $set :  updatedBanner 
+            })
+            res.redirect( '/admin/banner' )
+            
+        } catch (error) {
+            console.log(error.message);
+      }
     }
 }

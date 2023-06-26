@@ -75,5 +75,9 @@ router.get( '/add-banner', isAuth.adminAuth, bannerController.getAddBanner )
 
 router.post( '/add-banner', isAuth.adminAuth, upload.single('image'), bannerController.addingBanner )
 
+router.get( '/edit-banner/:id', isAuth.adminAuth, bannerController.getEditBanner )
+
+router.post( '/edit-banner', isAuth.adminAuth, upload.single('image'), bannerController.updateBanner )
+
 
 module.exports = router 

@@ -7,34 +7,35 @@
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Add Banner</h4>
+                <h4 class="card-title">Edit Banner</h4>
                 <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
 
-                <form id="productForm" class="forms-sample" action="/admin/add-banner" method="POST" enctype="multipart/form-data">
+                <form id="productForm" class="forms-sample" action="/admin/edit-banner" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="exampleInputName1">Banner Head</label>
-                        <input type="text" class="form-control" id="exampleInputName1" name="mainHead" placeholder="Banner Head" required>
+                        <input type="text" class="form-control" value="<%= banner.mainHead %>" id="exampleInputName1" name="mainHead" placeholder="Banner Head" required>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail3">Description</label>
-                        <input type="text" class="form-control" id="exampleInputEmail3" name="description" placeholder="Description" required>
+                        <input type="text" class="form-control" value="<%= banner.description %>" id="exampleInputEmail3" name="description" placeholder="Description" required>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail3">Type</label>
-                        <input type="text" class="form-control" id="exampleInputEmail3" name="type" placeholder="Type" required>
+                        <input type="text" class="form-control" value="<%= banner.typeHead %>" id="exampleInputEmail3" name="type" placeholder="Type" required>
                     </div>
+                    <input type="hidden" name="bannerId" value="<%= banner._id %>" id="">
                     
 
                     <div class="form-group">
                         <label>Image</label>
                         <div class="input-group col-xs-12">
-                            <input id="images" type="file" name="image" class="form-control btn btn-primary" placeholder="Upload Image" required>
+                            <input id="images" type="file" name="image" class="form-control btn btn-primary" placeholder="Upload Image" >
                             <span class="input-group-append"></span>
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                    <button type="submit" class="btn  mr-2 mt-4"><a class="btn btn-outline-danger" href="/admin/banner">Cancel</a></button>
+                    <button type="submit" class="btn  mr-2"><a class="btn btn-outline-danger" href="/admin/banner">Cancel</a></button>
 
                 </form>
             </div>
