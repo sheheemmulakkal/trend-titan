@@ -35,7 +35,7 @@ module.exports = {
                 price : req.body.price
             })
             const result = await product.save()
-            res.redirect('/admin/add-products')
+            res.redirect('/admin/products')
 
         } catch(error){
             console.log(error.message);

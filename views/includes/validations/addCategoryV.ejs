@@ -1,10 +1,16 @@
 <script>
     const errorContainer = document.getElementById('errorContainer');
     const productForm = document.getElementById('category');
+    const renderErr = document.getElementById('catExist');
 
     productForm.addEventListener('submit', (event) => {
         errorContainer.style.display = 'none';
         errorContainer.innerHTML = '';
+
+        if(catExist) {
+            catExist.style.display = 'none';
+            catExist.innerHTML = ""
+        }
 
         const category = document.getElementById('category-field').value.trim();
 

@@ -13,6 +13,9 @@
               <div class="card-body">
                 <h4 class="card-title">Add category</h4>
                 <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
+                <% if( err.length > 0 ) { %>
+                    <div id="catExist" class="alert alert-danger"><%= err %></div> <!-- Error container exist category -->
+                <% } %>
                 <form class="forms-sample" action="/admin/add-category" method="POST" id="category">
                   <div class="form-group">
                     <input type="text" name="category" class="form-control" id="category-field" placeholder="Add category" required>
