@@ -1,8 +1,16 @@
 <script>
     const errorContainer = document.getElementById('errorContainer');
     const productForm = document.getElementById('productForm');
+    const err = document.getElementById('err')
+
+
 
     productForm.addEventListener('submit', (event) => {
+        if(err){
+            err.style.display = 'none'
+            err.innerHTML = ""
+        }
+
         errorContainer.style.display = 'none';
         errorContainer.innerHTML = '';
 
@@ -30,10 +38,6 @@
             event.preventDefault();
             errorContainer.innerHTML = 'Please select between 1 and 4 images.';
             errorContainer.style.display = 'block';
-        } else if (!allowedExtensions.exec(filePath)){
-            event.preventDefault();
-            errorContainer.innerHTML = 'Please upload file having extensions .jpeg/.jpg/.png/.gif only.'
-            errorContainer.style.display = 'block'
         }
     });
 </script>

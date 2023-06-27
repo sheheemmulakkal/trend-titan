@@ -12,6 +12,9 @@
             <div class="card-body">
                 <h4 class="card-title">Edit products</h4>
                 <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
+                <% if( err.length > 0) { %>
+                    <div id="err" class="alert alert-danger"><%= err %></div> <!-- Error container -->
+                <% }  %>
 
                 <form id="productForm" class="forms-sample" action="/admin/edit-product" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
@@ -87,6 +90,9 @@
 <!-- Validation -->
 <script>
 
+    const err = document.getElementById('err')
+
+
     const imgLength = document.getElementById('imgLength').value
     imgPossible = 4 - imgLength 
     console.log(imgLength);
@@ -94,6 +100,12 @@
     const productForm = document.getElementById('productForm');
 
     productForm.addEventListener('submit', (event) => {
+
+        if(err){
+            err.style.display = 'none'
+            err.innerHTML = ""
+        }
+
         errorContainer.style.display = 'none';
         errorContainer.innerHTML = '';
 
@@ -120,12 +132,12 @@
         } else if ( (imgPossible === 4 && image.length === 0) || image.length > imgPossible) {
             event.preventDefault();
             errorContainer.innerHTML = 'Please select between 1 and 4 images.';
-            errorContainer.style.display = 'block';
-        } else if (image.length !== 0 && !allowedExtensions.exec(filePath)){
-            event.preventDefault();
-            errorContainer.innerHTML = 'Please upload file having extensions .jpeg/.jpg/.png/.gif only.'
-            errorContainer.style.display = 'block'
-        }
+            errorContainer.style.display = 'block';}
+        // } else if (image.length !== 0 && !allowedExtensions.exec(filePath)){
+        //     event.preventDefault();
+        //     errorContainer.innerHTML = 'Please upload file having extensions .jpeg/.jpg/.png/.gif only.'
+        //     errorContainer.style.display = 'block'
+        // }
     });
 </script>
 

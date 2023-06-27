@@ -11,7 +11,9 @@
             <div class="card-body">
                 <h4 class="card-title">Add products</h4>
                 <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
-
+                <% if( err.length > 0) { %>
+                <div id="err" class="alert alert-danger"><%= err %></div> <!-- Error container -->
+                <% }  %>
                 <form id="productForm" class="forms-sample" action="/admin/add-products" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="exampleInputName1">Product Name</label>

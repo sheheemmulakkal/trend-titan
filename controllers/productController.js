@@ -14,7 +14,8 @@ module.exports = {
             const categories = await categorySchema.find({status:true})
             res.render( 'admin/add-products',{
                 admin : req.session.admin,
-                categories : categories
+                categories : categories,
+                err : req.flash('err')
             } )
         } catch (error) {
             console.log(error.message);
@@ -23,6 +24,20 @@ module.exports = {
 
     addProducts : async ( req, res ) => {
         try {
+
+            for(let file of req.files) {
+                if( 
+                    file.mimetype !== 'image/jpg' &&
+                    file.mimetype !== 'image/jpeg' &&
+                    file.mimetype !== 'image/png' &&
+                    file.mimetype !== 'image/gif'
+                    ){
+                        req.flash('err','Check the image type')
+                        return res.redirect('/admin/add-products')
+                    }
+            }
+
+
             const img = []
             for( let items of req.files) {
                 img.push(items.filename)
@@ -89,7 +104,8 @@ module.exports = {
             res.render( 'admin/edit-products', {
                 product : product,
                 categories : category,
-                admin : req.session.admin
+                admin : req.session.admin,
+                err : req.flash('err')
             } )
             
         } catch (error) {
@@ -102,7 +118,6 @@ module.exports = {
         try {
             const id = req.query.id
             const image = req.query.imageId
-            console.log(image,'imagename');
             const deleteImage = await productSchema.updateOne({_id : id},{ $pull : {image : image}})
             fs.unlink( path.join( __dirname, '../public/images/product-images/' ) + image , (err) => {
                 if( err ) {
@@ -119,8 +134,22 @@ module.exports = {
     editProduct : async( req, res ) => {
 
         try {
+            const existingProduct = await productSchema.findById(req.body.productId)
+
             if( req.files ) {
-                const existingProduct = await productSchema.findById(req.body.productId)
+
+                for(let file of req.files) {
+                    if( 
+                        file.mimetype !== 'image/jpg' &&
+                        file.mimetype !== 'image/jpeg' &&
+                        file.mimetype !== 'image/png' &&
+                        file.mimetype !== 'image/gif'
+                        ){
+                            req.flash('err','Check the image type')
+                            return res.redirect(`/admin/edit-product/${existingProduct._id}`)
+                        }
+                }
+
                 const images = existingProduct.image
                 req.files.forEach(element => {
                     images.push(element.filename)
