@@ -11,7 +11,7 @@ module.exports = {
     getUserLogin : ( req, res ) => {
 
         res.render( 'auth/userLogin', {
-            err:false
+            err: req.flash('error')
         })
 
     },
@@ -20,72 +20,44 @@ module.exports = {
     doUserLogin : async ( req, res ) => {
 
         try {
-
             userData = await userSchema.findOne( { email : req.body.email } )
             if( userData && userData.isAdmin !== 1 ) {
-
                 // Checking is user is blocked
                     if( userData.isBlocked === false ) {
                     const password = await bcrypt.compare( req.body.password, userData.password)
-
-
                     if( password ) {
-
                         if( userData.isVerified ) {
                             req.session.user = userData._id
                             res.redirect( '/shop' )
-
                         } else {
                             const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
-
                             const otpUpdate = await userSchema.updateOne({email : req.body.email},{
                                 $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
                             })
                             req.session.unVerfiedMail = req.body.email
-
                             res.redirect( '/otp-verification')
-
                         }
-
                         // For Incorrect password
-
                     } else {
-                        res.render( 'auth/userLogin', {
-                            err: 'Incorrect Password'
-                        } )
+                        req.flash('error', 'Incorrect Password')
+                        res.redirect( '/login')
                     }
-
                 } else {
-
-                    
                     const password = await bcrypt.compare( req.body.password, userData.password)
-
                     if( password ) {
-
                         // If user is blocked
-
-                        res.render( 'auth/userLogin', {
-                            err: 'Blocked user'
-                        } )
-
+                        req.flash('error','Blocked user')
+                        res.redirect( '/login')
                     } else {
-
                         // FOr incorrect password 
-
-                        res.render( 'auth/userLogin', {
-                            err: 'Incorrect password'
-                        } )
-
+                        req.flash('error', 'Incorrect Password')
+                        res.redirect( '/login')
                     }
                 }
-
-                // Incorrect Username
             } else {
-
-                res.render( 'auth/userLogin', {
-                    err: 'Incorrect Username'
-                } )
-
+                // Incorrect Username
+                req.flash('error', 'Incorrect email')
+                res.redirect( '/login' )
             }
 
         } catch ( err ) {

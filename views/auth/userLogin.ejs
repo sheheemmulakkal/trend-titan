@@ -19,14 +19,13 @@
 
                         <!-- error message ( Invalid username or password ) -->
                         <!-- <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> -->
-                        <% if( err) { %>
+                        <% if( err.length > 0 ) { %>
                             <div class="col-md-12 form-group" >
                               <label id="errDiv"  
                               style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);" 
                               for=""><%= err %></label>
                             </div>
-                            <% } else { %>
-                                <% } %>
+                        <% } %>
 
                         <div class="col-md-12 form-group">
                             <input type="text" class="form-control" id="email" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
