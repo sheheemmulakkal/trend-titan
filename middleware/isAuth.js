@@ -2,8 +2,8 @@ module.exports = {
     
     userAuth : ( req, res, next ) => {
 
-        if( !req.session.isLoggedin ) {
-            return res.redirect( '/login' )  
+        if( !req.session.user ) {
+            return res.redirect( '/login' ) 
         }
 
         next()
@@ -11,7 +11,7 @@ module.exports = {
 
     adminAuth : ( req, res, next ) => {
 
-        if( !req.session.adminLoggedin ) {
+        if( !req.session.admin ) {
            return res.redirect( '/admin/login')
         }
 
@@ -20,7 +20,7 @@ module.exports = {
 
     userLoggedout : ( req, res, next ) => {
 
-        if( req.session.isLoggedin ) {
+        if( req.session.user ) {
             return res.redirect( '/' ) 
         }
 
@@ -29,7 +29,7 @@ module.exports = {
 
     adminLoggedOut : (req, res, next ) => {
 
-        if( req.session.adminLoggedin ) {
+        if( req.session.admin ) {
             return res.redirect( '/admin' )
         }
 

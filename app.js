@@ -30,7 +30,7 @@ app.use( session ({
     resave : false,
     secret : 'key',
     saveUninitialized: false
-
+    
 }))
 
 // Using connect-flash message
@@ -44,10 +44,9 @@ app.locals.moment = moment;
 app.locals.shortDateFormat = shortDateFormat;
 
 
- 
 // Setting local variable
 app.use( ( req, res, next ) => {
-    res.locals.userLoggedin = req.session.isLoggedin
+    res.locals.userLoggedin = req.session.user
     next()
 })
 

@@ -22,7 +22,6 @@ module.exports = {
         try {
 
             userData = await userSchema.findOne( { email : req.body.email } )
-            console.log(userData);
             if( userData && userData.isAdmin !== 1 ) {
 
                 // Checking is user is blocked
@@ -33,21 +32,15 @@ module.exports = {
                     if( password ) {
 
                         if( userData.isVerified ) {
-
-                            req.session.user = userData
-                            req.session.isLoggedin = true
-
+                            req.session.user = userData._id
                             res.redirect( '/shop' )
 
                         } else {
                             const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
-                            console.log(newOtp);
 
                             const otpUpdate = await userSchema.updateOne({email : req.body.email},{
                                 $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
                             })
-                            console.log(1);
-                            console.log(otpUpdate);
                             req.session.unVerfiedMail = req.body.email
 
                             res.redirect( '/otp-verification')
@@ -187,8 +180,7 @@ module.exports = {
                 // If expiry time is valid setting isVerified as true
                 const verify = await userSchema.updateOne({ email : otpCheck.email } , { $set : {isVerified : true} })
 
-                req.session.user = otpCheck
-                req.session.isLoggedin = true
+                req.session.user = otpCheck._id
                 req.session.unVerfiedMail = null
 
                res.redirect('/shop')
@@ -239,11 +231,7 @@ module.exports = {
 
                 if( password ) {
 
-                    req.session.admin = adminData
-                    req.session.adminLoggedin = true
-
-                    // console.log(req.session.admin);
-
+                    req.session.admin = adminData._id
                     res.redirect( '/admin' )
 
                 } else {

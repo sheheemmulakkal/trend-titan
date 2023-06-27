@@ -1,5 +1,7 @@
 
 const { id } = require('date-fns/locale')
+const fs = require( 'fs' )
+const path = require( 'path' )
 const userSchema = require( '../models/userModel')
 const categorySchema = require( '../models/categoryModel')
 const productSchema = require( '../models/productModel' )
@@ -93,17 +95,20 @@ module.exports = {
         } catch (error) {
             console.log(error.message);
         }
-
     },
-
-
 
     deleteImage : async ( req, res ) => {
 
         try {
             const id = req.query.id
             const image = req.query.imageId
+            console.log(image,'imagename');
             const deleteImage = await productSchema.updateOne({_id : id},{ $pull : {image : image}})
+            fs.unlink( path.join( __dirname, '../public/images/product-images/' ) + image , (err) => {
+                if( err ) {
+                   console.log(err.message);
+                }
+            })
             res.redirect(`/admin/edit-product/${id}`)
             
         } catch (error) {

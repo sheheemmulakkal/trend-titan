@@ -29,14 +29,27 @@ module.exports = {
 
     blockUser : async ( req, res ) => {
 
-
         try {
-
             const userId = req.params.id
+            console.log(userId,'user');
             const userData = await userSchema.findById(userId)
-            
             const block = await userData.updateOne({ $set : {isBlocked : true}})
 
+            // Destroying the session of user
+            for (const sessionKey in req.sessionStore.sessions) {
+                const sessionData = JSON.parse(req.sessionStore.sessions[sessionKey]);
+                // Check if the session contains a user and it matches the user to block
+                if (sessionData.user && sessionData.user === userId) {
+                    console.log('session');
+                  // Destroy the session
+                  req.sessionStore.destroy(sessionKey, (error) => {
+                    if (error) {
+                      console.error('Error destroying session:', error);
+                    }
+                  });
+                }
+            }
+            
             res.redirect( '/admin/userList' )
             
         } catch (error) {
