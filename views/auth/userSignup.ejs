@@ -20,13 +20,12 @@
           <h3>Create an account</h3>
           <form class="row login_form" method="POST" action="/signup" id="register_form">
 
-            <% if( err) { %>
-            <div class="col-md-12 form-group">
+            <% if( err.length > 0) { %>
+            <div class="col-md-12 form-group" id="flash-div">
               <label   
               style="border: 1px solid rgb(196, 0, 0); padding: 15px 0; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);" 
               for=""><%= err %></label>
             </div>
-            <% } else { %>
             <% } %>
             
             <div class="col-md-12 form-group">
@@ -125,9 +124,18 @@
 -->
 
 <script>
+
+    
     document.querySelector('#register_form').addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent the form from submitting
-  
+      
+      var flash = document.getElementById('flash-div')
+
+      if(flash) {
+        flash.style.display = 'none'
+        flash.innerHTML = ''
+      }
+      
       // Get form input values
       var firstName = document.getElementById('firstName').value.trim();
       var lastName = document.getElementById('lastName').value.trim();

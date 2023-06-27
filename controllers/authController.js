@@ -112,7 +112,7 @@ module.exports = {
     // Getting user signup page
     getUserSignup : ( req, res ) => {
 
-        res.render( 'auth/userSignup', {err:false})
+        res.render( 'auth/userSignup', {err: req.flash('userExist')})
     },
 
     // User Signing Up
@@ -126,9 +126,8 @@ module.exports = {
             // If existing user
             if( userData ) {
 
-                return res.render( 'auth/userSignup', {
-                    err: "User already exist"
-                })
+                req.flash('userExist', 'User already exist...')
+                return res.redirect( '/signup' )
 
             } else { 
 

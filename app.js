@@ -2,6 +2,7 @@ const express = require( 'express' );
 const path = require( 'path' );
 const mongoose = require( 'mongoose' );
 const bodyParser = require( 'body-parser' )
+const flash = require( 'connect-flash' )
 const session = require( 'express-session')
 const nocache = require( 'nocache' )
 const moment = require( 'moment' )
@@ -31,6 +32,9 @@ app.use( session ({
     saveUninitialized: false
 
 }))
+
+// Using connect-flash message
+app.use(flash())
 
 // Date format
 const shortDateFormat = "MMM Do YY"
