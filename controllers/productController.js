@@ -9,13 +9,11 @@ module.exports = {
 
     getAddProducts : async ( req, res ) => {
         try {
-
             const categories = await categorySchema.find({status:true})
             res.render( 'admin/add-products',{
                 admin : req.session.admin,
                 categories : categories
             } )
-
         } catch (error) {
             console.log(error.message);
         }
@@ -23,7 +21,6 @@ module.exports = {
 
     addProducts : async ( req, res ) => {
         try {
-
             const img = []
             for( let items of req.files) {
                 img.push(items.filename)
@@ -48,7 +45,6 @@ module.exports = {
     getProductsList : async( req, res ) => {
 
         try {
-
             const products = await productSchema.find().populate('category')
             res.render('admin/products',{
                 admin : req.session.admin,
@@ -64,7 +60,6 @@ module.exports = {
     deleteProduct : async( req, res ) => {
 
         try {
-
             const product = await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : false}})
             res.redirect('/admin/products')
             
@@ -76,7 +71,6 @@ module.exports = {
     restoreProduct : async( req, res ) => {
 
         try {
-
             const product = await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : true} })
             res.redirect('/admin/products')
             
@@ -87,27 +81,29 @@ module.exports = {
 
     getEditProdut : async( req, res ) => {
 
-        const product = await productSchema.findOne({ _id : req.params.id }).populate('category')
-        const category = await categorySchema.find()
-
-        res.render( 'admin/edit-products', {
-            product : product,
-            categories : category,
-            admin : req.session.admin
-        } )
+        try {
+            const product = await productSchema.findOne({ _id : req.params.id }).populate('category')
+            const category = await categorySchema.find()
+            res.render( 'admin/edit-products', {
+                product : product,
+                categories : category,
+                admin : req.session.admin
+            } )
+            
+        } catch (error) {
+            console.log(error.message);
+        }
 
     },
 
 
 
     deleteImage : async ( req, res ) => {
-        try {
 
+        try {
             const id = req.query.id
             const image = req.query.imageId
             const deleteImage = await productSchema.updateOne({_id : id},{ $pull : {image : image}})
-
-
             res.redirect(`/admin/edit-product/${id}`)
             
         } catch (error) {
@@ -118,7 +114,6 @@ module.exports = {
     editProduct : async( req, res ) => {
 
         try {
-
             if( req.files ) {
                 const existingProduct = await productSchema.findById(req.body.productId)
                 const images = existingProduct.image
@@ -127,7 +122,6 @@ module.exports = {
                 });
                 var img = images
             }
-    
             const update = await productSchema.updateOne( {_id : req.body.productId},
                 {
                     $set : {
@@ -140,7 +134,6 @@ module.exports = {
                         image : img
                     }
                 })
-    
             res.redirect( '/admin/products')
             
         } catch (error) {

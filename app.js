@@ -40,8 +40,6 @@ app.locals.moment = moment;
 app.locals.shortDateFormat = shortDateFormat;
 
 
-
-
  
 // Setting local variable
 app.use( ( req, res, next ) => {
