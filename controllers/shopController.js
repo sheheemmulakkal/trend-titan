@@ -31,8 +31,6 @@ module.exports = {
             const products = await productSchema.find({status: true})
             const category = await categorySchema.find({status: true})
             const brands = await productSchema.distinct('brand')
-            console.log(brands); 
-            console.log(category); 
 
             res.render('shop/shop',{
                 products  : products,
@@ -52,7 +50,6 @@ module.exports = {
             
             const product = await productSchema.find({_id : req.params.id, status : true }).populate('category')
             const related = await productSchema.find({status : true}).limit(4)
-            console.log(product);
             res.render('shop/single-product',{
                 product : product,
                 related : related
