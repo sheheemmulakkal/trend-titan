@@ -1,3 +1,5 @@
+//Database connection
+const connection = require('./config/database')()
 const express = require( 'express' );
 const path = require( 'path' );
 const mongoose = require( 'mongoose' );
@@ -6,7 +8,7 @@ const flash = require( 'connect-flash' )
 const session = require( 'express-session')
 const nocache = require( 'nocache' )
 const moment = require( 'moment' )
-
+const dotenv = require( 'dotenv' ).config()
 
 const app = express();
 
@@ -19,7 +21,7 @@ const errorRouter = require( './routers/errorRouter');
 const { log } = require('console');
 
 app.use( express.json())
-app.use( express.urlencoded({ extended: true }))
+app.use( express.urlencoded({ extended: false }))
 
 // Using nocache 
 app.use( nocache() )
@@ -28,7 +30,7 @@ app.use( nocache() )
 app.use( session ({
 
     resave : false,
-    secret : 'key',
+    secret : process.env.KEY,
     saveUninitialized: false
     
 }))
@@ -70,16 +72,6 @@ app.use ( '/user', userRouter );
 app.use ( errorRouter );
 
 
-
-// Database and server connection
-mongoose.connect( 
-    'mongodb://127.0.0.1:27017/male-fashion'
-)
-.then(
-    app.listen( 3000, () => {
-        console.log( "Server started successfully" );
-    })
-)
-.catch( err => {
-    throw err
+app.listen( process.env.PORT || 3000 , () => {
+    console.log( "Server started successfully" );
 })
