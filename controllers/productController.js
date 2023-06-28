@@ -135,7 +135,6 @@ module.exports = {
 
         try {
             const existingProduct = await productSchema.findById(req.body.productId)
-
             if( req.files ) {
 
                 for(let file of req.files) {
@@ -149,7 +148,6 @@ module.exports = {
                             return res.redirect(`/admin/edit-product/${existingProduct._id}`)
                         }
                 }
-
                 const images = existingProduct.image
                 req.files.forEach(element => {
                     images.push(element.filename)
@@ -174,7 +172,4 @@ module.exports = {
             console.log(error.message);
         }
     }
-
-
-
 }

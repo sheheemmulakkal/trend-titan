@@ -26,6 +26,24 @@
             </div>
           </div>
 
+          <!-- ======================== success model ========================= -->
+          
+        <% if( success.length > 0 ) { %>
+            <!-- The popup message modal -->
+            <div id="popupModal" class="modal fade" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-body">
+                    <h5 class="modal-title">Success</h5><br>
+                    <p><%= success %></p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        <% } %>
+  
+  
+
 
         <!-- ======================== Table ========================= -->
         <div class="row mt-5">

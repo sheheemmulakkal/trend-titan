@@ -1,6 +1,92 @@
 <%- include('../includes/userHead.ejs') %>
 <%- include('../includes/userNavbar.ejs') %>
 
+<style>
+    .main-div{
+        display: flex;
+        justify-content: center;
+
+    }
+    .profile-container {
+        background-color: #F3F2EE
+    }
+    section {
+        width: 80%;
+    }
+    .edit-image{
+        text-decoration: none;
+    }
+    input {
+        border-radius: 0!important;
+    }
+</style>
+<div style="width: 100%;" class="main-div m-5">
+<section class="font-1">
+    <div class="container profile-container p-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-3">
+                <div class="row font-1">
+                    <div class="col text-center text-lg-left">
+                        <a href="assets/images/portraits/square/03.jpg" data-lightbox="profile-pic">
+                            <img class="img-thumbnail radius-primary" src="/images/profile/alt-profile.png" alt="" width="320">
+                        </a>
+                        <a class="edit-image bg-dark p-2 mt-3" href=""> Add/Edit image</a>
+                        <h5 class="mb-0 mt-3">Alice Merriweather</h5>
+                        <p class="mb-0">Interface Designer, Posh</p>
+                        <p class="mb-0">Live at NY, USA</p>
+                        <hr class="color-9">
+                        <div class="fs--1 fw-600">
+                            <a class="d-block mb-2" href="page-profile.html">Profile</a>
+                            <a class="d-block mb-2" href="#">Email Notifications</a>
+                            <a class="d-block mb-2" href="#">Billing Details</a>
+                            <a class="d-block mb-2" href="#">Password</a>
+                            <a class="color-danger fw-400 d-block mb-2" href="#">Delete Account</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 pl-lg-5">
+                <div class="row">
+                    <div class="col-lg-8 mt-5 mt-lg-0">
+                        <h4 class="color-black mb-2">Profile</h4>
+                        <p class="color-3">With Posh you can make a web application too. That's what we mean by doing more with Posh.</p>
+                    </div>
+                </div>
+                <form class="mt-5 row">
+                    <div class="col-md-6">
+                        <input class="form-control mb-3" type="text" placeholder="First Name">
+                    </div>
+                    <div class="col-md-6">
+                        <input class="form-control mb-3" type="text" placeholder="Last Name">
+                    </div>
+                    <div class="col-12">
+                        <input class="form-control mb-3" type="email" placeholder="Email">
+                    </div>
+                    <div class="col-12">
+                        <input class="form-control mb-3" type="text" placeholder="Location">
+                    </div>
+                    <div class="col-12">
+                        <input class="form-control mb-3" type="url" placeholder="Website">
+                    </div>
+                    <!-- <div class="col-12">
+                        <textarea class="form-control mb-3" rows="8" placeholder="Bio"></textarea>
+                    </div> -->
+                    <div class="col-12">
+                        <div class="form-group">
+                            <input class="ios-toggle" id="checkbox1" type="checkbox" name="checkbox1">
+                            <label class="checkbox-label" for="checkbox1" data-off="" data-on=""></label>
+                            <small>Allow my profile to be viewable by guests</small>
+                        </div>
+                    </div>
+                </form>
+                <div class="mt-4 btn btn-primary">Save changes</div>
+            </div>
+        </div>
+        <!--/.row-->
+    </div>
+    <!--/.container-->
+</section>
+</div>
 
 
 

@@ -9,7 +9,9 @@
             <div class="card-body">
                 <h4 class="card-title">Edit Banner</h4>
                 <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
-
+                <% if ( err.length > 0 ) { %>
+                <div id="err" class="alert alert-danger"> <%= err %></div> <!-- Error container -->
+                <% } %>
                 <form id="productForm" class="forms-sample" action="/admin/edit-banner" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="exampleInputName1">Banner Head</label>

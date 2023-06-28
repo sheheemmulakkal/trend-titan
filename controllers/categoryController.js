@@ -5,6 +5,7 @@ const userSchema = require( '../models/userModel')
 const categorySchema = require( '../models/categoryModel')
 const productSchema = require( '../models/productModel' )
 const { log } = require('util')
+const { runInNewContext } = require('vm')
 
 
 module.exports = {
@@ -16,7 +17,8 @@ module.exports = {
             res.render( 'admin/category', {
                 admin : req.session.admin,
                 category : category,
-                err : req.flash('categoryExist')
+                err : req.flash('categoryExist'),
+                success : req.flash('success')
             } )
 
         } catch (error) {
@@ -28,6 +30,7 @@ module.exports = {
     addCategory : async ( req, res ) => {
 
         try {
+            const cat = req.body.category.toUpperCase()
             const category = await categorySchema.findOne( { category : req.body.category.toUpperCase() })
             if( category ) {
                 req.flash('categoryExist','Category already exist')
@@ -37,6 +40,7 @@ module.exports = {
                     category : req.body.category.toUpperCase()
                 })
                 const result = await categoryName.save()
+                req.flash('success',`${cat} successfully added to category`)
                 res.redirect('/admin/category')
             }
             

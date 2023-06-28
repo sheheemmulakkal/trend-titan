@@ -1,3 +1,21 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Show the popup message modal
+    $('#popupModal').modal('show');
+    
+    // Hide the popup message modal when clicking outside of it
+    $(document).on('click', function(event) {
+      if (!$(event.target).closest('.modal-content').length) {
+        $('#popupModal').modal('hide');
+      }
+    });
+  });
+</script>
+
+
+
 <script>
     const errorContainer = document.getElementById('errorContainer');
     const productForm = document.getElementById('category');

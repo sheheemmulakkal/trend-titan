@@ -1,8 +1,23 @@
+
+
+
+
+
+
+
+
+
 <script>
     const errorContainer = document.getElementById('errorContainer');
     const productForm = document.getElementById('productForm');
 
     productForm.addEventListener('submit', (event) => {
+
+        if(err){
+            err.style.display = 'none'
+            err.innerHTML = ""
+        }
+
         errorContainer.style.display = 'none';
         errorContainer.innerHTML = '';
 
