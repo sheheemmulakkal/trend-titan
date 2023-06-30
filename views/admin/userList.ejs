@@ -38,11 +38,15 @@
                   <!-- <td> Credit card </td> -->
                   <td> <%= moment(user.joinedDate).format(shortDateFormat) %> </td>
                   <td>
-                    <% if ( user.isBlocked === false ) { %>
-                        <div><a class="badge badge-outline-success" href="/admin/block-user/<%= user._id %>">Active</a></div>
-                    <% } else { %>
-                        <div><a class="badge badge-outline-danger" href="/admin/unblock-user/<%= user._id %>">Blocked</a></div>
-                    <% }    %>
+                    <div id="button-container-<%= user._id %>">
+                      <% if ( user.isBlocked === false ) { %>
+                        <!-- <div><a class="badge badge-outline-success" href="/admin/block-user/<%= user._id %>">Active</a></div> -->
+                        <div><button id="block-<%= user._id %>" onclick="blockUser('<%= user._id %>')" class="badge badge-outline-danger">block</button></div>
+                      <% } else { %>
+                          <!-- <div><a class="badge badge-outline-danger" href="/admin/unblock-user/<%= user._id %>">Blocked</a></div> -->
+                        <div><button id="unblock-<%= user._id %>" onclick="unblockUser('<%= user._id %>')" class="badge badge-outline-success">Unblock</button></div>
+                      <% } %>
+                    </div>
                   </td>
                 </tr>
                 <% } %>
@@ -59,6 +63,107 @@
 </div>
 </div>
 </div>
+
+<!-- The popup message modal -->
+<div id="popupModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-content bg-light text-dark">
+      <div class="modal-body">
+      <h5 id="modalHead" class="modal-title"></h5><br>
+      <p id="modalContent"></p>
+      </div>
+  </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+  async function blockUser( userId ) {
+    try {
+      const response = await axios.patch(`/admin/block-user/${userId}`)
+      if( response.data.success ){
+
+        const button = document.getElementById(`block-${userId}`);
+        const buttonContainer = document.getElementById(`button-container-${userId}`);
+        button.classList.remove('badge-outline-success');
+        button.classList.add('badge-outline-danger');
+        button.textContent = 'Unblock';
+        button.removeEventListener('click', blockUser); // Remove the previous event listener
+        button.addEventListener('click', () => unblockUser(userId)); // Add the new event listener
+        buttonContainer.innerHTML = `<div><button id="unblock-${userId}" onclick="unblockUser('${userId}')" class="badge badge-outline-success">Unblock</button></div>`;
+        showModal( 'success', 'User blocked' )
+      } else {
+        showModal( 'Error', 'Error in user blocking!!!' )
+
+      }
+      
+    } catch(error) {
+      console.log(error.message);
+    }
+
+
+  }
+
+  async function unblockUser( userId ) {
+    try {
+      const response = await axios.patch(`/admin/unblock-user/${userId}`)
+      if( response.data.success ){
+
+        const button = document.getElementById(`unblock-${userId}`);
+        const buttonContainer = document.getElementById(`button-container-${userId}`);
+        button.classList.remove('badge-outline-danger');
+        button.classList.add('badge-outline-success');
+        button.textContent = 'Block';
+        button.removeEventListener('click', unblockUser); // Remove the previous event listener
+        button.addEventListener('click', () => blockUser(userId)); // Add the new event listener
+        buttonContainer.innerHTML = `<div><button id="block-${userId}" onclick="blockUser('${userId}')" class="badge badge-outline-danger">Block</button></div>`;
+        showModal( 'success', 'User unblocked' )
+
+      } else {
+        showModal( 'Error', 'Error in user unblocking!!!' )
+
+      }
+      
+    } catch(error) {
+      console.log(error.message);
+    }
+
+
+  }
+
+  
+    function showModal(title,message) {
+      console.log('hi');
+      console.log(title);
+      console.log(message);
+      const modalTitle = document.getElementById('modalHead')
+      const modalBody = document.getElementById('modalContent')
+      console.log(modalTitle);
+      console.log(modalBody);
+    
+    modalTitle.innerText = title;
+    modalBody.innerText = message;
+
+  
+    // Show the popup message modal
+    $('#popupModal').modal('show');
+    
+    // Hide the popup message modal when clicking outside of it
+    $(document).on('click', function(event) {
+      if (!$(event.target).closest('.modal-content').length) {
+        $('#popupModal').modal('hide');
+      }
+    });
+
+  }
+  
+
+</script>
 
 
 

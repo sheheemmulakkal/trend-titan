@@ -27,8 +27,8 @@ router.get( '/logout', isAuth.adminAuth, authController.doAdminLogout )
 router.get( '/', isAuth.adminAuth, adminController.getAdminHome )
 
 router.get( '/userList', isAuth.adminAuth, adminController.getUserList )
-router.get( '/block-user/:id', isAuth.adminAuth, adminController.blockUser )
-router.get( '/unblock-user/:id', isAuth.adminAuth, adminController.unBlockUser )
+router.patch( '/block-user/:id', isAuth.adminAuth, adminController.blockUser )
+router.patch( '/unblock-user/:id', isAuth.adminAuth, adminController.unBlockUser )
 
 router.get( '/category', isAuth.adminAuth, categoryController.getCategory )
 router.post( '/add-category', isAuth.adminAuth, categoryController.addCategory )

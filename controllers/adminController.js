@@ -31,7 +31,7 @@ module.exports = {
 
         try {
             const userId = req.params.id
-            console.log(userId,'user');
+            // console.log(userId,'user');
             const userData = await userSchema.findById(userId)
             const block = await userData.updateOne({ $set : {isBlocked : true}})
 
@@ -50,7 +50,7 @@ module.exports = {
                 }
             }
             
-            res.redirect( '/admin/userList' )
+            res.json( {success : true} )
             
         } catch (error) {
             console.log(error.message);
@@ -65,7 +65,7 @@ module.exports = {
             const userData = await userSchema.findById(userId)
             const unblock = await userData.updateOne({ $set : {isBlocked : false}})
 
-            res.redirect( '/admin/userList' )
+            res.json( {success : true} )
 
         } catch (error) {
             console.log(error.message);
