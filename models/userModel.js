@@ -64,7 +64,6 @@ const userSchema = Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'address'
     }]
-
 })
 
 module.exports = mongoose.model( 'user', userSchema )

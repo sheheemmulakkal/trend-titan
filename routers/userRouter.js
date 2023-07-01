@@ -5,10 +5,12 @@
  const router = express.Router()
 
  router.get( '/profile', isAuth.userAuth, userController.getUserProfile )
-
- router.get( '/add-address', isAuth.userAuth, userController.getAddAddress )
+ 
+ router.put( '/edit-profile', isAuth.userAuth, userController.editProfile )
 
  router.get( '/address', isAuth.userAuth, userController.getAddress )
+ 
+ router.get( '/add-address', isAuth.userAuth, userController.getAddAddress )
 
  router.post( '/add-address', isAuth.userAuth, userController.addAddress)
 
