@@ -1,0 +1,89 @@
+<%- include('../includes/userHead.ejs') %>
+<%- include('../includes/userNavbar.ejs') %>
+
+<style>
+    .main-div{
+        display: flex;
+        justify-content: center;
+
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+    .profile-container {
+        /* border: .5px solid #6e6e6e2f; */
+        box-shadow: 0px 10px 40px 0px rgba(56,74,235,0.2);
+    }
+    section {
+        width: 80%;
+    }
+    .edit-image{
+        text-decoration: none;
+    }
+    input {
+        border-radius: 0!important;
+    }
+    input.form-control, textarea {
+        background-color: #fff;
+    }
+    input:disabled{
+        border: none;
+        background-color: #fff;
+        font-weight: bold;
+    }
+</style>
+<div style="width: 100%;" class="main-div m-5">
+    <section class="font-1">
+        <div class="container profile-container p-5">
+            <div class="row justify-content-center">
+                
+                <div class="col-md-9 pl-lg-5">
+                    <div class="row">
+                        <!-- <div class="col-lg-8 mt-5 mt-lg-0">
+                            <h4 class="color-black mb-2">Profile</h4>
+                            <p class="color-3">With Posh you can make a web application too. That's what we mean by doing more with Posh.</p>
+                        </div> -->
+                    </div>
+                    <form class="mt-5 row" action="/user/add-address" method="post">
+                        <div class="col-md-12">
+                            <input class="form-control mb-3" type="text" value="shheem" name="fullName" required placeholder="Full Name">
+                        </div>
+                        <div class="col-md-12">
+                            <input class="form-control mb-3" value="69656596" type="Number" name="mobile" required placeholder="Mobile">
+                        </div>
+                        <div class="col-12">
+                        <input class="form-control mb-3" value="shheem" type="text" name="street" required placeholder="Street name">
+                        </div>
+                        <div class="col-12">
+                            <input class="form-control mb-3" type="text" value="oorakam" name="village" required placeholder="Village">
+                        </div>
+                        <div class="col-12">
+                            <input class="form-control mb-3" type="text" name="city" value="malappuram" required placeholder="City">
+                        </div>
+                        <div class="col-12">
+                            <input class="form-control mb-3" type="Number" value="25652" name="pincode" required placeholder="PIN Code">
+                        </div>
+                        <div class="col-12">
+                            <input class="form-control mb-3" value="malabar" type="text" name="landmark" required placeholder="Landmark">
+                        </div>
+                        <div class="col-12">
+                            <input class="form-control mb-3" type="text" value="KERALA" name="state" required placeholder="State">
+                        </div>
+                        <div class="col-12">
+                            <input class="form-control mb-3" type="text" name="country" required value="India" disabled placeholder="India">
+                        </div>
+                        <div ><input class="mt-4 btn btn-dark rounded-0" value="Save Address" type="submit"></div>
+                    </form>
+                    <div class="mt-4 btn btn rounded-0">Cancel</div>
+                </div>
+            </div>
+            <!--/.row-->
+        </div>
+        <!--/.container-->
+    </section>
+</div>
+
+<%- include('../includes/userFooter.ejs') %>
+<%- include('../includes/end.ejs') %>

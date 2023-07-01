@@ -7,16 +7,10 @@ const productController = require( '../controllers/productController')
 const categoryController = require('../controllers/categoryController')
 const bannerController = require( '../controllers/bannerController')
 const isAuth = require ( '../middleware/isAuth')
-const upload = require( '../config/multer')
+const upload = require( '../middleware/multer')
 
 const multer = require('multer')
-
 const router = express.Router()
-
-
-// Setting up multer
-
-
 
 // Routes 
 

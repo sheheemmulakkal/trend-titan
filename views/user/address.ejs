@@ -1,0 +1,192 @@
+<%- include('../includes/userHead.ejs') %>
+<%- include('../includes/userNavbar.ejs') %>
+
+<style>
+    .main-div{
+        display: flex;
+        justify-content: center;
+
+    }
+    .profile-container {
+        /* border: .5px solid #6e6e6e2f; */
+        box-shadow: 0px 10px 40px 0px rgba(56,74,235,0.2);
+    }
+    section {
+        width: 80%;
+    }
+    .edit-image{
+        text-decoration: none;
+    }
+    input {
+        border-radius: 0!important;
+    }
+    input.form-control, textarea {
+        background-color: #fff;
+    }
+    input:disabled{
+        border: none;
+        background-color: #fff;
+        font-weight: bold;
+    }
+    .fs--1 a{
+        color: #7a7a7a;
+        padding: 10px;
+    }
+
+    .fs--1 a.active{
+        background-color: #7a7a7a;
+        color: #fff;
+    }
+    
+    .fs--1 a:hover {
+        background-color: #7a7a7a;
+        color: white;
+    }
+    .address p {
+        font-weight: bold;
+    }
+    .address{
+        box-shadow: 0px 10px 40px -20px rgba(56,74,235,0.7);
+        padding: 10px 0;
+    }
+    .buttons{
+        padding: 10px 0;
+    }
+    .remove:hover{
+        color: #690000!important;
+    }
+    .modal.fade.top .modal-dialog.modal-full-width {
+    transform: translate3d(0, -100%, 0);
+    }
+
+    .modal.fade.top.show .modal-dialog.modal-full-width {
+    transform: translate3d(0, 0, 0);
+    }
+
+    .modal.fade:not(.show) .modal-backdrop {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+    }
+
+    .modal.fade.show .modal-backdrop {
+    opacity: 0.5;
+    transition: opacity 0.3s ease-in;
+    }
+    /* CSS for the background overlay */
+    .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+    }
+
+    /* CSS for changing the color of other elements */
+    body.modal-open {
+        background-color: #f8f8f8; /* Change to the desired color */
+    }
+    .modal{
+        background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+
+    }
+
+</style>
+
+
+
+<div style="width: 100%;" class="main-div m-5">
+<section class="font-1">
+    <div class="container profile-container p-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-3">
+                <div class="row font-1">
+                    <div class="col text-center text-lg-left">
+                        <a href="" data-lightbox="profile-pic">
+                            <img class="img-thumbnail radius-primary" src="/images/profile/alt-profile.png" alt="Profile Image" width="150">
+                        </a>
+                        
+                        <h5 class="mb-0 mt-3"><%= user.firstName %> <%= user.lastName %></h5>
+                        <p class="mb-0"><%= user.email %></p>
+                        <hr class="color-9">
+                        <div class="fs--1 fw-600">
+                            <a id="orders-link" class=" d-block mb-2" href="/user/orders">Orders</a>
+                            <a id="bio-link" class=" d-block mb-2" href="/user/edit-bio">Edit Bio</a>
+                            <a id="addresses-link" class=" d-block mb-2" href="/user/address">Manage Addresses</a>
+                            <a id="password-link" class=" d-block mb-2" href="/user/change-password">Change Password</a>
+                        </div>                          
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <% if( address && address.length > 0) { %>
+                    <% for ( let items of address ){ %>
+                        <div id="addressdiv-<%= items._id %>" class="row pl-lg-5 address mb-4">
+                            <p class="pt-2"><%= `${items.fullName}` %></p> <p>Mobile : <%=` ${items.mobile}` %></p> <p><%= `${items.street}, ${items.village}, ${items.city}, Near ${items.landmark},
+                                PIN Code :  ${items.pincode}, ${items.state}` %> </p>
+                                
+                            <div class="row buttons">
+                                <div class="col">
+                                    <hr style="color: #86868662;">
+                                    <a class="edit btn text-secondary fw-bold" href="/user/edit-address/<%= items._id %>">Edit Address</a>
+                                </div>
+                                <div class="col">
+                                    <hr style="color: #86868662;">    
+                                    <a onclick="removeAddress('<%= items._id %>')" class="remove btn text-danger fw-bold">Remove Address</a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                <% } %>
+                <div class="row mt-3 pl-lg-5 address p-2">
+                    <a class="btn text-primary fw-bold " href="/user/add-address">Add Address</a>
+                </div>
+            </div>
+        </div>
+        <!--/.row-->
+    </div>
+    <!--/.container-->
+</section>
+</div>
+
+
+<div class="modal fade top rounded-0" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-dialog-centered modal-full-width modal-full-width" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header bg-success rounded-0">
+        <h5 class="modal-title" id="successModalLabel">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Address removed successfully.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    async function removeAddress ( addressId ) {
+        const response = await axios.patch( `/user/remove-address/${addressId}` );
+        if( response.data.success){
+            const addressDiv = document.getElementById(`addressdiv-${addressId}`)
+            const modal = document.getElementById('modalCookie1')
+            addressDiv.style.display = 'none'
+            const successModal = document.getElementById("successModal");
+
+            // Show the success modal
+            successModal.classList.add("show");
+            successModal.style.display = "block";
+
+            // Hide the success modal when clicked anywhere
+            successModal.addEventListener("click", () => {
+            successModal.classList.remove("show");
+            successModal.style.display = "none";
+            });
+            }
+    }
+</script>
+
+
+<%- include('../includes/userFooter.ejs') %>
+<%- include('../includes/end.ejs') %>

@@ -58,7 +58,12 @@ const userSchema = Schema({
     joinedDate : {
         type : Date,
         default : Date.now
-    }
+    },
+
+    address : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'address'
+    }]
 
 })
 
