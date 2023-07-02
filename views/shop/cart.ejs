@@ -1,0 +1,212 @@
+<%- include('../includes/userHead.ejs') %>
+<%- include('../includes/userNavbar.ejs') %>
+
+ 
+
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="shopping__cart__table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for ( let item of cartItems.items ) { %>
+                                <% var totalPrice = item.productId.price * item.quantity  %>
+                            <tr id="cart-row-<%= item._id %>">
+                                <td class="product__cart__item">
+                                    <div class="product__cart__item__pic">
+                                        <img src="/images/product-images/<%= item.productId.image[0] %>" width="100" alt="">
+                                    </div>
+                                    <div class="product__cart__item__text">
+                                        <h6><%= item.productId.name %></h6>
+                                        <h5 id="price-<%= item.productId._id %>">₹ <%= item.productId.price %></h5>
+                                    </div>
+                                </td>
+                                <td class="quantity__item">
+                                    <div class="quantity">
+                                        <div class="pro-qty-2">
+                                            <span id="dec-<%= item.productId._id %>" onclick="decreaseCart('<%= item.productId._id %>')" class="fa fa-angle-left dec qtybtn"></span>
+                                                <input id="qty-<%= item.productId._id %>" type="text" disabled value="<%= item.quantity %>">
+                                            <span id="inc-<%= item.productId._id %>" onclick="addToCart('<%= item.productId._id %>')" class="fa fa-angle-right inc qtybtn"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td id="total-<%= item.productId._id %>" class="cart__price">₹ <%= totalPrice %></td>
+                                <td class="cart__close"><i onclick="removeCart('<%= item._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn">
+                            <a href="/shop">Continue Shopping</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn update__btn">
+                            <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="cart__discount">
+                    <h6>Discount codes</h6>
+                    <form action="#">
+                        <input type="text" placeholder="Coupon code">
+                        <button type="submit">Apply</button>
+                    </form>
+                </div>
+                <div class="cart__total">
+                    <h6>Cart total</h6>
+                    <ul>
+                        <li>Subtotal <span>₹ 169.50</span></li>
+                        <li>Total <span>₹ 169.50</span></li>
+                    </ul>
+                    <a href="#" class="primary-btn">Proceed to checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<div class="modal fade top rounded-0" style="background-color: #000000a2;" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-dialog-centered modal-full-width modal-full-width" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header bg-danger rounded-0">
+        <h5 class="modal-title" id="successModalLabel">OOPS!!!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Oops! It seems you've reached the maximum quantity of products available for purchase.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+    // Cheking the quantity... If quantity is 1 it will hide left arrow
+    window.addEventListener('DOMContentLoaded', () => {
+    const qtyInputs = document.querySelectorAll('input[id^="qty-"]');
+    qtyInputs.forEach((qtyInput) => {
+        const productId = qtyInput.id.split('-')[1];
+        const span = document.getElementById(`dec-${productId}`);
+        const quantity = parseInt(qtyInput.value);
+        if (quantity < 2) {
+        span.style.display = 'none';
+        }
+    });
+    });
+
+    async function addToCart( productId ){
+
+        try {
+            const qty = $(`#qty-${productId}`)
+            const dec = $(`#dec-${productId}`)
+            const priceTag = document.getElementById(`price-${productId}`).innerHTML.split(" ")
+            const currentTotal = document.getElementById(`total-${productId}`).innerHTML.split(" ")
+            const price = Number(priceTag[1])
+            const totalNumber = Number(currentTotal [1])
+            
+            const total = document.getElementById(`total-${productId}`)
+            const response = await axios.post('/add-to-cart',{productId})
+            if( !response.data.login ){
+                return window.location.href = '/login'
+            } 
+            if( response.data.outOfStock){
+                const bdy = document.body
+                const modal = document.getElementById('modalCookie1')
+                const successModal = document.getElementById("successModal");
+
+                // Show the success modal
+                successModal.classList.add("show");
+                successModal.style.display = "block";
+                bdy.style.overflow = 'hidden'
+                
+                // Hide the success modal when clicked anywhere
+                successModal.addEventListener("click", () => {
+                    successModal.classList.remove("show");
+                    successModal.style.display = "none";
+                    bdy.style.overflow = 'auto'
+                    
+                });
+            }
+            if( response.data.success === true){
+                const currentQty = parseInt(qty.val())
+                const updatedQty = currentQty+1
+                const totalPrice = updatedQty * price
+                updatedQty > 1 ? dec.show() : null ;
+                total.innerHTML = `₹ ${totalPrice}`
+                qty.val(updatedQty)
+            }  
+            
+        } catch (error) {
+            console.log(error.status);
+        }
+    }
+
+        async function decreaseCart(productId) {
+                try {
+                    const qty = $(`#qty-${productId}`)
+                    const total = document.getElementById(`total-${productId}`)
+                    const dec = $(`#dec-${productId}`)
+                    const priceTag = document.getElementById(`price-${productId}`).innerHTML.split(" ")
+                    const currentTotal = document.getElementById(`total-${productId}`).innerHTML.split(" ")
+                    const price = Number(priceTag[1])
+                    const totalNumber = Number(currentTotal [1])
+                    const currentQty = parseInt(qty.val())
+                    const response = await axios.post('/decrease-cart',{productId})
+                    if( response.data.success === true){
+                        const updatedQty = currentQty-1
+                        const totalPrice = totalNumber - price
+                        total.innerHTML = `₹ ${totalPrice}`
+                            if(updatedQty < 2 ){
+                                dec.hide()
+                            }
+                            qty.val(updatedQty)
+                        }
+                    
+                } catch (error) {
+                    console.log(error.message);
+                }
+            }
+        
+            async function removeCart(itemId){
+                const response = await axios.patch('/removeCartItem',{ itemId })
+                if( response.data.success ){
+                    const item = document.getElementById(`cart-row-${itemId}`) 
+                    item.style.display = 'none'
+                }
+                if( response.data.removeItem === true ){
+                        const count = document.getElementById('cartCount')
+                        currentCount = parseInt(count.innerHTML)
+                        updatedCount = currentCount - 1
+                        count.innerHTML = updatedCount                 
+                    }
+            }
+    
+
+</script>
+
+<%- include('../includes/userFooter.ejs') %>
+<%- include('../includes/end.ejs') %>

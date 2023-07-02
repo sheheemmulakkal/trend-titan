@@ -1,4 +1,5 @@
 const userSchema = require( '../models/userModel') 
+const cartSchema = require( '../models/cartModel')
 const verificationController = require( './verificationControllers')
 const bcrypt = require( 'bcryptjs' )
 
@@ -13,7 +14,6 @@ module.exports = {
         res.render( 'auth/userLogin', {
             err: req.flash('error')
         })
-
     },
 
     // User Loging in 
@@ -28,6 +28,12 @@ module.exports = {
                     if( password ) {
                         if( userData.isVerified ) {
                             req.session.user = userData._id
+                            const cart = await cartSchema.findOne({userId : userData._id})
+                            if( cart ){
+                                req.session.productCount = cart.items.length
+                            } else {
+                                req.session.productCount = 0
+                            }
                             res.redirect( '/shop' )
                         } else {
                             const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)

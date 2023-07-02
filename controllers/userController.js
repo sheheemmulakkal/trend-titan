@@ -7,7 +7,6 @@ module.exports = {
     getUserProfile : async ( req, res ) => {
         try{
             const user = await userSchema.findOne({_id : req.session.user})
-            console.log(user);
             res.render( 'user/profile',{
                 user : user
             } )
@@ -31,7 +30,8 @@ module.exports = {
                 city:req.body.city,
                 pincode:req.body.pincode,
                 state:req.body.state,
-                country:req.body.country
+                country:req.body.country,
+                userId : req.session.user
             })
             const result = await address.save()
             const user = await userSchema.updateOne({_id : req.session.user},{
@@ -66,6 +66,9 @@ module.exports = {
             const result = await addressSchema.updateOne({_id : addressId},{
                 $set : { status : false}
             }) 
+            const removeFromUser = await userSchema.updateOne( {_id : req.session.user },{
+                $pull : { address : addressId}
+            })
             res.status(200).json({success : true})
         } catch (error) {
             console.log(error.message);
@@ -105,16 +108,20 @@ module.exports = {
     },
 
     editProfile : async ( req, res ) => {
-        const result = await userSchema.updateOne({_id : req.session.user},{
-            $set :{ 
-                firstName : req.body.firstName,
-                lastName : req.body.lastName,
-                mobile : req.body.mobile,
-                email : req.body.email,
-            } 
-        })
-        res.json({success : true})
-    }
+        try {
+            const result = await userSchema.updateOne({_id : req.session.user},{
+                $set :{ 
+                    firstName : req.body.firstName,
+                    lastName : req.body.lastName,
+                    mobile : req.body.mobile,
+                    email : req.body.email,
+                } 
+            })
+            res.json({success : true})
+        } catch(error){
+            console.log(error.message);
+        }
+    } 
     
 }
 

@@ -105,7 +105,7 @@
                             </a>
                             <div class="product__item__text">
                                 <h6><%= product.name %></h6>
-                                <a href="#" class="add-cart">+ Add To Cart</a>
+                                <a onclick="addToCart('<%= product._id %>')" style="cursor: pointer;" class="add-cart">+ Add To Cart</a>
                                 <div class="rating">
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
@@ -139,6 +139,69 @@
     </div>
 </section>
 <!-- Shop Section End -->
+
+
+
+<div class="modal fade top rounded-0" style="background-color: #000000a2;" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-dialog-centered modal-full-width modal-full-width" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header bg-danger rounded-0">
+        <h5 class="modal-title" id="successModalLabel">OOPS!!!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Oops! It seems you've reached the maximum quantity of products available for purchase.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    async function addToCart( productId ){
+
+        try {
+            console.log(productId);
+            const response = await axios.post('/add-to-cart',{productId})
+            console.log(response.data);
+            if( !response.data.login ){
+                return window.location.href = '/login'
+            } 
+            if( response.data.outOfStock){
+                const bdy = document.body
+                const modal = document.getElementById('modalCookie1')
+                const successModal = document.getElementById("successModal");
+
+                // Show the success modal
+                successModal.classList.add("show");
+                successModal.style.display = "block";
+                bdy.style.overflow = 'hidden'
+                
+                // Hide the success modal when clicked anywhere
+                successModal.addEventListener("click", () => {
+                    successModal.classList.remove("show");
+                    successModal.style.display = "none";
+                    bdy.style.overflow = 'auto'
+                    
+                });
+            }
+            if( response.data.newItem === true ){
+                const count = document.getElementById('cartCount')
+                currentCount = parseInt(count.innerHTML)
+                updatedCount = currentCount + 1
+                count.innerHTML = updatedCount                 
+            }
+        } catch (error) {
+            console.log(response.status);
+        }
+    }
+</script>
 
 
 <%- include('../includes/userFooter.ejs') %>

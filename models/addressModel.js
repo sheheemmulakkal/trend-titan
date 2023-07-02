@@ -53,6 +53,11 @@ const addressSchema = Schema({
         type : Boolean,
         default : true,
         required : true
+    },
+
+    userId : {
+        type : mongoose.Schema.Types.ObjectId,
+        required : true
     }
 
 })

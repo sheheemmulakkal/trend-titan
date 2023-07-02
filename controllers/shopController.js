@@ -1,7 +1,9 @@
-
+const mongoose = require('mongoose')
 const productSchema = require('../models/productModel')
 const categorySchema = require( '../models/categoryModel')
 const bannerSchema = require( '../models/bannerModel')
+const cartSchema = require( '../models/cartModel')
+const { tr } = require('date-fns/locale')
 
 
 module.exports = {
@@ -47,8 +49,7 @@ module.exports = {
     getSingleProduct : async( req, res ) => {
 
         try {
-            
-            const product = await productSchema.find({_id : req.params.id, status : true }).populate('category')
+            const product = await productSchema.find({_id : req.params.id, status : true }).populate('category')         
             const related = await productSchema.find({status : true}).limit(4)
             res.render('shop/single-product',{
                 product : product,
@@ -59,6 +60,6 @@ module.exports = {
             console.log(error.message);
         }
 
-    }
+    },
 
 }

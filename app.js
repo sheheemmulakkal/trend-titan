@@ -8,6 +8,7 @@ const flash = require( 'connect-flash' )
 const session = require( 'express-session')
 const nocache = require( 'nocache' )
 const moment = require( 'moment' )
+const morgan = require( 'morgan' )
 const dotenv = require( 'dotenv' ).config()
 
 const app = express();
@@ -22,6 +23,7 @@ const { log } = require('console');
 
 app.use( express.json())
 app.use( express.urlencoded({ extended: false }))
+
 
 // Using nocache 
 app.use( nocache() )
@@ -49,6 +51,11 @@ app.locals.shortDateFormat = shortDateFormat;
 // Setting local variable
 app.use( ( req, res, next ) => {
     res.locals.userLoggedin = req.session.user
+    if( req.session.productCount ){
+        res.locals.productCount = req.session.productCount
+    } else {
+        res.locals.productCount = 0
+    }
     next()
 })
 

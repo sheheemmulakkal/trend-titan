@@ -56,12 +56,12 @@
                         <!-- <h3>₹270.00 <span>70.00</span></h3> -->
                         <p><%= product[0].description %></p>
                         <div class="product__details__cart__option">
-                            <div class="quantity">
+                            <!-- <div class="quantity">
                                 <div class="pro-qty">
                                     <input type="text" value="1">
                                 </div>
-                            </div>
-                            <a href="#" class="primary-btn">add to cart</a>
+                            </div> -->
+                            <a style="cursor: pointer;" onclick="addToCart('<%= product[0]._id %>')" class="primary-btn text-white">add to cart</a>
                         </div>
                         <div class="product__details__btns__option">
                             <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
@@ -135,6 +135,30 @@
     </div>
 </section>
 <!-- Related Section End -->
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    async function addToCart( productId ){
+
+        try {
+            console.log(productId);
+            const response = await axios.post('/add-to-cart',{productId})
+            console.log(response.data);
+            if( !response.data.login ){
+                return window.location.href = '/login'
+            } 
+            if( response.data.newItem === true ){
+                const count = document.getElementById('cartCount')
+                currentCount = parseInt(count.innerHTML)
+                updatedCount = currentCount + 1
+                count.innerHTML = updatedCount                 
+            }
+        } catch (error) {
+            console.log(response.status);
+        }
+    }
+</script>
 
 
 <%- include('../includes/userFooter.ejs') %>

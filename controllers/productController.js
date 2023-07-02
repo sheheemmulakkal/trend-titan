@@ -36,8 +36,6 @@ module.exports = {
                         return res.redirect('/admin/add-products')
                     }
             }
-
-
             const img = []
             for( let items of req.files) {
                 img.push(items.filename)
