@@ -6,6 +6,7 @@ const cartController = require( '../controllers/cartController')
 const orderController = require( '../controllers/orderController' )
 const isAuth = require( '../middleware/isAuth');
 const { isArgumentsObject } = require('util/types');
+const { is } = require('date-fns/locale');
 
 const router = express.Router();
 
@@ -26,7 +27,13 @@ router.patch( '/removeCartItem', isAuth.userAuth, cartController.removeCartItem 
 
 router.get( '/checkout', isAuth.userAuth, shopController.getCheckout )
 
+router.get( '/add-checkout-address', isAuth.userAuth, shopController.getCheckoutAddAddress)
+
+router.post( '/add-checkout-address', isAuth.userAuth, shopController.checkoutAddAddress)
+
 router.post( '/place-order', isAuth.userAuth, orderController.placeOrder )
+
+router.get( '/confirm-order', isAuth.userAuth, orderController.getConfirmOrder)
 
 
 

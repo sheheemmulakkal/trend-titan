@@ -9,7 +9,7 @@
 </style>
 <section class="shopping-cart spad mt-5">
     <div class="container">
-        <% if( cartItems.items.length > 0){ %>
+        <% if( cartItems && cartItems.items.length > 0){ %>
             <div class="row" id="cart-table">
                 <div class="col-lg-8">
                     <div class="shopping__cart__table">
@@ -48,8 +48,10 @@
                                     </td>
                                     <td id="total-<%= item.productId._id %>" class="cart__price">₹ <%= totalPrice %></td>
                                     <td class="cart__close"><i onclick="removeCart('<%= item._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
-                                <% } else { %>
-                                    <td id="stockOut"> <label onload="removeCart('<%= item._id %>')"  class="text-danger fw-bold" for="">Out of Stock</label> </td>
+                                    <% } else { %>
+                                        <td id="stockOut"> <label onload="removeCart('<%= item._id %>')"  class="text-danger fw-bold" for="">Out of Stock</label> </td>
+                                        <td></td>
+                                        <td class="cart__close"><i onclick="removeCart('<%= item._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
                                 <% } %>
                                 </tr>
                                 <% } %>
@@ -64,7 +66,7 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="continue__btn update__btn">
-                                <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
+                                <a href="/cart"><i class="fa fa-spinner"></i> Update cart</a>
                             </div>
                         </div>
                     </div>
