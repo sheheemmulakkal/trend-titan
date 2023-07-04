@@ -10,6 +10,7 @@ const isAuth = require ( '../middleware/isAuth')
 const upload = require( '../middleware/multer')
 
 const multer = require('multer')
+const orderController = require('../controllers/orderController')
 const router = express.Router()
 
 // Routes 
@@ -47,6 +48,9 @@ router.get( '/edit-banner/:id', isAuth.adminAuth, bannerController.getEditBanner
 router.post( '/edit-banner', isAuth.adminAuth, upload.single('image'), bannerController.updateBanner )
 router.get( '/delete-banner/:id', isAuth.adminAuth, bannerController.deleteBanner )
 router.get( '/restore-banner/:id', isAuth.adminAuth, bannerController.restoreBanner )
+
+router.get( '/orders', isAuth.adminAuth, orderController.getAdminOrderlist )
+router.patch( '/change-order-status', isAuth.adminAuth, orderController.changeOrderStatus)
 
 
 

@@ -197,7 +197,10 @@
             }
             if( response.data.newItem === true ){
                 const count = document.getElementById('cartCount')
+                
                 currentCount = parseInt(count.innerHTML)
+                console.log(currentCount);
+                
                 updatedCount = currentCount + 1
                 count.innerHTML = updatedCount                 
             }

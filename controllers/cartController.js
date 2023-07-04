@@ -80,6 +80,7 @@ module.exports = {
                             items : [{ productId : productId }]
                         });
                         await newCart.save();
+                        req.session.productCount++
                         res.status(200).json({
                             success : 'Added to cart',
                             login : true

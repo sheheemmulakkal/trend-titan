@@ -14,7 +14,6 @@ module.exports = {
             const { user } = req.session
             const products =  await cartHelper.totalCartPrice(user)
             const { paymentMethod } = req.body
-            console.log(req.body);
             const { addressId } = req.body
             const productItems = products[0].items
 
@@ -23,7 +22,6 @@ module.exports = {
                 quantity : items.quantity,
                 price : (items.totalPrice / items.quantity)
             }))
-            console.log(cartProducts);
             const totalPrice = products[0].total 
 
             const order = new orderSchema({
@@ -40,7 +38,7 @@ module.exports = {
             for( const items of cartProducts ){
                 const { productId, quantity } = items
                 await productSchema.updateOne({_id : productId},
-                    { $inc : { quantity : (quantity * (-1))}})
+                    { $inc : { quantity :  -quantity  }})
             }
  
             res.redirect('/confirm-order')
@@ -56,6 +54,30 @@ module.exports = {
             console.log(error.message);
         }
 
+    },
+
+    getAdminOrderlist : async( req, res ) => {
+        try{
+            const orders = await orderSchema.find().populate('userId').populate('products.productId').populate('address')
+            res.render('admin/orders',{
+                orders : orders,
+                admin : true
+            })
+        }catch(error){
+            console.log(error.message);
+        }
+    },
+
+    changeOrderStatus : async ( req, res ) => {
+       try {
+            const {status, orderId} = req.body
+            const update = await orderSchema.findOneAndUpdate({_id : orderId},
+                { $set : { orderStatus : status }}) 
+            const newStatus = await orderSchema.findOne({ _id : orderId })
+            res.status(200).json({success : true, status : newStatus.orderStatus })
+       } catch (error) {
+            console.log(error.message);
+       }
     }
 
 }

@@ -6,12 +6,14 @@ const orderSchema = Schema({
 
     userId : {
         type : mongoose.Schema.Types.ObjectId,
+        ref : 'user',
         required : true
     },
 
     products : [{
         productId : {
             type : mongoose.Schema.Types.ObjectId,
+            ref : 'product',
             required : true
         },
         quantity : {
@@ -35,11 +37,13 @@ const orderSchema = Schema({
     },
 
     orderStatus : {
-        type : String
+        type : String,
+        default : 'Confirmed'
     },
 
     address : {
         type : mongoose.Schema.Types.ObjectId,
+        ref : 'address',
         required : true
     },
 

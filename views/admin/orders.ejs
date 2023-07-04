@@ -1,0 +1,149 @@
+
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+<style>
+    .dropdown-menu a:hover{
+        color: white!important;
+        cursor: pointer;
+    }
+    
+</style>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+
+<div class="row mt-5">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Orders</h4>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> Date </th>
+                  <th> OrderId </th>
+                  <th> Payment </th>
+                  <!-- <th> Status </th> -->
+                  <th> Amount </th>
+                  <th> Order Status </th>
+                  <th> Manage </th>
+                  <!-- <th> Status </th> -->
+                  <!-- <th> View products </th> -->
+                </tr>
+              </thead>
+              <tbody>
+
+                <% for ( let order of orders ) { %>
+                <tr>
+                  
+                  <td> <%= moment(order.date).format(shortDateFormat) %> </td>
+                  <td> <%= order._id %> </td>
+                  <td> <%= order.paymentMethod %> </td>
+                  <td> <%= order.totalPrice %> </td>
+                  <td id="order-status-<%= order._id %>"> <% if(order.orderStatus) { %> <%= order.orderStatus %> <% } else { %> Pending <% } %> </td>
+                  <td>
+                    <% if( order.orderStatus === 'Confirmed' || order.orderStatus === 'Shipping' ){ %>
+                    <div class="dropdown" id="dropdown-<%= order._id %>">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Dropdown </button>
+                        <div class="dropdown-menu bg-light text-dark" aria-labelledby="dropdownMenuButton1">
+                            <% if( order.orderStatus === 'Confirmed'){ %>
+                                <a id="delivered-<%= order._id %>" onclick="changeOrderStatus('Delivered','<%= order._id %>')" class="text-dark dropdown-item">Delivered</a>
+                                <a id="shipping-<%= order._id %>" onclick="changeOrderStatus('Shipping','<%= order._id %>')" class="text-dark dropdown-item">Shipping</a>
+                                <a id="cancelled-<%= order._id %>" onclick="changeOrderStatus('Cancelled','<%= order._id %>')" class="text-dark dropdown-item">Cancelled</a>
+                            <% } else { %>
+                                <% if( order.orderStatus === 'Shipping' ){ %>
+                                    <a id="delivered-<%= order._id %>" onclick="changeOrderStatus('Delivered','<%= order._id %>')" class="text-dark dropdown-item">Delivered</a>
+                                    <a id="cancelled-<%= order._id %>" onclick="changeOrderStatus('Cancelled','<%= order._id %>')" class="text-dark dropdown-item">Cancelled</a>
+                                <% } %>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% } %>
+                  </td>
+
+                </tr>
+                <% } %>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+
+<!-- The popup message modal -->
+<div id="popupModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-content bg-light text-dark">
+      <div class="modal-body">
+      <h5 id="modalHead" class="modal-title"></h5><br>
+      <p id="modalContent"></p>
+      </div>
+  </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    // const delivered = document.getElementById(`delivered-${orderId}`)
+    // const shipping = document.getElementById(`shipping-${orderId}`)
+    // const cancelled = document.getElementById(`cancelled-${orderId}`)
+
+    async function changeOrderStatus(status,orderId){
+
+        const changeStatus = await axios.patch('/admin/change-order-status',{status,orderId})
+        if( changeStatus.data.status === 'Shipping'){
+            const shipping = document.getElementById(`shipping-${orderId}`)
+            const orderStatus = document.getElementById(`order-status-${orderId}`)
+            orderStatus.innerHTML = changeStatus.data.status
+            shipping.style.display = 'none'
+            showModal( 'success', 'Status updated' )
+        }
+        if(changeStatus.data.status === 'Delivered' || changeStatus.data.status === 'Cancelled'){
+            const dropdown = document.getElementById(`dropdown-${orderId}`)
+            const orderStatus = document.getElementById(`order-status-${orderId}`)
+            orderStatus.innerHTML = changeStatus.data.status
+            dropdown.style.display = 'none'
+            showModal( 'success', 'Status updated' )
+        }
+    }
+
+    function showModal(title,message) {
+
+    const modalTitle = document.getElementById('modalHead')
+    const modalBody = document.getElementById('modalContent')
+
+    modalTitle.innerText = title;
+    modalBody.innerText = message;
+
+
+    // Show the popup message modal
+    $('#popupModal').modal('show');
+
+    // Hide the popup message modal when clicking outside of it
+    $(document).on('click', function(event) {
+    if (!$(event.target).closest('.modal-content').length) {
+    $('#popupModal').modal('hide');
+    }
+    });
+
+    }
+</script>
+
+
+
+
+
+  <%- include('../includes/admin/adminFooter.ejs') %>
