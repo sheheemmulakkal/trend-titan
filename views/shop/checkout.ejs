@@ -107,7 +107,7 @@
                                 <input type="radio" id="html" name="PaymentMethod" value="COD">
                                 <label for="COD">Cash on Delivery</label>
 
-                            <button type="submit" class="site-btn">PLACE ORDER</button>
+                            <button type="submit" onclick="submitForm()" class="site-btn">PLACE ORDER</button>
                         </div>
                         
                     </div>
@@ -142,7 +142,7 @@
             <% } %>
         <% } %>
         <div class="row mt-3 pl-lg-5 address p-1">
-            <a onclick="newAddress()" class="btn text-primary fw-bold ">Add Address</a>
+            <a onclick="newAddress()" id="addAddressButton" class="btn text-primary fw-bold">Add Address</a>
         </div>
 
       </div>
@@ -151,70 +151,67 @@
 </div>
 
 <script>
-
-function changeAddress() {
-  const bdy = document.body;
-  const successModal = document.getElementById("successModal");
-
-  // Show the success modal
-  successModal.classList.add("show");
-  successModal.style.display = "block";
-  bdy.style.overflow = "hidden";
-
-  // Hide the success modal when clicked anywhere
-  successModal.addEventListener("click", () => {
-    successModal.classList.remove("show");
-    successModal.style.display = "none";
-    bdy.style.overflow = "auto";
-  });
-}
-
-function addAddress(addressId) {
-  const newAddress = document.getElementById("newAddress");
-  if (newAddress) {
-    newAddress.style.display = "none";
-  }
-
-  // Hide all addresses
-  const addresses = document.querySelectorAll('[id^="address-"]');
-  addresses.forEach((address) => {
-    address.style.display = "none";
-  });
-
-  // Show the selected address
-  const selectedAddress = document.getElementById(`address-${addressId}`);
-  selectedAddress.style.display = "block";
-
-  // Enable the input fields in the selected address div
-  const inputFields = selectedAddress.querySelectorAll("input");
-  inputFields.forEach((input) => {
-    input.removeAttribute("disabled");
-  });
-}
-
-function newAddress() {
-  // Hide all addresses
-  const addresses = document.querySelectorAll('[id^="address-"]');
-  addresses.forEach((address) => {
-    address.style.display = "none";
-  });
-
-  // Show the newAddress div
-  const newAddress = document.getElementById("newAddress");
-  newAddress.style.display = "block";
-
-  // Enable the input fields in the newAddress div
-  const inputFields = newAddress.querySelectorAll("input");
-  inputFields.forEach((input) => {
-    input.removeAttribute("disabled");
-  });
-}
-
-function submitForm() {
+    function changeAddress() {
+      const bdy = document.body;
+      const successModal = document.getElementById("successModal");
+    
+      // Show the success modal
+      successModal.classList.add("show");
+      successModal.style.display = "block";
+      bdy.style.overflow = "hidden";
+    
+      // Hide the success modal when clicked anywhere
+      successModal.addEventListener("click", () => {
+        successModal.classList.remove("show");
+        successModal.style.display = "none";
+        bdy.style.overflow = "auto";
+      });
+    }
+    
+    function addAddress(addressId) {
+      const newAddress = document.getElementById("newAddress");
+      if (newAddress) {
+        newAddress.style.display = "none";
+      }
+    
+      // Hide all addresses
+      const addresses = document.querySelectorAll('[id^="address-"]');
+      addresses.forEach((address) => {
+        address.style.display = "none";
+      });
+    
+      // Show the selected address
+      const selectedAddress = document.getElementById(`address-${addressId}`);
+      selectedAddress.style.display = "block";
+    
+      // Enable the input fields in the selected address div
+      const inputFields = selectedAddress.querySelectorAll("input");
+      inputFields.forEach((input) => {
+        input.removeAttribute("disabled");
+      });
+    }
+    
+    function newAddress() {
+      // Hide all addresses
+      const addresses = document.querySelectorAll('[id^="address-"]');
+      addresses.forEach((address) => {
+        address.style.display = "none";
+      });
+    
+      // Show the newAddress div
+      const newAddress = document.getElementById("newAddress");
+      newAddress.style.display = "block";
+    
+      // Enable the input fields in the newAddress div
+      const inputFields = newAddress.querySelectorAll("input");
+      inputFields.forEach((input) => {
+        input.removeAttribute("disabled");
+      });
+    }
+    
+    function submitForm() {
   // Get the selected address div
-  const selectedAddress = document.querySelector(
-    '[id^="address-"]:not([style*="display: none"])'
-  );
+  const selectedAddress = document.querySelector('[id^="address-"]:not([style*="display: none"])');
 
   // Create a FormData object to collect the form data
   const formData = new FormData(selectedAddress.closest("form"));
@@ -232,7 +229,8 @@ function submitForm() {
   form.submit();
 }
 
-</script>
+    </script>
+    
 
 <%- include('../includes/userFooter.ejs') %>
 <%- include('../includes/end.ejs') %>

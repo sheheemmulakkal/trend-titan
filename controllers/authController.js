@@ -236,6 +236,87 @@ module.exports = {
 
         req.session.destroy()
         res.redirect ( '/admin/login' )
+    },
+
+    getForgotPassword : ( req, res ) => {
+        
+        res.render('auth/forgot-password',{
+            err: req.flash('existErr')
+        })
+    },
+
+    forgotPassword : async( req, res ) => {
+    const emialExist = await userSchema.findOne( {email : req.body.email })
+    if( emialExist ){
+        const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
+        console.log(newOtp);
+        const otpUpdate = await userSchema.updateOne({email : req.body.email},{
+            $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
+        })
+        console.log(req.body);
+        req.session.unVerfiedMail = req.body.email
+        res.render('auth/forgot-password-otp')
+    } else {
+        req.flash('existErr','Mail not exist')
+        res.redirect('/forgot-password')
+    }
+    },
+
+    forgotPasswordOtpVerification : async( req, res ) => {
+        try {
+
+            const enterTime = new Date()
+    
+            // console.log(req.body);
+            let { val1, val2, val3, val4, val5, val6 } = req.body
+            userOtp = val1 + val2 + val3 + val4 + val5 + val6
+            
+            // console.log(req.session.unVerfiedMail);
+    
+            // Checking otp in database
+            const otpCheck = await userSchema.findOne({email: req.session.unVerfiedMail, 'token.otp' : userOtp })
+    
+            // If Otp matched
+            if( otpCheck ) { 
+    
+                //Calculating the expire of the OTP
+                const timeDiff =  (new Date(enterTime) - otpCheck.token.generatedTime) / 1000 / 60
+                if( timeDiff <= 60 ) {
+                    console.log('otp matched');
+                    // If expiry time is valid setting isVerified as true
+                    res.render('auth/passwordReEnter',{
+                        err : req.flash('err')
+                    })
+                   // If TimedOut
+                } else {
+                    console.log('timout');
+                    res.redirect( '/otp-verification' )
+                }
+    
+                // If not OTP in database
+            } else {
+                console.log('otp not matched');
+                res.redirect('/otp-verification')
+            }
+            
+           } catch (error) {
+            console.log(error.messge);
+           }
+    },
+
+    newPassword : async ( req, res ) => {
+        console.log(req.body);
+        const password = await bcrypt.hash( req.body.password, 12)
+        console.log(password);
+        console.log(req.session.unVerfiedMail);
+        const user = await userSchema.findOneAndUpdate( { email : req.session.unVerfiedMail, isBlocked : false },
+            { $set : {
+                password : password
+            }})
+        console.log(user);
+        req.session.user = user._id
+        console.log(req.session.user);
+        res.redirect('/login')
     }
 
 }
