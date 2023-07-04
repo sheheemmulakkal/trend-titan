@@ -3,6 +3,7 @@ const express = require('express');
 // Getting controllers
 const shopController = require( '../controllers/shopController' )
 const cartController = require( '../controllers/cartController')
+const orderController = require( '../controllers/orderController' )
 const isAuth = require( '../middleware/isAuth');
 const { isArgumentsObject } = require('util/types');
 
@@ -22,6 +23,11 @@ router.post( '/add-to-cart', cartController.addToCart )
 router.post( '/decrease-cart', isAuth.userAuth, cartController.decCart )
 
 router.patch( '/removeCartItem', isAuth.userAuth, cartController.removeCartItem )
+
+router.get( '/checkout', isAuth.userAuth, shopController.getCheckout )
+
+router.post( '/place-order', isAuth.userAuth, orderController.placeOrder )
+
 
 
 module.exports = router;

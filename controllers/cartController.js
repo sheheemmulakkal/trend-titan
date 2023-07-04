@@ -1,6 +1,7 @@
 const cartSchema = require( '../models/cartModel');
 const mongoose = require('mongoose');
 const productSchema = require('../models/productModel');
+const cartHelper = require( '../helpers/cartHelper' )
 const { kStringMaxLength } = require('buffer');
 const { availableParallelism } = require('os');
 
@@ -10,8 +11,11 @@ module.exports = {
         try {
             const { user } = req.session;
             const cartItems = await cartSchema.findOne({userId : user }).populate('items.productId');
+            const totalPrice = await cartHelper.totalCartPrice(user)
+            //   console.log(totalPrice[0].items);
             res.render('shop/cart',{
-                cartItems : cartItems
+                cartItems : cartItems,
+                totalAmount : totalPrice
             });
         } catch (error) {
             console.log(error.message);
@@ -46,7 +50,9 @@ module.exports = {
                                 const cartitmes = await cartSchema.updateOne( { userId : userId, 'items.productId' : productId },
                                 { $inc : { 'items.$.quantity': 1 }}
                                 );
-                                res.status(200).json({ success : true, message : 'Added to cart' ,login : true });
+                                //total price of cart
+                                const totalPrice = await cartHelper.totalCartPrice(userId)
+                                res.status(200).json({ success : true, message : 'Added to cart' ,login : true, totalPrice : totalPrice });
                             } else {
                                 //If cart quantity and availabe quantity are same
                                 res.json({ message : "Oops! It seems you've reached the maximum quantity of products available for purchase.",
@@ -98,9 +104,10 @@ module.exports = {
             const { user } = req.session ;
             const { productId } = req.body;
             const cart = await cartSchema.updateOne({ userId : user, 'items.productId' : productId},
-            { $inc : { 'items.$.quantity' : -1}}
+            { $inc : { 'items.$.quantity' : -1 }}
             )
-            res.status(200).json({success : true, message : 'cart item decreased'});
+            const totalPrice = await cartHelper.totalCartPrice(user)
+            res.status(200).json({success : true, message : 'cart item decreased', totalPrice : totalPrice});
         } catch (error) {
             console.log(error.message);
         }
@@ -114,7 +121,8 @@ module.exports = {
             const cart = await cartSchema.updateOne({ userId : user, 'items._id': itemId },
                 { $pull : { items : {_id : itemId}}})
                 req.session.productCount--
-                res.status(200).json({success : true, message : 'Item removed', removeItem : true})
+                const totalPrice = await cartHelper.totalCartPrice(user)
+                res.status(200).json({success : true, message : 'Item removed', removeItem : true, totalPrice : totalPrice})
         } catch (error) {
             console.log(error.message);
         }

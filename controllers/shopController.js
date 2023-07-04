@@ -3,6 +3,8 @@ const productSchema = require('../models/productModel')
 const categorySchema = require( '../models/categoryModel')
 const bannerSchema = require( '../models/bannerModel')
 const cartSchema = require( '../models/cartModel')
+const cartHelper = require( '../helpers/cartHelper')
+const addressSchema = require( '../models/addressModel')
 const { tr } = require('date-fns/locale')
 
 
@@ -61,5 +63,19 @@ module.exports = {
         }
 
     },
+
+    getCheckout : async( req, res ) => {
+        try {
+            const { user } = req.session
+            const cartAmount = await cartHelper.totalCartPrice( user )
+            const address = await addressSchema.find({ userId : user, status : true })
+            res.render('shop/checkout',{
+                cartAmount : cartAmount,
+                address : address
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 
 }

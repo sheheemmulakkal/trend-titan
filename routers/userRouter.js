@@ -16,7 +16,7 @@
 
  router.get( '/edit-address/:id', isAuth.userAuth, userController.getEditAddress )
  
- router.post( '/edit-address', isAuth.userAuth, userController.editAddress )
+ router.post( '/edit-address', isAuth.userAuth, userController.editAddress )  
 
  router.patch( '/remove-address/:id', isAuth.userAuth, userController.removeAddress )
 

@@ -2,80 +2,102 @@
 <%- include('../includes/userNavbar.ejs') %>
 
  
-
-<section class="shopping-cart spad">
+<style>
+    .shop-now a:hover{
+        color: #111;
+    }
+</style>
+<section class="shopping-cart spad mt-5">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="shopping__cart__table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% for ( let item of cartItems.items ) { %>
-                                <% var totalPrice = item.productId.price * item.quantity  %>
-                            <tr id="cart-row-<%= item._id %>">
-                                <td class="product__cart__item">
-                                    <div class="product__cart__item__pic">
-                                        <img src="/images/product-images/<%= item.productId.image[0] %>" width="100" alt="">
-                                    </div>
-                                    <div class="product__cart__item__text">
-                                        <h6><%= item.productId.name %></h6>
-                                        <h5 id="price-<%= item.productId._id %>">₹ <%= item.productId.price %></h5>
-                                    </div>
-                                </td>
-                                <td class="quantity__item">
-                                    <div class="quantity">
-                                        <div class="pro-qty-2">
-                                            <span id="dec-<%= item.productId._id %>" onclick="decreaseCart('<%= item.productId._id %>')" class="fa fa-angle-left dec qtybtn"></span>
-                                                <input id="qty-<%= item.productId._id %>" type="text" disabled value="<%= item.quantity %>">
-                                            <span id="inc-<%= item.productId._id %>" onclick="addToCart('<%= item.productId._id %>')" class="fa fa-angle-right inc qtybtn"></span>
+        <% if( cartItems.items.length > 0){ %>
+            <div class="row" id="cart-table">
+                <div class="col-lg-8">
+                    <div class="shopping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for ( let item of cartItems.items ) { %>
+                                    <% var totalPrice = item.productId.price * item.quantity  %>
+                                    <%  if( item.quantity > item.productId.quantity ){ var quantity = item.productId.quantity } else { var quantity = item.quantity } %>
+                                <tr id="cart-row-<%= item._id %>">
+                                    <td class="product__cart__item">
+                                        <div class="product__cart__item__pic">
+                                            <img src="/images/product-images/<%= item.productId.image[0] %>" width="100" alt="">
                                         </div>
-                                    </div>
-                                </td>
-                                <td id="total-<%= item.productId._id %>" class="cart__price">₹ <%= totalPrice %></td>
-                                <td class="cart__close"><i onclick="removeCart('<%= item._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
-                            </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6">
-                        <div class="continue__btn">
-                            <a href="/shop">Continue Shopping</a>
+                                        <div class="product__cart__item__text">
+                                            <h6><%= item.productId.name %></h6>
+                                            <h5 id="price-<%= item.productId._id %>">₹ <%= item.productId.price %></h5>
+                                        </div>
+                                    </td>
+                                <% if( item.productId.quantity > 0){ %>
+                                    <td class="quantity__item">
+                                        <div class="quantity">
+                                            <div class="pro-qty-2">
+                                                <span id="dec-<%= item.productId._id %>" onclick="decreaseCart('<%= item.productId._id %>')" class="fa fa-angle-left dec qtybtn"></span>
+                                                    <input id="qty-<%= item.productId._id %>" type="text" disabled value="<%= quantity %>">
+                                                <span id="inc-<%= item.productId._id %>" onclick="addToCart('<%= item.productId._id %>')" class="fa fa-angle-right inc qtybtn"></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td id="total-<%= item.productId._id %>" class="cart__price">₹ <%= totalPrice %></td>
+                                    <td class="cart__close"><i onclick="removeCart('<%= item._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
+                                <% } else { %>
+                                    <td id="stockOut"> <label onload="removeCart('<%= item._id %>')"  class="text-danger fw-bold" for="">Out of Stock</label> </td>
+                                <% } %>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn">
+                                <a href="/shop">Continue Shopping</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn update__btn">
+                                <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6">
-                        <div class="continue__btn update__btn">
-                            <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
-                        </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="cart__discount">
+                        <h6>Discount codes</h6>
+                        <form action="#">
+                            <input type="text" placeholder="Coupon code">
+                            <button type="submit">Apply</button>
+                        </form>
+                    </div>
+                    <div class="cart__total">
+                        <h6>Cart total</h6>
+                        <ul>
+                            <li>Subtotal <span id="subtotal">₹ <%= totalAmount[0].total %></span></li>
+                            <li>Total <span id="total">₹ <%= totalAmount[0].total %></span></li>
+                        </ul>
+                        <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="cart__discount">
-                    <h6>Discount codes</h6>
-                    <form action="#">
-                        <input type="text" placeholder="Coupon code">
-                        <button type="submit">Apply</button>
-                    </form>
-                </div>
-                <div class="cart__total">
-                    <h6>Cart total</h6>
-                    <ul>
-                        <li>Subtotal <span>₹ 169.50</span></li>
-                        <li>Total <span>₹ 169.50</span></li>
-                    </ul>
-                    <a href="#" class="primary-btn">Proceed to checkout</a>
-                </div>
+        <% } else { %>
+            <div class="col-12 mt-5">
+                <h1 class="text-center"><b>Cart is empty...</b></h1>
+                <br>
+                <h3 class="text-center shop-now" ><a href="/shop">Shop now</a></h3>
             </div>
+        <% } %>
+        <div style="display: none;" class="col-12 mt-5" id="empty-cart">
+            <h1 class="text-center"><b>Cart is empty...</b></h1>
+            <br>
+            <h3 class="text-center shop-now" ><a href="/shop">Shop now</a></h3>
         </div>
     </div>
 </section>
@@ -117,6 +139,16 @@
         }
     });
     });
+    const totalCartPrice = document.getElementById('total')
+    const subtotalCartPrice = document.getElementById('subtotal')
+    const cartTable = document.getElementById('cart-table')
+    const emptyCart = document.getElementById('empty-cart')
+    const stockOut = document.getElementById('stockOut')
+    if(stockOut){
+        console.log('yes');
+    } else {
+        console.log('no');
+    }
 
     async function addToCart( productId ){
 
@@ -152,11 +184,14 @@
                 });
             }
             if( response.data.success === true){
+                console.log(response.data.totalPrice);
                 const currentQty = parseInt(qty.val())
                 const updatedQty = currentQty+1
                 const totalPrice = updatedQty * price
                 updatedQty > 1 ? dec.show() : null ;
                 total.innerHTML = `₹ ${totalPrice}`
+                totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                subtotalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
                 qty.val(updatedQty)
             }  
             
@@ -183,6 +218,9 @@
                             if(updatedQty < 2 ){
                                 dec.hide()
                             }
+                            // console.log(response.data.totalPrice[0].total);
+                            totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                            subtotalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
                             qty.val(updatedQty)
                         }
                     
@@ -201,7 +239,10 @@
                         const count = document.getElementById('cartCount')
                         currentCount = parseInt(count.innerHTML)
                         updatedCount = currentCount - 1
-                        count.innerHTML = updatedCount                 
+                        count.innerHTML = updatedCount   
+                        if(updatedCount == 0 ){ cartTable.style.display = 'none'; emptyCart.style.display = 'block'}
+                        totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                        subtotalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
                     }
             }
     

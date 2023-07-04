@@ -110,6 +110,9 @@ ol {
   Helper CSS
 -----------------------*/
 
+.main-div {
+	padding-top: 100px;
+}
 .section-title {
 	margin-bottom: 45px;
 	text-align: center;
