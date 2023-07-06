@@ -1,4 +1,4 @@
-const mongoose = require( 'mongoose' )
+
 const userSchema = require( '../models/userModel' )
 const addressSchema = require( '../models/addressModel' )
 
@@ -6,12 +6,12 @@ module.exports = {
 
     getUserProfile : async ( req, res ) => {
         try{
-            const user = await userSchema.findOne({_id : req.session.user})
+            const user = await userSchema.findOne({ _id : req.session.user })
             res.render( 'user/profile',{
                 user : user
             } )
         }catch(error){
-            console.log(error.message);
+            console.log( error.message );
         }
     },
 
@@ -34,61 +34,60 @@ module.exports = {
                 userId : req.session.user
             })
             const result = await address.save()
-            const user = await userSchema.updateOne({_id : req.session.user},{
-                 $push : { address : result._id}
+            await userSchema.updateOne({ _id : req.session.user }, {
+                 $push : { address : result._id }
             })
-            res.redirect('/user/address')   
-        }catch(error){
-            console.log(error.message);
+            res.redirect( '/user/address' )   
+        }catch( error ){
+            console.log( error.message );
         }
     },
 
     getAddress : async ( req, res ) => {
         try{
-            const user = await userSchema.find({ _id : req.session.user}).populate({
+            const user = await userSchema.find({ _id : req.session.user }).populate({
                 path: 'address',
                 model: 'address',
-                match : { status : true}
+                match : { status : true }
               })
-            //   console.log(user[0].address);
-            res.render('user/address',{
+            res.render( 'user/address', {
                 user : user[0],
                 address : user[0].address
             })
-        } catch ( errror ) {
-            console.log(errror.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
     removeAddress : async ( req, res ) => {
         try {
             const addressId = req.params.id
-            const result = await addressSchema.updateOne({_id : addressId},{
+            await addressSchema.updateOne({ _id : addressId }, {
                 $set : { status : false}
             }) 
-            const removeFromUser = await userSchema.updateOne( {_id : req.session.user },{
+            await userSchema.updateOne( { _id : req.session.user }, {
                 $pull : { address : addressId}
             })
-            res.status(200).json({success : true})
-        } catch (error) {
-            console.log(error.message);
+            res.status( 200 ).json({ success : true })
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
     getEditAddress : async( req, res ) => {
         try {
             const addressId = req.params.id 
-            const address = await addressSchema.findOne({_id : addressId})
-            res.render('user/edit-address', { address : address })
-        } catch (error) {
-            console.log(error.message);
+            const address = await addressSchema.findOne({ _id : addressId })
+            res.render( 'user/edit-address', { address : address })
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
     editAddress : async ( req, res ) => {
         const addressId = req.body.id
         try {
-            const update = await addressSchema.updateOne({_id : addressId},{
+            await addressSchema.updateOne({ _id : addressId }, {
                 $set : {
                     fullName:req.body.fullName,
                     mobile:req.body.mobile,
@@ -101,15 +100,15 @@ module.exports = {
                     country:req.body.country
                     }
             })
-            res.redirect('/user/address')   
-        } catch (error) {
-            console.log(errror.message);
+            res.redirect( '/user/address' )   
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
     editProfile : async ( req, res ) => {
         try {
-            const result = await userSchema.updateOne({_id : req.session.user},{
+            await userSchema.updateOne({ _id : req.session.user }, {
                 $set :{ 
                     firstName : req.body.firstName,
                     lastName : req.body.lastName,
@@ -117,9 +116,9 @@ module.exports = {
                     email : req.body.email,
                 } 
             })
-            res.json({success : true})
-        } catch(error){
-            console.log(error.message);
+            res.json({ success : true })
+        } catch( error ){
+            console.log( error.message );
         }
     } 
     

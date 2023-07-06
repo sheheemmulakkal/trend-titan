@@ -1,5 +1,4 @@
 
-const { runInNewContext } = require('vm')
 const bannerSchema = require( '../models/bannerModel')
 
 module.exports = {
@@ -75,7 +74,6 @@ module.exports = {
                 description : req.body.description
             }
             if( req.file ){
-                console.log(req.file);
                     if(     
                         file.mimetype !== 'image/jpg' &&
                         file.mimetype !== 'image/jpeg' &&
@@ -87,7 +85,7 @@ module.exports = {
                         }
                 updatedBanner.image = req.file.filename
             }
-            const result = await bannerSchema.updateOne({ _id : req.body.bannerId},{
+            await bannerSchema.updateOne({ _id : req.body.bannerId},{
                 $set :  updatedBanner 
             })
             req.flash('success','Banner Updated')
@@ -101,7 +99,7 @@ module.exports = {
     deleteBanner : async ( req, res ) => {
         try {
 
-            const deletetBanner = await bannerSchema.updateOne({ _id : req.params.id },{ status : false })
+            await bannerSchema.updateOne({ _id : req.params.id },{ status : false })
             res.redirect('/admin/banner')
             
         } catch (error) {
@@ -112,7 +110,7 @@ module.exports = {
     restoreBanner : async ( req, res ) => {
         try {
 
-            const restoreBanner = await bannerSchema.updateOne({ _id : req.params.id },{ status : true })
+            await bannerSchema.updateOne({ _id : req.params.id },{ status : true })
             res.redirect('/admin/banner')
             
         } catch (error) {

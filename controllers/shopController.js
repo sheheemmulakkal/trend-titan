@@ -1,12 +1,11 @@
-const mongoose = require('mongoose')
+
 const productSchema = require('../models/productModel')
 const categorySchema = require( '../models/categoryModel')
 const bannerSchema = require( '../models/bannerModel')
 const userSchema = require( '../models/userModel')
-const cartSchema = require( '../models/cartModel')
 const cartHelper = require( '../helpers/cartHelper')
 const addressSchema = require( '../models/addressModel')
-const { tr } = require('date-fns/locale')
+
 
 
 module.exports = {
@@ -16,15 +15,15 @@ module.exports = {
 
         try {
 
-            const banners = await bannerSchema.find({status : true})
-            const products = await productSchema.find({status : true})
-            res.render( 'shop/home',{
+            const banners = await bannerSchema.find({ status : true })
+            const products = await productSchema.find({ status : true })
+            res.render( 'shop/home', {
                 products : products,
                 banners : banners
-            } )
+            })
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
@@ -33,18 +32,18 @@ module.exports = {
 
         try {
 
-            const products = await productSchema.find({status: true})
-            const category = await categorySchema.find({status: true})
-            const brands = await productSchema.distinct('brand')
+            const products = await productSchema.find({ status: true })
+            const category = await categorySchema.find({ status: true })
+            const brands = await productSchema.distinct( 'brand' )
 
-            res.render('shop/shop',{
+            res.render( 'shop/shop', {
                 products  : products,
                 category : category,
                 brands : brands
             })
               
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
@@ -52,15 +51,15 @@ module.exports = {
     getSingleProduct : async( req, res ) => {
 
         try {
-            const product = await productSchema.find({_id : req.params.id, status : true }).populate('category')         
-            const related = await productSchema.find({status : true}).limit(4)
-            res.render('shop/single-product',{
+            const product = await productSchema.find({ _id : req.params.id, status : true }).populate( 'category' )         
+            const related = await productSchema.find({ status : true }).limit( 4 )
+            res.render( 'shop/single-product', {
                 product : product,
                 related : related
             })
 
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
 
     },
@@ -69,19 +68,19 @@ module.exports = {
         try {
             const { user } = req.session
             const cartAmount = await cartHelper.totalCartPrice( user )
-            const address = await userSchema.findOne({_id : user}).populate('address')
+            const address = await userSchema.findOne({ _id : user }).populate( 'address' )
             const addresses = address.address.reverse()
-            res.render('shop/checkout',{
+            res.render( 'shop/checkout', {
                 cartAmount : cartAmount,
                 address : addresses
             })
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
     getCheckoutAddAddress : async( req, res ) => {
-        res.render('shop/checkout-address')
+        res.render( 'shop/checkout-address' )
     },
 
     checkoutAddAddress : async ( req, res ) => {
@@ -99,12 +98,12 @@ module.exports = {
                 userId : req.session.user
             })
             const result = await address.save()
-            const user = await userSchema.updateOne({_id : req.session.user},{
+            await userSchema.updateOne({ _id : req.session.user }, {
                  $push : { address : result._id}
             })
-            res.redirect('/checkout')
+            res.redirect( '/checkout' )
         } catch ( error ) {
-            console.log(error.message); 
+            console.log( error.message ); 
         }
     }
 

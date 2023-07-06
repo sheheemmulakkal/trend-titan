@@ -1,0 +1,118 @@
+<%- include('../includes/userHead.ejs') %>
+<%- include('../includes/userNavbar.ejs') %>
+
+<style>
+    .main-div{
+        display: flex;
+        justify-content: center;
+
+    }
+    .profile-container {
+        /* border: .5px solid #6e6e6e2f; */
+        box-shadow: 0px 10px 40px 0px rgba(56,74,235,0.2);
+    }
+    section {
+        width: 80%;
+    }
+    .edit-image{
+        text-decoration: none;
+    }
+    input {
+        border-radius: 0!important;
+    }
+    input.form-control, textarea {
+        background-color: #fff;
+    }
+    input:disabled{
+        border: none;
+        background-color: #fff;
+        font-weight: bold;
+    }
+    .fs--1 a{
+        color: #7a7a7a;
+        padding: 10px;
+    }
+
+    .fs--1 a.active{
+        background-color: #7a7a7a;
+        color: #fff;
+    }
+    
+    .fs--1 a:hover {
+        background-color: #7a7a7a;
+        color: white;
+    }
+</style>
+<div class="main-div m-5">
+<section class="font-1">
+    <div class="container profile-container pt-5">
+        <div class="row justify-content-center">
+
+            <div class="col-12">
+                <div class="table">
+                    <table>
+                        <thead>
+                            <th>Date</th>
+                            <th>Order Id</th>
+                            <th>Address</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            <% for ( let order of orders ){ %>
+                            <tr>
+                                <td>
+                                    <%= moment(order.date).format(shortDateFormat) %> 
+                                </td>
+                                <td>
+                                    <%= order._id %>
+                                </td>
+                               <td>
+                                <p><%= order.address.fullName %> <br>
+                                    <%= order.address.mobile %><br>
+                                    <%= order.address.street %>, <%= order.address.village %><br> 
+                                    <%= order.address.pincode %>, <%= order.address.city %>, <%= order.address.state %>
+                                </p>
+                            </td>
+                            <td> <%= order.totalPrice %></td>
+                            <td id="order-status-<%= order._id %>"><%= order.orderStatus %></td>
+                            <td> <% if( order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled') { %><% } else { %> <button style="font-size: 12px;" id="cancel-<%= order._id %>" onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger rounded-0"> Cancel</button> <% } %></td>
+                            <td><a  style="font-size: 12px;" class="btn btn-dark rounded-0" href="/user/view-order-products/<%= order._id %>">View products</a></td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <!--/.row-->
+    </div>
+    <!--/.container-->
+</section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    async function cancelOrder(orderId){
+        try {
+            console.log(orderId);
+            const status = 'Cancelled'
+            const cancel = await axios.patch('/user/cancel-order',{orderId,status})
+            if (cancel.data.success){
+                console.log(cancel.data);
+                const cancelButton = document.getElementById(`cancel-${orderId}`)
+                const order_status = document.getElementById(`order-status-${orderId}`)
+                cancelButton.style.display = 'none'
+                order_status.innerHTML = cancel.data.status
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+</script>
+
+
+<%- include('../includes/userFooter.ejs') %>
+<%- include('../includes/end.ejs') %>

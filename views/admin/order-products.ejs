@@ -1,0 +1,52 @@
+
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div><a class="badge badge-outline-primary" href="/admin/orders">Back to orders</a></div>
+        <div class="row mt-5">
+            <div class="col-12 grid-margin">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Banners</h4>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Brand</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% for ( let product of products ){ %>
+                            <% var total = product.price * product.quantity %>
+                            <tr>
+                                <td>
+                                    <img style="width:100px; height: auto;border-radius: 0;" src="/images/product-images/<%= product.productId.image[0] %>" alt="">
+                                </td>
+                            <td><%= product.productId.name %></td>
+                            <td><%= product.productId.brand %></td>
+                            <td><%= product.price %></td>
+                            <td><%= product.quantity %></td>
+                            <td><%= total %></td>
+                            
+                            </tr>
+
+                        <% } %>
+                      
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+    </div>
+</div>

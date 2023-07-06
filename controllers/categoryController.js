@@ -1,11 +1,8 @@
 
 
-const { id } = require('date-fns/locale')
-const userSchema = require( '../models/userModel')
+
 const categorySchema = require( '../models/categoryModel')
-const productSchema = require( '../models/productModel' )
-const { log } = require('util')
-const { runInNewContext } = require('vm')
+
 
 
 module.exports = {
@@ -39,7 +36,7 @@ module.exports = {
                 const categoryName = new categorySchema({
                     category : req.body.category.toUpperCase()
                 })
-                const result = await categoryName.save()
+                await categoryName.save()
                 req.flash('success',`${cat} successfully added to category`)
                 res.redirect('/admin/category')
             }
@@ -53,17 +50,17 @@ module.exports = {
     listCategory : async ( req, res ) => {
 
         try {
-            const list = await categorySchema.updateOne({ _id : req.params.id }, { $set : { status : true } })
+            await categorySchema.updateOne({ _id : req.params.id }, { $set : { status : true } })
             res.redirect('/admin/category')
         } catch (error) {
-            console.log(errror.message);
+            console.log(error.message);
         }
     },
 
     unlistCategory : async ( req, res ) => {
 
         try {
-            const unlist = await categorySchema.updateOne({ _id : req.params.id },{ $set : { status : false}})
+            await categorySchema.updateOne({ _id : req.params.id },{ $set : { status : false}})
             res.redirect('/admin/category')
         } catch (error) {
             console.log(error.message);
@@ -88,7 +85,7 @@ module.exports = {
     editCategory : async ( req, res ) => {
 
         try {
-            const update = await categorySchema.updateOne( { _id : req.body.categoryId },{
+            await categorySchema.updateOne( { _id : req.body.categoryId },{
                 category : req.body.category
             }) 
             res.redirect('/admin/category')

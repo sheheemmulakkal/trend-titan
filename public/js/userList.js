@@ -6,7 +6,7 @@ async function blockUser( userId ) {
         const button = document.getElementById(`block-${userId}`);
         const buttonContainer = document.getElementById(`button-container-${userId}`);
         button.classList.remove('badge-outline-success');
-        button.classList.add('badge-outline-danger');
+        button.classList.add( 'badge-outline-danger' );
         button.textContent = 'Unblock';
         button.removeEventListener('click', blockUser); // Remove the previous event listener
         button.addEventListener('click', () => unblockUser(userId)); // Add the new event listener
@@ -14,7 +14,6 @@ async function blockUser( userId ) {
         showModal( 'success', 'User blocked' )
       } else {
         showModal( 'Error', 'Error in user blocking!!!' )
-
       }
       
     } catch(error) {
@@ -56,7 +55,7 @@ async function blockUser( userId ) {
 
       const modalTitle = document.getElementById('modalHead')
       const modalBody = document.getElementById('modalContent')
-      
+
     modalTitle.innerText = title;
     modalBody.innerText = message;
 

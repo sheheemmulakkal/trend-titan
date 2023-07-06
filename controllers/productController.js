@@ -1,11 +1,10 @@
 
-const { id } = require('date-fns/locale')
+
 const fs = require( 'fs' )
 const path = require( 'path' )
-const userSchema = require( '../models/userModel')
 const categorySchema = require( '../models/categoryModel')
 const productSchema = require( '../models/productModel' )
-const { log } = require('util')
+
 
 module.exports = {
 
@@ -49,7 +48,7 @@ module.exports = {
                 quantity : req.body.quantity,
                 price : req.body.price
             })
-            const result = await product.save()
+            await product.save()
             res.redirect('/admin/products')
 
         } catch(error){
@@ -75,7 +74,7 @@ module.exports = {
     deleteProduct : async( req, res ) => {
 
         try {
-            const product = await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : false}})
+            await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : false}})
             res.redirect('/admin/products')
             
         } catch (error) {
@@ -86,7 +85,7 @@ module.exports = {
     restoreProduct : async( req, res ) => {
 
         try {
-            const product = await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : true} })
+            await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : true} })
             res.redirect('/admin/products')
             
         } catch (error) {
@@ -116,7 +115,7 @@ module.exports = {
         try {
             const id = req.query.id
             const image = req.query.imageId
-            const deleteImage = await productSchema.updateOne({_id : id},{ $pull : {image : image}})
+            await productSchema.updateOne({_id : id},{ $pull : {image : image}})
             fs.unlink( path.join( __dirname, '../public/images/product-images/' ) + image , (err) => {
                 if( err ) {
                    console.log(err.message);
@@ -152,7 +151,7 @@ module.exports = {
                 });
                 var img = images
             }
-            const update = await productSchema.updateOne( {_id : req.body.productId},
+            await productSchema.updateOne( {_id : req.body.productId},
                 {
                     $set : {
                         name : req.body.name,

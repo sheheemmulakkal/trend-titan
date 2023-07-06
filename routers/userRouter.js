@@ -1,6 +1,7 @@
  const express = require( 'express' )
  const userController = require('../controllers/userController')
  const isAuth = require('../middleware/isAuth')
+ const orderController = require('../controllers/orderController')
 
  const router = express.Router()
 
@@ -19,5 +20,11 @@
  router.post( '/edit-address', isAuth.userAuth, userController.editAddress )  
 
  router.patch( '/remove-address/:id', isAuth.userAuth, userController.removeAddress )
+ 
+ router.get( '/orders', isAuth.userAuth, orderController.getOrders )  
+
+ router.patch( '/cancel-order', isAuth.userAuth, orderController.userCancelOrder )  
+
+ router.get( '/view-order-products/:id', isAuth.userAuth, orderController.userOrderProducts )  
 
  module.exports = router   

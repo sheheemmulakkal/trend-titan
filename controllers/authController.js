@@ -37,7 +37,7 @@ module.exports = {
                             res.redirect( '/shop' )
                         } else {
                             const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
-                            const otpUpdate = await userSchema.updateOne({email : req.body.email},{
+                            await userSchema.updateOne({email : req.body.email},{
                                 $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
                             })
                             req.session.unVerfiedMail = req.body.email
@@ -75,7 +75,7 @@ module.exports = {
     // UserLogout
     doUserLogout : ( req, res ) => {
 
-        req.session.destroy()
+        req.session.user = null
         res.redirect( '/login' )
     },
     
@@ -118,7 +118,7 @@ module.exports = {
                         }
                     })
 
-                const userData = await user.save()
+                await user.save()
 
                 req.session.unVerfiedMail = req.body.email
 
@@ -156,7 +156,7 @@ module.exports = {
             if( timeDiff <= 60 ) {
 
                 // If expiry time is valid setting isVerified as true
-                const verify = await userSchema.updateOne({ email : otpCheck.email } , { $set : {isVerified : true} })
+                await userSchema.updateOne({ email : otpCheck.email } , { $set : {isVerified : true} })
 
                 req.session.user = otpCheck._id
                 req.session.unVerfiedMail = null
@@ -234,7 +234,7 @@ module.exports = {
 
     doAdminLogout : ( req, res ) => {
 
-        req.session.destroy()
+        req.session.admin = null
         res.redirect ( '/admin/login' )
     },
 
@@ -250,7 +250,7 @@ module.exports = {
     if( emialExist ){
         const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
         console.log(newOtp);
-        const otpUpdate = await userSchema.updateOne({email : req.body.email},{
+        await userSchema.updateOne({email : req.body.email},{
             $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
         })
         console.log(req.body);
@@ -305,17 +305,11 @@ module.exports = {
     },
 
     newPassword : async ( req, res ) => {
-        console.log(req.body);
         const password = await bcrypt.hash( req.body.password, 12)
-        console.log(password);
-        console.log(req.session.unVerfiedMail);
         const user = await userSchema.findOneAndUpdate( { email : req.session.unVerfiedMail, isBlocked : false },
             { $set : {
                 password : password
             }})
-        console.log(user);
-        req.session.user = user._id
-        console.log(req.session.user);
         res.redirect('/login')
     }
 

@@ -50,7 +50,8 @@ router.get( '/delete-banner/:id', isAuth.adminAuth, bannerController.deleteBanne
 router.get( '/restore-banner/:id', isAuth.adminAuth, bannerController.restoreBanner )
 
 router.get( '/orders', isAuth.adminAuth, orderController.getAdminOrderlist )
-router.patch( '/change-order-status', isAuth.adminAuth, orderController.changeOrderStatus)
+router.patch( '/change-order-status', isAuth.adminAuth, orderController.changeOrderStatus )
+router.get( '/order-products/:id', isAuth.adminAuth, orderController.adminOrderProducts )
 
 
 

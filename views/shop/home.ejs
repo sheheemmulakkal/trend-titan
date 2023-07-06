@@ -105,7 +105,7 @@
 
                     <div class="product__item__text">
                         <h6><%= product.name %></h6>
-                        <% if( product.quantity > 1 ) { %>
+                        <% if( product.quantity > 0 ) { %>
                             <a onclick="addToCart('<%= product._id %>')" style="cursor: pointer;" class="add-cart">+ Add To Cart</a>
                             <% } else { %>
                                 <a class="add-cart text-danger">Out of Stock</a>

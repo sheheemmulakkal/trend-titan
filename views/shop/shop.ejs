@@ -105,7 +105,7 @@
                             </a>
                             <div class="product__item__text">
                                 <h6><%= product.name %></h6>
-                                <% if( product.quantity > 1 ) { %>
+                                <% if( product.quantity > 0 ) { %>
                                     <a onclick="addToCart('<%= product._id %>')" style="cursor: pointer;" class="add-cart">+ Add To Cart</a>
                                     <% } else { %>
                                         <a class="add-cart text-danger">Out of Stock</a>
@@ -171,9 +171,9 @@
     async function addToCart( productId ){
 
         try {
-            console.log(productId);
+
             const response = await axios.post('/add-to-cart',{productId})
-            console.log(response.data);
+            console.log(response.data,'data');
             if( !response.data.login ){
                 return window.location.href = '/login'
             } 
@@ -196,6 +196,7 @@
                 });
             }
             if( response.data.newItem === true ){
+                console.log(response.data.newItem, 'new');
                 const count = document.getElementById('cartCount')
                 
                 currentCount = parseInt(count.innerHTML)
@@ -205,7 +206,7 @@
                 count.innerHTML = updatedCount                 
             }
         } catch (error) {
-            console.log(response.status);
+            console.log(error.message);
         }
     }
 </script>

@@ -1,24 +1,25 @@
-const cartSchema = require( '../models/cartModel');
-const mongoose = require('mongoose');
-const productSchema = require('../models/productModel');
+const cartSchema = require( '../models/cartModel' );
+const productSchema = require( '../models/productModel' );
 const cartHelper = require( '../helpers/cartHelper' )
-const { kStringMaxLength } = require('buffer');
-const { availableParallelism } = require('os');
+
 
 
 module.exports = {
     getCart : async( req, res ) => {
         try {
-            const { user } = req.session;
-            const cartItems = await cartSchema.findOne({userId : user }).populate('items.productId');
-            const totalPrice = await cartHelper.totalCartPrice(user)
-            //   console.log(totalPrice[0].items);
-            res.render('shop/cart',{
-                cartItems : cartItems,
+            const { user } = req.session;   
+            const productCount = await cartHelper.updateQuantity( user )
+            if( productCount === 1 ){
+                req.session.productCount--
+            }
+            const updatedCart = await cartSchema.findOne({ userId : user }).populate( 'items.productId' );
+            const totalPrice = await cartHelper.totalCartPrice( user )
+            res.render( 'shop/cart', {
+                cartItems : updatedCart,
                 totalAmount : totalPrice
             });
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
@@ -31,9 +32,9 @@ module.exports = {
                 productId = req.body.productId;
 
                 // Getting stock quantity
-                const Quantity = await productSchema.findOne({ _id : productId },{ quantity : 1 });
+                const Quantity = await productSchema.findOne({ _id : productId }, { quantity : 1 });
                 // Checking if cart is exist
-                const cart = await cartSchema.findOne({userId : userId });
+                const cart = await cartSchema.findOne({ userId : userId });
                 const stockQuantity = Quantity.quantity
                 if( stockQuantity > 0 ){
                     // If cart exist
@@ -47,26 +48,26 @@ module.exports = {
                             const availableQuantity = stockQuantity - exist.quantity
                             if( availableQuantity > 0 ) {
                                 // quantity increases
-                                const cartitmes = await cartSchema.updateOne( { userId : userId, 'items.productId' : productId },
+                                await cartSchema.updateOne( { userId : userId, 'items.productId' : productId },
                                 { $inc : { 'items.$.quantity': 1 }}
                                 );
                                 //total price of cart
-                                const totalPrice = await cartHelper.totalCartPrice(userId)
-                                res.status(200).json({ success : true, message : 'Added to cart' ,login : true, totalPrice : totalPrice });
+                                const totalPrice = await cartHelper.totalCartPrice( userId )
+                                res.status( 200 ).json({ success : true, message : 'Added to cart' ,login : true, totalPrice : totalPrice });
                             } else {
                                 //If cart quantity and availabe quantity are same
                                 res.json({ message : "Oops! It seems you've reached the maximum quantity of products available for purchase.",
-                                login : true , outOfStock : true})
+                                login : true , outOfStock : true })
                             }
                             
                         // if product not exists in cart, adding new object to items array
                         } else {
-                            const cartitems = await cartSchema.updateOne( { userId : userId },
-                                { $push : { items : {productId : productId } } }
+                            await cartSchema.updateOne( { userId : userId },
+                                { $push : { items : { productId : productId } } }
                                 );
                                 // increasing product count in session
                                 req.session.productCount++
-                            res.status(200).json({  success : true, 
+                            res.status( 200 ).json({  success : true, 
                                                     message : 'Added to cart',
                                                     newItem : true,
                                                     login : true });
@@ -81,22 +82,23 @@ module.exports = {
                         });
                         await newCart.save();
                         req.session.productCount++
-                        res.status(200).json({
+                        res.status( 200 ).json({
                             success : 'Added to cart',
-                            login : true
+                            login : true,
+                            newItem : true
                         });
                     }
                 // If product stock is empty
                 } else {
-                    res.status(404).json({error : true, message : 'Out of stock' ,login : true});
+                    res.status( 404 ).json({ error : true, message : 'Out of stock', login : true });
                 }
             // If user not logged in 
             } else {
-                res.json({login : false });
+                res.json({ login : false });
             }
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
@@ -104,13 +106,13 @@ module.exports = {
         try {
             const { user } = req.session ;
             const { productId } = req.body;
-            const cart = await cartSchema.updateOne({ userId : user, 'items.productId' : productId},
+            await cartSchema.updateOne({ userId : user, 'items.productId' : productId },
             { $inc : { 'items.$.quantity' : -1 }}
             )
-            const totalPrice = await cartHelper.totalCartPrice(user)
-            res.status(200).json({success : true, message : 'cart item decreased', totalPrice : totalPrice});
-        } catch (error) {
-            console.log(error.message);
+            const totalPrice = await cartHelper.totalCartPrice( user )
+            res.status( 200 ).json({ success : true, message : 'cart item decreased', totalPrice : totalPrice });
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
@@ -119,13 +121,13 @@ module.exports = {
 
             const { itemId } = req.body
             const { user } = req.session
-            const cart = await cartSchema.updateOne({ userId : user, 'items._id': itemId },
-                { $pull : { items : {_id : itemId}}})
+            await cartSchema.updateOne({ userId : user, 'items._id': itemId },
+                { $pull : { items : { _id : itemId }}})
                 req.session.productCount--
                 const totalPrice = await cartHelper.totalCartPrice(user)
-                res.status(200).json({success : true, message : 'Item removed', removeItem : true, totalPrice : totalPrice})
-        } catch (error) {
-            console.log(error.message);
+                res.status( 200 ).json({ success : true, message : 'Item removed', removeItem : true, totalPrice : totalPrice })
+        } catch ( error ) {
+            console.log( error.message );
         }
     }
 }

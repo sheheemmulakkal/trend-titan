@@ -42,18 +42,6 @@
         background-color: #7a7a7a;
         color: white;
     }
-    .orderDetails{
-        
-    }
-    .orderDetails p{
-        font-weight: 700;
-    }
-    .address {
-        
-    }
-    .address p{
-        font-weight: 700;
-    }
 </style>
 <div class="main-div m-5">
 <section class="font-1">
@@ -61,27 +49,7 @@
         <div class="row justify-content-center">
 
             <div class="col-12">
-                <div style="display: flex; justify-content: center;padding-bottom: 20px;">
-                    <h3 style="font-weight: 700; color: #1b8f27; padding-bottom: 50px;"><u>Order Confirmed</u></h3>
-                </div>
-                <div class="col-12 row">
-                    <div style="margin-bottom: 20px;" class="col-6  orderDetails pe-5">
-                        <P>Order Date : <%= moment(order[0].date).format(shortDateFormat) %></P>
-                        <P>Order id : <%= order[0]._id %></P>
-                        <P>Amount :  <%= order[0].totalPrice %></P>
-                        <P>Payment Method : <%= order[0].paymentMethod %></P>
-                    </div>
-                    <div class="col-6 address ps-5">
-                        <h5><u>Adress</u></h5>
-                        <P><%= order[0].address.fullName %></P>
-                        <P><%= order[0].address.mobile %>, <%= order[0].address.street %>, <%= order[0].address.village %>, <%= order[0].address.city %></P>
-                        <P>PIN : <%= order[0].address.pincode %></P>
-                        <P><%= order[0].address.state %></P>
-                        
-                    </div>
-                </div>
-                <div class="table" style="display: flex; flex-direction: column; justify-content: center; margin-top: 100px;">
-                    <h5 style="font-weight: 700;">Products</h5>
+                <div class="table" style="display: flex; flex-direction: column; justify-content: center;">
                     <table>
                         <thead>
                             <th></th>
@@ -108,10 +76,9 @@
                             <% } %>
                         </tbody>
                     </table>
-                    
-                </div>
-                <div style="display: flex; justify-content: center; margin-top: 100px;">
-                    <h3 class="" style="font-weight: 700; color: #1b8f27;">Thanks for your order</h3>
+                    <div class="pt-2">
+                        <a class="me-auto btn btn-outline-dark rounded-0" href="/user/orders">Back to orders</a>
+                    </div>
                 </div>
                 
 

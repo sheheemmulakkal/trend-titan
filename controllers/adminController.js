@@ -1,9 +1,7 @@
 
-const { id } = require('date-fns/locale')
+
 const userSchema = require( '../models/userModel')
-const categorySchema = require( '../models/categoryModel')
-const productSchema = require( '../models/productModel' )
-const { log } = require('util')
+
 
 module.exports = {
 
@@ -33,21 +31,21 @@ module.exports = {
             const userId = req.params.id
             // console.log(userId,'user');
             const userData = await userSchema.findById(userId)
-            const block = await userData.updateOne({ $set : {isBlocked : true}})
+            await userData.updateOne({ $set : {isBlocked : true}})
 
-            // Destroying the session of user
-            for (const sessionKey in req.sessionStore.sessions) {
-                const sessionData = JSON.parse(req.sessionStore.sessions[sessionKey]);
-                // Check if the session contains a user and it matches the user to block
-                if (sessionData.user && sessionData.user === userId) {
-                    console.log('session');
-                  // Destroy the session
-                  req.sessionStore.destroy(sessionKey, (error) => {
-                    if (error) {
-                      console.error('Error destroying session:', error);
-                    }
-                  });
-                }
+            // Checks if the user is in same browser 
+            if( req.session.user === userId ){
+                // If user is in same browser it deletes 
+                delete req.session.user
+            }
+            
+            const sessions = req.sessionStore.sessions;
+            for (const sessionId in sessions) {
+            const session = JSON.parse(sessions[sessionId]);
+            if (session.user === userId) {
+                delete sessions[sessionId];
+                break; 
+            }
             }
             
             res.json( {success : true} )
@@ -63,7 +61,7 @@ module.exports = {
             
             const userId = req.params.id
             const userData = await userSchema.findById(userId)
-            const unblock = await userData.updateOne({ $set : {isBlocked : false}})
+            await userData.updateOne({ $set : {isBlocked : false}})
 
             res.json( {success : true} )
 

@@ -2,6 +2,27 @@
 <%- include('../includes/admin/adminHead.ejs') %>
 <%- include('../includes/admin/adminNavbar.ejs') %>
 
+<style>
+    .category-name span p{
+        width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    } 
+    .modal-content p{
+        width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    @media( max-width : 499px){
+        .modal-content p{
+        width: calc(100% - 44px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    }
+</style>
+
 
 <div class="main-panel">
     <div class="content-wrapper">
@@ -63,8 +84,8 @@
                         <% for( let items of category ) { %>
                             <tr>
                        
-                                <td>
-                                    <span class="pl-2"><%= items.category %></span>
+                                <td class="category-name">
+                                    <span class="pl-2"><p><%= items.category %></p></span>
                                 </td>
         
                                 <td>
