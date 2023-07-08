@@ -1,7 +1,8 @@
 
 
 
-const categorySchema = require( '../models/categoryModel')
+const categorySchema = require( '../models/categoryModel' )
+const paginationHelper = require( '../helpers/paginationHelper' )
 
 
 
@@ -10,12 +11,25 @@ module.exports = {
     getCategory : async ( req, res ) => {
 
         try {
+            let page = Number(req.query.page);
+            if (isNaN(page) || page < 1) {
+            page = 1;
+            }
+
+            const categoryCount = await categorySchema.find().count()
             const category = await categorySchema.find()
+            .skip(( page - 1 ) * paginationHelper.CATEGORY_PER_PAGE ).limit( paginationHelper.CATEGORY_PER_PAGE )
             res.render( 'admin/category', {
                 admin : req.session.admin,
                 category : category,
                 err : req.flash('categoryExist'),
-                success : req.flash('success')
+                success : req.flash('success'),
+                currentPage : page,
+                hasNextPage : page * paginationHelper.CATEGORY_PER_PAGE < categoryCount,
+                hasPrevPage : page > 1,
+                nextPage : page + 1,
+                prevPage : page -1,
+                lastPage : Math.ceil( categoryCount / paginationHelper.CATEGORY_PER_PAGE )
             } )
 
         } catch (error) {

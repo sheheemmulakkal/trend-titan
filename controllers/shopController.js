@@ -32,17 +32,33 @@ module.exports = {
     getShop : async( req, res ) => {
 
         try {
-            const page = req.query.page
+            let page = Number(req.query.page);
+            if (isNaN(page) || page < 1) {
+            page = 1;
+            }
+            const productCount = await productSchema.find({ status : true }).count()
             const products = await productSchema.find({ status: true })
-            .skip( ( page-1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
+            .skip( ( page - 1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
 
             const category = await categorySchema.find({ status: true }) 
             const brands = await productSchema.distinct( 'brand' )
 
+            const startingNo = (( page - 1) * paginationHelper.ITEMS_PER_PAGE) + 1
+            const endingNo = startingNo + paginationHelper.ITEMS_PER_PAGE
+
             res.render( 'shop/shop', {
                 products  : products,
                 category : category,
-                brands : brands
+                brands : brands,
+                totalCount : productCount,
+                currentPage : page,
+                hasNextPage : page * paginationHelper.ITEMS_PER_PAGE < productCount, // Checks is there is any product to show to next page
+                hasPrevPage : page > 1,
+                nextPage : page + 1,
+                prevPage : page -1,
+                lastPage : Math.ceil( productCount / paginationHelper.ITEMS_PER_PAGE ),
+                startingNo : startingNo,
+                endingNo : endingNo
             })
               
         } catch ( error ) {

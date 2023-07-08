@@ -1,8 +1,9 @@
 const orderSchema = require( '../models/orderModel' )
 const cartSchema = require( '../models/cartModel' )
 const productSchema = require ( '../models/productModel' )
-const userSchema = require( '../models/userModel')
+const userSchema = require( '../models/userModel' )
 const cartHelper = require( '../helpers/cartHelper' )
+const paginationHelper = require( '../helpers/paginationHelper' )
 
 
 
@@ -63,10 +64,24 @@ module.exports = {
 
     getAdminOrderlist : async( req, res ) => {
         try{
-            const orders = await orderSchema.find().populate( 'userId' ).populate( 'products.productId' ).populate( 'address' )
+            let page = Number(req.query.page);
+            if (isNaN(page) || page < 1) {
+            page = 1;
+            }
+
+            const ordersCount = await orderSchema.find().count()
+            const orders = await orderSchema.find()
+                .skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit( paginationHelper.ORDER_PER_PAGE )
+                .populate( 'userId' ).populate( 'products.productId' ).populate( 'address' )
             res.render( 'admin/orders', {
                 orders : orders,
-                admin : true
+                admin : true,
+                currentPage : page,
+                hasNextPage : page * paginationHelper.ORDER_PER_PAGE < ordersCount,
+                hasPrevPage : page > 1,
+                nextPage : page + 1,
+                prevPage : page -1,
+                lastPage : Math.ceil( ordersCount / paginationHelper.ORDER_PER_PAGE )
             })
         }catch( error ){
             console.log( error.message );

@@ -1,6 +1,7 @@
 
 
-const userSchema = require( '../models/userModel')
+const userSchema = require( '../models/userModel' )
+const paginationHelper = require( '../helpers/paginationHelper' )
 
 
 module.exports = {
@@ -14,14 +15,29 @@ module.exports = {
 
     getUserList : async( req, res ) => {
 
-        const userList = await userSchema.find( {isAdmin : 0} )
+        try {
+            let page = Number(req.query.page);
+            if (isNaN(page) || page < 1) {
+            page = 1;
+            }
+            const userCount = await userSchema.find({ isAdmin : 0 }).count()
+            const userList = await userSchema.find({ isAdmin : 0 })
+            .skip(( page - 1 ) * paginationHelper.USERS_PER_PAGE ).limit( paginationHelper.USERS_PER_PAGE )
 
-        // console.log(userList);
-
-        res.render( 'admin/userList', {
-            userList : userList,
-            admin : req.session.admin
-        } )
+            res.render( 'admin/userList', {
+                userList : userList,
+                admin : req.session.admin,
+                currentPage : page,
+                hasNextPage : page * paginationHelper.USERS_PER_PAGE < userCount,
+                hasPrevPage : page > 1,
+                nextPage : page + 1,
+                prevPage : page -1,
+                lastPage : Math.ceil( userCount / paginationHelper.USERS_PER_PAGE ) 
+            } )
+            
+        } catch (error) {
+            console.log(error.message);
+        }
 
     },
 

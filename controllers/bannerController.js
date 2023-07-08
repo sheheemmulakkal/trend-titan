@@ -1,17 +1,30 @@
 
-const bannerSchema = require( '../models/bannerModel')
+const bannerSchema = require( '../models/bannerModel' )
+const paginationHelper = require( '../helpers/paginationHelper' )
 
 module.exports = {
 
     getBannerManagement : async ( req, res ) => {
 
         try {
+            let page = Number(req.query.page);
+            if (isNaN(page) || page < 1) {
+            page = 1;
+            }
+            const bannersCount = await bannerSchema.find().count()
             const banners = await bannerSchema.find()
+            .skip(( page - 1 ) * paginationHelper.BANNER_PER_PAGE ).limit( paginationHelper.BANNER_PER_PAGE )
 
             res.render( 'admin/banner-management',{
                 banners : banners,
                 admin : req.session.admin,
-                success : req.flash('success')
+                success : req.flash('success'),
+                currentPage : page,
+                hasNextPage : page * paginationHelper.BANNER_PER_PAGE < bannersCount,
+                hasPrevPage : page > 1,
+                nextPage : page + 1,
+                prevPage : page -1,
+                lastPage : Math.ceil( bannersCount / paginationHelper.BANNER_PER_PAGE )
             })
 
         } catch(error) {

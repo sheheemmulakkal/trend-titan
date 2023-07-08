@@ -1,5 +1,13 @@
-const ITEMS_PER_PAGE = 2
+const ITEMS_PER_PAGE = 1
+const USERS_PER_PAGE = 2
+const BANNER_PER_PAGE = 1
+const ORDER_PER_PAGE = 1
+const CATEGORY_PER_PAGE = 2
 
 module.exports = {
-    ITEMS_PER_PAGE
+    ITEMS_PER_PAGE,
+    USERS_PER_PAGE,
+    BANNER_PER_PAGE,
+    ORDER_PER_PAGE,
+    CATEGORY_PER_PAGE
 }

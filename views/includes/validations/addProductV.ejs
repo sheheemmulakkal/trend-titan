@@ -38,6 +38,14 @@
             event.preventDefault();
             errorContainer.innerHTML = 'Please select between 1 and 4 images.';
             errorContainer.style.display = 'block';
+        } else if ( price < 0 ) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'Price should not be negative';
+            errorContainer.style.display = 'block';
+        } else if ( price < 0 ) {
+            event.preventDefault();
+            errorContainer.innerHTML = 'Quantity should not be negative';
+            errorContainer.style.display = 'block';
         }
     });
 </script>
