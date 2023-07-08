@@ -4,6 +4,8 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const categorySchema = require( '../models/categoryModel')
 const productSchema = require( '../models/productModel' )
+const paginationHelper = require( '../helpers/paginationHelper' )
+
 
 
 module.exports = {
@@ -59,10 +61,22 @@ module.exports = {
     getProductsList : async( req, res ) => {
 
         try {
+            let page = Number(req.query.page);
+            if (isNaN(page) || page < 1) {
+            page = 1;
+            }
+            const productsCount = await productSchema.find().count()
             const products = await productSchema.find().populate('category')
+            .skip(( page - 1 ) * paginationHelper.PRODUCT_PER_PAGE ).limit( paginationHelper.PRODUCT_PER_PAGE )
             res.render('admin/products',{
                 admin : req.session.admin,
-                products : products
+                products : products,
+                currentPage : page,
+                hasNextPage : page * paginationHelper.PRODUCT_PER_PAGE < productsCount,
+                hasPrevPage : page > 1,
+                nextPage : page + 1,
+                prevPage : page -1,
+                lastPage : Math.ceil( productsCount / paginationHelper.PRODUCT_PER_PAGE )
             })
 
         } catch (error) { 
