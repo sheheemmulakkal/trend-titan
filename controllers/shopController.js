@@ -1,10 +1,11 @@
 
-const productSchema = require('../models/productModel')
-const categorySchema = require( '../models/categoryModel')
-const bannerSchema = require( '../models/bannerModel')
-const userSchema = require( '../models/userModel')
-const cartHelper = require( '../helpers/cartHelper')
-const addressSchema = require( '../models/addressModel')
+const productSchema = require( '../models/productModel' )
+const categorySchema = require( '../models/categoryModel' )
+const bannerSchema = require( '../models/bannerModel' )
+const userSchema = require( '../models/userModel' )
+const addressSchema = require( '../models/addressModel' )
+const cartHelper = require( '../helpers/cartHelper' )
+const paginationHelper = require( '../helpers/paginationHelper' )
 
 
 
@@ -31,9 +32,11 @@ module.exports = {
     getShop : async( req, res ) => {
 
         try {
-
+            const page = req.query.page
             const products = await productSchema.find({ status: true })
-            const category = await categorySchema.find({ status: true })
+            .skip( ( page-1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
+
+            const category = await categorySchema.find({ status: true }) 
             const brands = await productSchema.distinct( 'brand' )
 
             res.render( 'shop/shop', {
