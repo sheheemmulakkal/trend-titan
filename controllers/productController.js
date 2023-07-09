@@ -25,7 +25,6 @@ module.exports = {
 
     addProducts : async ( req, res ) => {
         try {
-            console.log('Helloo');
             for(let file of req.files) {
                 if( 
                     file.mimetype !== 'image/jpg' &&

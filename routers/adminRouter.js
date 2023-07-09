@@ -6,10 +6,10 @@ const adminController = require( '../controllers/adminController')
 const productController = require( '../controllers/productController')
 const categoryController = require('../controllers/categoryController')
 const bannerController = require( '../controllers/bannerController')
+const multer = require('multer')
 const isAuth = require ( '../middleware/isAuth')
 const upload = require( '../middleware/multer')
 
-const multer = require('multer')
 const orderController = require('../controllers/orderController')
 const router = express.Router()
 

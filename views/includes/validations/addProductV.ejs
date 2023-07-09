@@ -18,7 +18,7 @@
         const description = document.getElementById('exampleInputEmail3').value.trim();
         const brand = document.getElementById('exampleInputEmail3').value.trim();
         const quantity = document.getElementById('exampleInputPassword4').value.trim();
-        const price = document.getElementById('exampleInputPassword4').value.trim();
+        const price = document.getElementById('exampleInputPassword5').value.trim();
         const fileInput = document.getElementById('images')
         const filePath = fileInput.value
         const image = document.querySelector('input[type="file"]').files;
@@ -34,17 +34,17 @@
             event.preventDefault();
             errorContainer.innerHTML = 'Quantity and price should be numbers.';
             errorContainer.style.display = 'block';
-        } else if (image.length < 1 || image.length > 4) {
+        } else if ( quantity < 0 ) {
             event.preventDefault();
-            errorContainer.innerHTML = 'Please select between 1 and 4 images.';
+            errorContainer.innerHTML = 'Quantity should not be negative';
             errorContainer.style.display = 'block';
         } else if ( price < 0 ) {
             event.preventDefault();
             errorContainer.innerHTML = 'Price should not be negative';
             errorContainer.style.display = 'block';
-        } else if ( price < 0 ) {
+        } else if (image.length < 1 || image.length > 4) {
             event.preventDefault();
-            errorContainer.innerHTML = 'Quantity should not be negative';
+            errorContainer.innerHTML = 'Please select between 1 and 4 images.';
             errorContainer.style.display = 'block';
         }
     });

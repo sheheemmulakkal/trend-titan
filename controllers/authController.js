@@ -10,10 +10,14 @@ module.exports = {
 
     // Getting user login page
     getUserLogin : ( req, res ) => {
-
-        res.render( 'auth/userLogin', {
-            err: req.flash('error')
-        })
+        try {
+            res.render( 'auth/userLogin', {
+                err: req.flash('error')
+            })
+        } catch (error) {
+            error.message
+        }
+        
     },
 
     // User Loging in 
@@ -75,8 +79,12 @@ module.exports = {
     // UserLogout
     doUserLogout : ( req, res ) => {
 
-        req.session.user = null
-        res.redirect( '/login' )
+        try {
+            req.session.user = null
+            res.redirect( '/login' )
+        } catch (error) {
+            console.log(error.message);
+        }
     },
     
 
@@ -234,8 +242,12 @@ module.exports = {
 
     doAdminLogout : ( req, res ) => {
 
-        req.session.admin = null
-        res.redirect ( '/admin/login' )
+        try {
+            req.session.admin = null
+            res.redirect ( '/admin/login' )
+        } catch (error) {
+            console.log(error.message);
+        }
     },
 
     getForgotPassword : ( req, res ) => {
@@ -246,20 +258,24 @@ module.exports = {
     },
 
     forgotPassword : async( req, res ) => {
-    const emialExist = await userSchema.findOne( {email : req.body.email })
-    if( emialExist ){
-        const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
-        console.log(newOtp);
-        await userSchema.updateOne({email : req.body.email},{
-            $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
-        })
-        console.log(req.body);
-        req.session.unVerfiedMail = req.body.email
-        res.render('auth/forgot-password-otp')
-    } else {
-        req.flash('existErr','Mail not exist')
-        res.redirect('/forgot-password')
-    }
+        try {
+            const emialExist = await userSchema.findOne( {email : req.body.email })
+            if( emialExist ){
+                const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
+                console.log(newOtp);
+                await userSchema.updateOne({email : req.body.email},{
+                    $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
+                })
+                console.log(req.body);
+                req.session.unVerfiedMail = req.body.email
+                res.render('auth/forgot-password-otp')
+            } else {
+                req.flash('existErr','Mail not exist')
+                res.redirect('/forgot-password')
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
     },
 
     forgotPasswordOtpVerification : async( req, res ) => {
@@ -267,11 +283,9 @@ module.exports = {
 
             const enterTime = new Date()
     
-            // console.log(req.body);
             let { val1, val2, val3, val4, val5, val6 } = req.body
             userOtp = val1 + val2 + val3 + val4 + val5 + val6
             
-            // console.log(req.session.unVerfiedMail);
     
             // Checking otp in database
             const otpCheck = await userSchema.findOne({email: req.session.unVerfiedMail, 'token.otp' : userOtp })
@@ -305,12 +319,16 @@ module.exports = {
     },
 
     newPassword : async ( req, res ) => {
-        const password = await bcrypt.hash( req.body.password, 12)
-        const user = await userSchema.findOneAndUpdate( { email : req.session.unVerfiedMail, isBlocked : false },
-            { $set : {
-                password : password
-            }})
-        res.redirect('/login')
+        try {
+            const password = await bcrypt.hash( req.body.password, 12)
+            const user = await userSchema.findOneAndUpdate( { email : req.session.unVerfiedMail, isBlocked : false },
+                { $set : {
+                    password : password
+                }})
+            res.redirect('/login')
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
 }

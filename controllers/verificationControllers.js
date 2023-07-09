@@ -14,32 +14,39 @@ const transporter = nodemailer.createTransport({
 });
 
 function generateOtp () {
-    const otp =  otpGenerator.generate( 6, {
-        upperCaseAlphabets : false,
-        lowerCaseAlphabets : false,
-        specialChars : false
-
-    })
-
-    return otp
+    try {
+        const otp =  otpGenerator.generate( 6, {
+            upperCaseAlphabets : false,
+            lowerCaseAlphabets : false,
+            specialChars : false
+    
+        })
+        return otp
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 
 module.exports = {
 
     sendEmail : (email) => {
 
-        const otp = generateOtp()
+        try {
+            const otp = generateOtp()
 
-        transporter.sendMail({
-            to : email,
-            from : process.env.USER_MAIL,
-            subject : 'OTP verification',
-            html : ` <h1> hey, Your OTP is ${otp}</h1><br>
-            <p> Note : The OTP only valid for 1 hour!!! </p>
-            `
-        })
+            transporter.sendMail({
+                to : email,
+                from : process.env.USER_MAIL,
+                subject : 'OTP verification',
+                html : ` <h1> hey, Your OTP is ${otp}</h1><br>
+                <p> Note : The OTP only valid for 1 hour!!! </p>
+                `
+            })
 
-        return otp
+            return otp
+        } catch (error) {
+            console.log(error.message);
+        }
 
     }
 

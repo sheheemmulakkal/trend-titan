@@ -4,13 +4,20 @@ const userSchema = require( '../models/userModel' )
 const paginationHelper = require( '../helpers/paginationHelper' )
 
 
+
+
 module.exports = {
 
     getAdminHome : ( req, res ) => {
 
-        res.render( 'admin/dashboard', {
-            admin : req.session.admin
-        } )
+        try {
+            res.render( 'admin/dashboard', {
+                admin : req.session.admin
+            } )
+        } catch (error) {
+            console.log(error.message);
+        }
+        
     },
 
     getUserList : async( req, res ) => {
