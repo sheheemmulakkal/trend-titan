@@ -86,7 +86,6 @@ module.exports = {
 
         try {
             const category = await categorySchema.findOne({ _id : req.params.id })
-            console.log(category);
             res.render('admin/edit-category',{
                 admin : req.session.admin,
                 category : category
@@ -99,8 +98,9 @@ module.exports = {
     editCategory : async ( req, res ) => {
 
         try {
+            const updatedCategory = req.body.category.toUpperCase()
             await categorySchema.updateOne( { _id : req.body.categoryId },{
-                category : req.body.category
+                category : updatedCategory
             }) 
             res.redirect('/admin/category')
             

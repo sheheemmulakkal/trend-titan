@@ -14,26 +14,21 @@ const router = express.Router();
 router.get( '/', shopController.getHome )
 
 router.get( '/shop', shopController.getShop )
-
 router.get( '/products/:id', shopController.getSingleProduct)
 
 router.get( '/cart', isAuth.userAuth, cartController.getCart )
-
 router.post( '/add-to-cart', cartController.addToCart )
-
 router.post( '/decrease-cart', isAuth.userAuth, cartController.decCart )
-
 router.patch( '/removeCartItem', isAuth.userAuth, cartController.removeCartItem )
 
 router.get( '/checkout', isAuth.userAuth, shopController.getCheckout )
-
 router.get( '/add-checkout-address', isAuth.userAuth, shopController.getCheckoutAddAddress)
-
 router.post( '/add-checkout-address', isAuth.userAuth, shopController.checkoutAddAddress)
 
 router.post( '/place-order', isAuth.userAuth, orderController.placeOrder )
-
 router.get( '/confirm-order', isAuth.userAuth, orderController.getConfirmOrder)
+
+router.post( '/verify-payment', isAuth.userAuth, orderController.razorpayVerifyPayment)
 
 
 

@@ -1,26 +1,24 @@
 //Database connection
-const connection = require('./config/database')()
+require('./config/database')()
+require( 'mongoose' );
+require( 'dotenv' ).config()
 const express = require( 'express' );
 const path = require( 'path' );
-const mongoose = require( 'mongoose' );
-const bodyParser = require( 'body-parser' )
 const flash = require( 'connect-flash' )
-const session = require( 'express-session')
+const session = require( 'express-session' )
 const nocache = require( 'nocache' )
 const moment = require( 'moment' )
-const morgan = require( 'morgan' )
-const dotenv = require( 'dotenv' ).config()
+
 
 const app = express();
 
 // Getting Routers from the router folder
 const shopRouter = require( './routers/shopRouter' );
-const authRouter = require( './routers/authRouter');
+const authRouter = require( './routers/authRouter'); 
 const adminRouter = require( './routers/adminRouter');
 const userRouter = require( './routers/userRouter');
 const errorRouter = require( './routers/errorRouter');
-const { log } = require('console');
-
+    
 app.use( express.json())
 app.use( express.urlencoded({ extended: false }))
 
@@ -39,6 +37,8 @@ app.use( session ({
 
 // Using connect-flash message
 app.use(flash())
+
+
 
 // Date format
 const shortDateFormat = "MMM Do YY"
@@ -81,4 +81,4 @@ app.use ( errorRouter );
 
 app.listen( process.env.PORT || 3000 , () => {
     console.log( "Server started successfully" );
-})
+}) 

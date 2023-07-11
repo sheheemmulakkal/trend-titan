@@ -1,0 +1,109 @@
+<script>
+    document.getElementById('addressForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting
+
+    // Get form input values
+    const fullName = document.getElementsByName('fullName')[0].value.trim();
+    const mobile = document.getElementsByName('mobile')[0].value.trim();
+    const street = document.getElementsByName('street')[0].value.trim();
+    const village = document.getElementsByName('village')[0].value.trim();
+    const city = document.getElementsByName('city')[0].value.trim();
+    const pincode = document.getElementsByName('pincode')[0].value.trim();
+    const landmark = document.getElementsByName('landmark')[0].value.trim();
+    const state = document.getElementsByName('state')[0].value.trim();
+    const country = document.getElementsByName('country')[0].value.trim();
+
+    // Remove any existing error messages
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(function(errorMessage) {
+        errorMessage.remove();
+    });
+
+    let hasError = false; // Track if there is any error
+
+    if (fullName === '') {
+        // Full name is empty, display an error message
+        displayErrorMessage('fullName', 'Full Name is required');
+        hasError = true;
+    }
+
+    if (mobile === '') {
+        // Mobile is empty, display an error message
+        displayErrorMessage('mobile', 'Mobile is required');
+        hasError = true;
+    } else if (!/^\d{10}$/.test(mobile)) {
+        // Mobile is not a 10-digit number, display an error message
+        displayErrorMessage('mobile', 'Mobile number should be a 10-digit number');
+        hasError = true;
+    }
+
+    if (street === '') {
+        // Street name is empty, display an error message
+        displayErrorMessage('street', 'Street name is required');
+        hasError = true;
+    }
+
+    if (village === '') {
+        // Village is empty, display an error message
+        displayErrorMessage('village', 'Village is required');
+        hasError = true;
+    }
+
+    if (city === '') {
+        // City is empty, display an error message
+        displayErrorMessage('city', 'City is required');
+        hasError = true;
+    }
+
+    if (pincode === '') {
+        // PIN Code is empty, display an error message
+        displayErrorMessage('pincode', 'PIN Code is required');
+        hasError = true;
+    } else if (!/^\d+$/.test(pincode)) {
+        // PIN Code is not a number, display an error message
+        displayErrorMessage('pincode', 'PIN Code should contain only numbers');
+        hasError = true;
+    }
+
+    if (landmark === '') {
+        // Landmark is empty, display an error message
+        displayErrorMessage('landmark', 'Landmark is required');
+        hasError = true;
+    }
+
+    if (state === '') {
+        // State is empty, display an error message
+        displayErrorMessage('state', 'State is required');
+        hasError = true;
+    }
+
+    if (!hasError) {
+        // No errors, proceed with form submission
+        this.submit();
+    }
+});
+
+function displayErrorMessage(inputName, message) {
+    const form = document.getElementById('addressForm');
+    const errorMessageContainer = document.getElementById('errorMessageContainer');
+
+    if (!errorMessageContainer) {
+        const container = document.createElement('div');
+        container.id = 'errorMessageContainer';
+        form.insertBefore(container, form.firstChild);
+        errorMessageContainer = container;
+    }
+
+    const errorMessage = document.createElement('div');
+    errorMessage.className = 'col-md-12 form-group error-message';
+    errorMessage.innerHTML = `
+        <label style="border: 1px solid rgb(196, 0, 0); padding: 15px 10px; width: 100%; background-color: rgb(255, 172, 172); color: rgb(196, 0, 0);" for="${inputName}">
+            ${message}
+        </label>
+    `;
+
+    errorMessageContainer.innerHTML = '';
+    errorMessageContainer.appendChild(errorMessage);
+}
+
+</script>

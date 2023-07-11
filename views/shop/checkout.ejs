@@ -7,7 +7,7 @@
 <section class="checkout spad mt-5">
     <div class="container">
         <div class="checkout__form">
-            <form action="/place-order" method="post" onsubmit="return validateForm()">
+            <form id="checkout-form">
                 <div class="row" style="display: flex; justify-content: space-between;">
                     <div class="col-6">
                         <% if( address && address.length > 0) { %>
@@ -27,6 +27,7 @@
                         </div>
                     </div>
                     <!-- modal -->
+                <% if( cartAmount && cartAmount.length > 0 && cartAmount[0].items ) { %>
                     <div class="col-lg-4 col-md-6">
                         <div class="checkout__order">
                             <h4 class="order__title">Your order</h4>
@@ -40,33 +41,138 @@
                                 <li>Subtotal <span>₹ <%= cartAmount[0].total %></span></li>
                                 <li>Total <span>₹ <%= cartAmount[0].total %></span></li>
                             </ul>
+                            <div style="display: flex; flex-direction: column; font-weight: 700;">
+                                <h6 class="mb-3"><b>Payment Method</b></h6>
+                                <div>
+                                    <input type="radio" id="COD" name="paymentMethod" value="COD" checked>
+                                    <label for="COD">Cash on Delivery</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="razorpay" name="paymentMethod" value="razorpay">
+                                    <label for="razorpay">Razorpay</label>
+                                </div>
+                            </div>
 
-                            <h6 class="mb-1"><b>Payment Method</b></h6>
-                            <input type="radio" id="html" name="paymentMethod" value="COD" checked>
-                            <label for="COD">Cash on Delivery</label>
-
-                            <button type="submit" onclick="submitForm()" class="site-btn">PLACE ORDER</button>
+                            <button onclick="submitForm()" class="site-btn">PLACE ORDER</button>
                         </div>
                     </div>
+                <% } %>
                 </div>
             </form>
         </div>
     </div>
 </section>
 
+
+
+<div class="modal fade top rounded-0" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-dialog-centered modal-full-width modal-full-width" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header bg-danger rounded-0">
+        <h5 class="modal-title" id="successModalLabel">Payment failed</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Unfortunately couldn't complete payment</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script>
-    function validateForm() {
-      const addressRadio = document.querySelector('input[name="addressId"]:checked');
-      const paymentMethodRadio = document.querySelector('input[name="paymentMethod"]:checked');
-      console.log(addressRadio);
-    
-      if (!addressRadio || !paymentMethodRadio) {
-        alert("Please select an address and payment method.");
-        return false; // Prevent form submission
+
+    async function submitForm() {   
+       
+      try {
+        const addressRadio = document.querySelector('input[name="addressId"]:checked');
+        const paymentMethodRadio = document.querySelector('input[name="paymentMethod"]:checked');
+
+        if (!addressRadio || !paymentMethodRadio) {
+            alert("Please select an address and payment method.");
+            return
+        }
+        
+        const addressId = addressRadio.value
+        const paymentMethod = paymentMethodRadio.value      
+        
+        $("#checkout-form").submit((e) => {
+            e.preventDefault()
+            $.ajax({
+                url : '/place-order',
+                method : 'post',
+                data : { addressId, paymentMethod },
+                success : ( order ) => {
+                    alert( order )
+                    if( order.success ){
+                        location.href = '/confirm-order'
+                    } else {
+                        razorpayPayment ( order.payment )
+                    }
+                }
+            })
+        })
+      } catch (error) {
+        console.log(error.message);
       }
     
-      return true; // Proceed with form submission
+}
+
+function razorpayPayment( order ) {
+
+    const rzp_key = '<%= process.env.RAZORPAY_KEY_ID %>'
+
+
+    var options = {
+        "key": rzp_key, // Enter the Key ID generated from the Dashboard
+        "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "Male fashion", //your business name
+        "description": "Test Transaction",
+        "image": "/user/img/logo.png",
+        "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response){
+            verifyPayment( response, order )
+        },
+        "notes": {
+            "address": "Male fashion office"
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+}
+
+async function verifyPayment ( response, order){
+    const result = await axios.post( '/verify-payment', {
+        response,
+        order
+    })
+    if( result.data.paid ) {
+        window.location = '/confirm-order'
+    } else {
+        window.location = '/orders'
+        const modal = document.getElementById('modalCookie1')
+        const successModal = document.getElementById("successModal");
+
+        // Show the success modal
+        successModal.classList.add("show");
+        successModal.style.display = "block";
+
+        // Hide the success modal when clicked anywhere
+        successModal.addEventListener("click", () => {
+        successModal.classList.remove("show");
+        successModal.style.display = "none";
+        window.location = '/orders'
+        });
     }
+}
     </script>
 
 <%- include('../includes/userFooter.ejs') %>

@@ -25,17 +25,16 @@
         errorContainer.style.display = 'none';
         errorContainer.innerHTML = '';
 
-        if(catExist) {
-            catExist.style.display = 'none';
-            catExist.innerHTML = ""
-        }
-
+        
         const category = document.getElementById('category-field').value.trim();
-
         if (!category) {
             event.preventDefault();
             errorContainer.innerHTML = 'All fields are required.';
             errorContainer.style.display = 'block';
+        }
+        if(catExist) {
+            catExist.style.display = 'none';
+            catExist.innerHTML = ""
         }
     });
 </script> 

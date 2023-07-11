@@ -38,7 +38,6 @@
     <section class="font-1">
         <div class="container profile-container p-5">
             <div class="row justify-content-center">
-                
                 <div class="col-md-9 pl-lg-5">
                     <div class="row">
                         <!-- <div class="col-lg-8 mt-5 mt-lg-0">
@@ -46,35 +45,36 @@
                             <p class="color-3">With Posh you can make a web application too. That's what we mean by doing more with Posh.</p>
                         </div> -->
                     </div>
-                    <form class="mt-5 row" action="/user/add-address" method="post">
+                    <form class="mt-5 row" id="addressForm" action="/user/add-address" method="post">
+                        <div id="errorMessageContainer"></div>
                         <div class="col-md-12">
                             <input class="form-control mb-3" type="text" name="fullName" required placeholder="Full Name">
                         </div>
                         <div class="col-md-12">
-                            <input class="form-control mb-3"  type="Number" name="mobile" required placeholder="Mobile">
+                            <input class="form-control mb-3" type="number" name="mobile" required placeholder="Mobile">
                         </div>
                         <div class="col-12">
-                        <input class="form-control mb-3" type="text" name="street" required placeholder="Street name">
+                            <input class="form-control mb-3" type="text" name="street" required placeholder="Street name">
                         </div>
                         <div class="col-12">
-                            <input class="form-control mb-3" type="text"  name="village" required placeholder="Village">
+                            <input class="form-control mb-3" type="text" name="village" required placeholder="Village">
                         </div>
                         <div class="col-12">
-                            <input class="form-control mb-3" type="text" name="city"  required placeholder="City">
+                            <input class="form-control mb-3" type="text" name="city" required placeholder="City">
                         </div>
                         <div class="col-12">
-                            <input class="form-control mb-3" type="Number" value="25652" name="pincode" required placeholder="PIN Code">
+                            <input class="form-control mb-3" type="number" name="pincode" required placeholder="PIN Code">
                         </div>
                         <div class="col-12">
-                            <input class="form-control mb-3"  type="text" name="landmark" required placeholder="Landmark">
+                            <input class="form-control mb-3" type="text" name="landmark" required placeholder="Landmark">
                         </div>
                         <div class="col-12">
-                            <input class="form-control mb-3" type="text"  name="state" required placeholder="State">
+                            <input class="form-control mb-3" type="text" name="state" required placeholder="State">
                         </div>
                         <div class="col-12">
                             <input class="form-control mb-3" type="text" name="country" required value="India" disabled placeholder="India">
                         </div>
-                        <div ><input class="mt-4 btn btn-dark rounded-0" value="Save Address" type="submit"></div>
+                        <div><input class="mt-4 btn btn-dark rounded-0" value="Save Address" type="submit"></div>
                     </form>
                     <div class="mt-4 btn btn rounded-0">Cancel</div>
                 </div>
@@ -85,5 +85,8 @@
     </section>
 </div>
 
+
+
+<%- include('../includes/validations/addressV.ejs') %>
 <%- include('../includes/userFooter.ejs') %>
 <%- include('../includes/end.ejs') %>

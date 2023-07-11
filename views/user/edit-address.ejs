@@ -40,7 +40,8 @@
             <div class="row justify-content-center">
                 
                 <div class="col-md-9 pl-lg-5">
-                    <form class="mt-5 row" action="/user/edit-address" method="post">
+                    <form class="mt-5 row"  id="addressForm"  action="/user/edit-address" method="post">
+                        <div id="errorMessageContainer"></div>
                         <div class="col-md-12">
                             <input class="form-control mb-3" type="text" value="<%= address.fullName %>" name="fullName" required placeholder="Full Name">
                         </div>
@@ -79,6 +80,6 @@
         <!--/.container-->
     </section>
 </div>
-
+<!--  -->
 <%- include('../includes/userFooter.ejs') %>
 <%- include('../includes/end.ejs') %>

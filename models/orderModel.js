@@ -38,7 +38,7 @@ const orderSchema = Schema({
 
     orderStatus : {
         type : String,
-        default : 'Confirmed'
+        default : 'Pending'
     },
 
     address : {

@@ -10,32 +10,40 @@
 <script>
     const errorContainer = document.getElementById('errorContainer');
     const productForm = document.getElementById('productForm');
-
+    console.log(errorContainer);
+    console.log(productForm);
     productForm.addEventListener('submit', (event) => {
-
-        if(err){
-            err.style.display = 'none'
-            err.innerHTML = ""
-        }
-
+        console.log('fhsdfdsiughgiudsfhgighd');
         errorContainer.style.display = 'none';
         errorContainer.innerHTML = '';
 
+        console.log(33);
         const mainHead = document.getElementById('mainHead').value.trim();
+        console.log(1);
         const description = document.getElementById('description').value.trim();
+        console.log(2);
         const type = document.getElementById('type').value.trim();
+        console.log(3);
         const fileInput = document.getElementById('images')
+        console.log(4);
         const filePath = fileInput.value
+        console.log(5);
         const image = document.querySelector('input[type="file"]').files;
-
+        console.log(6);
+        
         const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-
-
+        console.log(7);
+        
+        
         if (!mainHead || !description || !type) {
+            console.log(8);
             event.preventDefault();
+            console.log(9);
             errorContainer.innerHTML = 'All fields are required.';
             errorContainer.style.display = 'block';
+            
         } else if ( image.length !== 0 && !allowedExtensions.exec(filePath)){
+            console.log(10);
             event.preventDefault();
             errorContainer.innerHTML = 'Please upload file having extensions .jpeg/.jpg/.png/.gif only.'
             errorContainer.style.display = 'block'

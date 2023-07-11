@@ -44,101 +44,158 @@
     }
 </style>
 <div class="main-div m-5">
-<section class="font-1">
-    <div class="container profile-container p-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-3">
-                <div class="row font-1">
-                    <div class="col text-center text-lg-left">
-                        <a href="" data-lightbox="profile-pic">
-                            <img class="img-thumbnail radius-primary" src="/images/profile/alt-profile.png" alt="Profile Image" width="150">
-                        </a>
-                        
-                        <h5 class="mb-0 mt-3"><%= user.firstName %> <%= user.lastName %></h5>
-                        <p class="mb-0"><%= user.email %></p>
-                        <hr class="color-9">
-                        <div class="fs--1 fw-600">
-                            <a id="orders-link" class=" d-block mb-2" href="/user/orders">Orders</a>
-                            <a id="bio-link" class=" d-block mb-2" onclick="editButton()">Edit Bio</a>
-                            <a id="addresses-link" class=" d-block mb-2" href="/user/address">Manage Addresses</a>
-                            <a id="password-link" class=" d-block mb-2" href="/user/change-password">Change Password</a>
-                        </div>                          
+    <section class="font-1">
+        <div class="container profile-container p-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-3">
+                    <div class="row font-1">
+                        <div class="col text-center text-lg-left">
+                            <a href="" data-lightbox="profile-pic">
+                                <img class="img-thumbnail radius-primary" src="/images/profile/alt-profile.png" alt="Profile Image" width="150">
+                            </a>
+                            
+                            <h5 class="mb-0 mt-3"><%= user.firstName %> <%= user.lastName %></h5>
+                            <p class="mb-0"><%= user.email %></p>
+                            <hr class="color-9">
+                            <div class="fs--1 fw-600">
+                                <a id="orders-link" class=" d-block mb-2" href="/user/orders">Orders</a>
+                                <a id="bio-link" class=" d-block mb-2" onclick="editButton()">Edit Bio</a>
+                                <a id="addresses-link" class=" d-block mb-2" href="/user/address">Manage Addresses</a>
+                                <a id="password-link" class=" d-block mb-2" href="/user/change-password">Change Password</a>
+                            </div>                          
+                        </div>
                     </div>
                 </div>
+                <div class="col-md-9 pl-lg-5">
+                    <form class="mt-5 row" onsubmit="return validateForm(event)">
+                        <div class="col-md-6">
+                            <label for="firstName"><b>First Name</b></label>
+                            <input class="form-control mb-3" id="firstName" type="text" name="firstName" value="<%= user.firstName %>" disabled placeholder="First Name">
+                            <span id="firstNameError" class="error"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lastName"><b>Last Name</b></label>
+                            <input class="form-control mb-3" id="lastName" type="text" name="lastName" value="<%= user.lastName %>" disabled placeholder="Last Name">
+                            <span id="lastNameError" class="error"></span>
+                        </div>
+                        <div class="col-12">
+                            <label for="email"><b>Email</b></label>
+                            <input class="form-control mb-3" id="email" type="email" name="email" value="<%= user.email %>" disabled placeholder="Email">
+                            <span id="emailError" class="error"></span>
+                        </div>
+                        <div class="col-12">
+                            <label for="mobile"><b>Mobile</b></label>
+                            <input class="form-control mb-3" id="mobile" type="number" name="mobile" value="<%= user.mobile %>" disabled placeholder="Mobile">
+                            <span id="mobileError" class="error"></span>
+                        </div>
+                        <div id="save" style="display: none;" onclick="update()" class="mt-4 btn btn-dark rounded-0">Save changes</div>
+                    </form>
+                </div>
             </div>
-            <div class="col-md-9 pl-lg-5">
-                <form class="mt-5 row">
-                    <div class="col-md-6">
-                        <label for=""><b>First Name</b></label>
-                        <input class="form-control mb-3" id="firstName" type="text" name="firstName" value="<%= user.firstName %>" disabled placeholder="First Name">
-                    </div>
-                    <div class="col-md-6">
-                        <label for=""><b>Last Name</b></label>
-                        <input class="form-control mb-3" id="lastName" type="text" name="lastName" value="<%= user.lastName %>" disabled placeholder="Last Name">
-                    </div>
-                    <div class="col-12">
-                        <label for=""><b>Email</b></label>
-                        <input class="form-control mb-3" id="email" type="email" name="email" value="<%= user.email %>" disabled placeholder="Email">
-                    </div>
-                    <div class="col-12">
-                        <label for=""><b>Mobile</b></label>
-                        <input class="form-control mb-3" id="mobile" type="number" name="mobile" value="<%= user.mobile %>" disabled placeholder="Mobile">
-                    </div>
-                <!--     -->
-                <div id="save" style="display: none;" onclick="update()" class="mt-4 btn btn-dark rounded-0">Save changes</div>
-                </form>
-            </div>
+            <!--/.row-->
         </div>
-        <!--/.row-->
-    </div>
-    <!--/.container-->
-</section>
+        <!--/.container-->
+    </section>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-
- function editButton( ) {
-    const inp = document.querySelectorAll('.col-md-9 input')
-    const save = document.getElementById('save')
-    inp.forEach( ( field ) => {
-        if( field.getAttribute('name')!== 'email'){
-            field.removeAttribute('disabled')
-        }
-    })
-    if( save ) {
-        save.style.display = 'block'
-    }
- }
-
- async function update(){
-    
-
-    const firstName = document.getElementById('firstName').value
-    const lastName = document.getElementById('lastName').value
-    const mobile = document.getElementById('mobile').value
-    const email = document.getElementById('email').value
-
-    console.log(firstName, mobile, lastName,email);
- 
-    const response = await axios.put('/user/edit-profile',{firstName,lastName,mobile,email})
-    if(response.data.success){
+    function editButton() {
         const inp = document.querySelectorAll('.col-md-9 input')
         const save = document.getElementById('save')
-        inp.forEach( ( field ) => {
-            if( field.getAttribute('name')!== 'email'){
-                field.setAttribute('disabled','true')
+        inp.forEach((field) => {
+            if (field.getAttribute('name') !== 'email') {
+                field.removeAttribute('disabled')
             }
         })
-        if( save ) {
-            save.style.display = 'none'
+        if (save) {
+            save.style.display = 'block'
         }
     }
- }
+
+    async function update() {
+        
+        const firstName = document.getElementById('firstName').value
+        const lastName = document.getElementById('lastName').value
+        const mobile = document.getElementById('mobile').value
+        const email = document.getElementById('email').value
+
+        console.log(firstName, mobile, lastName, email);
+
+        const response = await axios.put('/user/edit-profile', { firstName, lastName, mobile, email })
+        if (response.data.success) {
+            const inp = document.querySelectorAll('.col-md-9 input')
+            const save = document.getElementById('save')
+            inp.forEach((field) => {
+                if (field.getAttribute('name') !== 'email') {
+                    field.setAttribute('disabled', 'true')
+                }
+            })
+            if (save) {
+                save.style.display = 'none'
+            }
+        }
+    }
+
+    function validateForm(event) {
+    event.preventDefault(); // Prevent form submission
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    const firstNameError = document.getElementById('firstNameError');
+    const lastNameError = document.getElementById('lastNameError');
+    const mobileError = document.getElementById('mobileError');
+    const emailError = document.getElementById('emailError');
+
+    firstNameError.textContent = '';
+    lastNameError.textContent = '';
+    mobileError.textContent = '';
+    emailError.textContent = '';
+
+    let isValid = true;
+
+    if (firstName === '') {
+        firstNameError.textContent = 'First name is required';
+        isValid = false;
+    } else if (!/^[a-zA-Z]+$/.test(firstName)) {
+        firstNameError.textContent = 'First name should only contain letters';
+        isValid = false;
+    }
+
+    if (lastName === '') {
+        lastNameError.textContent = 'Last name is required';
+        isValid = false;
+    } else if (!/^[a-zA-Z]+$/.test(lastName)) {
+        lastNameError.textContent = 'Last name should only contain letters';
+        isValid = false;
+    }
+
+    if (mobile === '') {
+        mobileError.textContent = 'Mobile number is required';
+        isValid = false;
+    } else if (!/^\d{10}$/.test(mobile)) {
+        mobileError.textContent = 'Mobile number should be 10 digits';
+        isValid = false;
+    }
+
+    if (email === '') {
+        emailError.textContent = 'Email is required';
+        isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+        emailError.textContent = 'Invalid email address';
+        isValid = false;
+    }
+
+    return isValid;
+}
 
 
 
 </script>
+
 
 
 

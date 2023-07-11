@@ -1,16 +1,17 @@
+const crypto = require( 'crypto' )
 const orderSchema = require( '../models/orderModel' )
 const cartSchema = require( '../models/cartModel' )
 const productSchema = require ( '../models/productModel' )
 const userSchema = require( '../models/userModel' )
 const cartHelper = require( '../helpers/cartHelper' )
 const paginationHelper = require( '../helpers/paginationHelper' )
-
+const paymentHelper = require( '../helpers/paymentHelper')
+const { RAZORPAY_KEY_SECRET } = process.env
 
 
 module.exports = {
 
     placeOrder : async ( req, res ) => {
-
         try {
             const { user } = req.session
             const products =  await cartHelper.totalCartPrice( user )
@@ -24,15 +25,16 @@ module.exports = {
                 price : ( items.totalPrice / items.quantity )
             }))
             const totalPrice = products[0].total 
-
+            paymentMethod === 'COD' ? orderStatus = 'Confirmed' : orderStatus = 'Pending';
             const order = new orderSchema({
                 userId : user,
                 products : cartProducts,
                 totalPrice : totalPrice,
                 paymentMethod : paymentMethod,
+                orderStatus : orderStatus,
                 address : addressId,
             })
-            await order.save()
+            const ordered = await order.save()
             await cartSchema.deleteOne({ userId : user })
             req.session.productCount = 0
 
@@ -40,11 +42,37 @@ module.exports = {
                 const { productId, quantity } = items
                 await productSchema.updateOne({_id : productId},
                     { $inc : { quantity :  -quantity  }})
+            } 
+            if(  paymentMethod === 'COD' ){
+                // COD
+                 res.json({ success : true})
+            } else
+            if( paymentMethod === 'razorpay'){
+                // Razorpay 
+                const payment = await paymentHelper.razorpayPayment( ordered._id, totalPrice )
+                res.json({ payment : payment , success : false  })
             }
- 
-            res.redirect( '/confirm-order' )
         } catch ( error ) {
             console.log( error.message );
+        }
+    },
+
+    razorpayVerifyPayment : async( req, res ) => {
+        const { response , order } = req.body
+        let hmac = crypto.createHmac( 'sha256', RAZORPAY_KEY_SECRET )
+        hmac.update( response.razorpay_order_id + '|' + response.razorpay_payment_id )
+        hmac = hmac.digest( 'hex' )
+
+
+        if( hmac === response.razorpay_signature ){
+            await orderSchema.updateOne({_id : order.receipt},{
+                $set : { orderStatus : 'Confirmed'}
+            })
+            console.log(2);
+            res.json({paid : true})
+        } else {
+            console.log(1);
+            res.json({paid : false})
         }
     },
 
@@ -71,7 +99,7 @@ module.exports = {
 
             const ordersCount = await orderSchema.find().count()
             const orders = await orderSchema.find()
-                .skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit( paginationHelper.ORDER_PER_PAGE )
+                .skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit( paginationHelper.ORDER_PER_PAGE ).sort({ date : -1 })
                 .populate( 'userId' ).populate( 'products.productId' ).populate( 'address' )
             res.render( 'admin/orders', {
                 orders : orders,
@@ -117,7 +145,8 @@ module.exports = {
     getOrders : async( req, res ) => {
         try {
             const { user } = req.session
-            const orders = await orderSchema.find({ userId : user }).populate( 'products.productId' ).populate( 'address' )
+            const orders = await orderSchema.find({ userId : user }).sort({ date : -1 })
+            .populate( 'products.productId' ).populate( 'address' )
             const userDetails = await userSchema.findOne({ _id : user }) 
             res.render( 'user/orders', {
                 orders : orders,

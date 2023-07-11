@@ -8,14 +8,12 @@ const cartHelper = require( '../helpers/cartHelper' )
 const paginationHelper = require( '../helpers/paginationHelper' )
 
 
-
 module.exports = {
 
     // Home page GET
     getHome : async( req, res ) => {
 
         try {
-
             const banners = await bannerSchema.find({ status : true })
             const products = await productSchema.find({ status : true })
             res.render( 'shop/home', {
