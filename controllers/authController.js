@@ -83,7 +83,7 @@ module.exports = {
             req.session.user = null
             res.redirect( '/login' )
         } catch (error) {
-            console.log(error.message);
+            console.log( error.message );
         }
     },
     
@@ -91,7 +91,7 @@ module.exports = {
     // Getting user signup page
     getUserSignup : ( req, res ) => {
 
-        res.render( 'auth/userSignup', {err: req.flash('userExist')})
+        res.render( 'auth/userSignup', { err: req.flash( 'userExist' )})
     },
 
     // User Signing Up
@@ -100,20 +100,18 @@ module.exports = {
         try {
 
             // Checking is there any existing user
-            const userData = await userSchema.findOne( {email : req.body.email} )
+            const userData = await userSchema.findOne({ email : req.body.email })
             
             // If existing user
             if( userData ) {
 
-                req.flash('userExist', 'User already exist...')
+                req.flash( 'userExist', 'User already exist...' )
                 return res.redirect( '/signup' )
 
             } else { 
 
                     const otp = verificationController.sendEmail(req.body.email)    
-
                     const password = await bcrypt.hash( req.body.password, 12)
-
                     const user = new userSchema( {
                         firstName : req.body.firstName,
                         lastName : req.body.lastName,
@@ -127,9 +125,7 @@ module.exports = {
                     })
 
                 await user.save()
-
                 req.session.unVerfiedMail = req.body.email
-
                 res.redirect( '/otp-verification' )
 
             }
@@ -144,14 +140,9 @@ module.exports = {
     signupVerification : async ( req,res ) => {
 
        try {
-
         const enterTime = new Date()
-
-        // console.log(req.body);
         let { val1, val2, val3, val4, val5, val6 } = req.body
         userOtp = val1 + val2 + val3 + val4 + val5 + val6
-        
-        // console.log(req.session.unVerfiedMail);
 
         // Checking otp in database
         const otpCheck = await userSchema.findOne({email: req.session.unVerfiedMail, 'token.otp' : userOtp })
@@ -165,70 +156,59 @@ module.exports = {
 
                 // If expiry time is valid setting isVerified as true
                 await userSchema.updateOne({ email : otpCheck.email } , { $set : {isVerified : true} })
-
                 req.session.user = otpCheck._id
                 req.session.unVerfiedMail = null
-
-               res.redirect('/shop')
-
+                res.redirect('/shop')
 
                // If TimedOut
             } else {
-                console.log('timout');
+                console.log( 'timout' );
                 res.redirect( '/otp-verification' )
             }
 
             // If not OTP in database
         } else {
-            console.log('otp not matched');
-            res.redirect('/otp-verification')
+            console.log( 'otp not matched' );
+            res.redirect( '/otp-verification' )
         }
         
-       } catch (error) {
-        console.log(error.messge);
+       } catch ( error ) {
+        console.log( error.messge );
        }
 
     },
 
     //Signup OTP verification page getting
     getSignupOtp : ( req, res ) => {
-
         res.render('auth/signup-otp')
     },
 
     // Getting admin login page
     getAdminLogin :  ( req, res ) => {
-
         res.render ( 'auth/adminLogin', {
             err : false
         })
-
     },
 
     // Admin loging in 
     doAdminLogin : async ( req, res ) => {
 
         try {
-
             const adminData = await userSchema.findOne( { email : req.body.email } )
-
             if( adminData && adminData.isAdmin == 1 ) {
                 const password = await bcrypt.compare( req.body.password, adminData.password )
 
                 if( password ) {
-
                     req.session.admin = adminData._id
                     res.redirect( '/admin' )
 
                 } else {
-
                     res.render('auth/adminLogin', {
                         err : 'Incorrect Password'
                     })
                 }
 
             } else {
-
                 res.render( 'auth/adminLogin', {
                     err: 'Incorrect Email'
                 } )
@@ -262,11 +242,9 @@ module.exports = {
             const emialExist = await userSchema.findOne( {email : req.body.email })
             if( emialExist ){
                 const newOtp = verificationController.sendEmail(req.body.email, req.body.lastName)
-                console.log(newOtp);
                 await userSchema.updateOne({email : req.body.email},{
                     $set :{ 'token.otp' : newOtp , 'token.generatedTime' : new Date()}
                 })
-                console.log(req.body);
                 req.session.unVerfiedMail = req.body.email
                 res.render('auth/forgot-password-otp')
             } else {
@@ -282,10 +260,8 @@ module.exports = {
         try {
 
             const enterTime = new Date()
-    
             let { val1, val2, val3, val4, val5, val6 } = req.body
             userOtp = val1 + val2 + val3 + val4 + val5 + val6
-            
     
             // Checking otp in database
             const otpCheck = await userSchema.findOne({email: req.session.unVerfiedMail, 'token.otp' : userOtp })
@@ -321,7 +297,7 @@ module.exports = {
     newPassword : async ( req, res ) => {
         try {
             const password = await bcrypt.hash( req.body.password, 12)
-            const user = await userSchema.findOneAndUpdate( { email : req.session.unVerfiedMail, isBlocked : false },
+            await userSchema.findOneAndUpdate( { email : req.session.unVerfiedMail, isBlocked : false },
                 { $set : {
                     password : password
                 }})

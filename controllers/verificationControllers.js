@@ -1,7 +1,7 @@
 
 const nodemailer = require( 'nodemailer' )
 const otpGenerator = require( 'otp-generator' )
-const dotenv = require( 'dotenv' ).config()
+require( 'dotenv' ).config()
 
 
 const transporter = nodemailer.createTransport({

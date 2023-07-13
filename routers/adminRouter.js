@@ -53,6 +53,8 @@ router.get( '/orders', isAuth.adminAuth, orderController.getAdminOrderlist )
 router.patch( '/change-order-status', isAuth.adminAuth, orderController.changeOrderStatus )
 router.get( '/order-products/:id', isAuth.adminAuth, orderController.adminOrderProducts )
 
+router.get( '/sales-report', isAuth.adminAuth, orderController.getSalesReport )
+
 
 
 module.exports = router 

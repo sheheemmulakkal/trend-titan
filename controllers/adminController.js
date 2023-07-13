@@ -1,23 +1,63 @@
 
 
 const userSchema = require( '../models/userModel' )
+const orderSchema = require( '../models/orderModel' )
+const productSchema = require( '../models/productModel' )
 const paginationHelper = require( '../helpers/paginationHelper' )
+const dashboardHelper = require( '../helpers/dashboardHelpers' )
+
+
 
 
 
 
 module.exports = {
-
-    getAdminHome : ( req, res ) => {
-
+    
+    getAdminHome : async( req, res ) => {
+        
         try {
+            const today = new Date();
+            today.setHours( 0, 0, 0, 0 )
+            const yesterday = new Date(today)
+            yesterday.setDate( today.getDate() - 1 );
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            const currentMonthStartDate = new Date(currentYear, currentMonth, 1, 0, 0, 0);
+            const previousMonthStartDate = new Date(currentYear, currentMonth - 1, 1, 0, 0, 0);
+            const previousMonthEndDate = new Date(currentYear, currentMonth, 0, 23, 59, 59);
+            
+            const revenueCurrentMonth = await dashboardHelper.currentMonthRevenue( currentMonthStartDate, now )
+            const revenuePreviousMonth = await dashboardHelper.previousMonthRevenue( previousMonthStartDate, previousMonthEndDate )
+            const monthlyGrowth = revenuePreviousMonth === 0 ? 100 : ((( revenueCurrentMonth - revenuePreviousMonth ) / revenuePreviousMonth ) * 100).toFixed(1);
+            const paymentMethodAmount = await dashboardHelper.paymentMethodAmount() 
+
+            const todayIncome = await dashboardHelper.todayIncome( today, now )
+            const yesterdayIncome = await dashboardHelper.yesterdayIncome( today, yesterday )
+            const totalRevenue = await dashboardHelper.totalRevenue()
+            const ordersToShip = await orderSchema.find({ orderStatus : "Confirmed" }).count()
+            const completedOrders = await orderSchema.find({ orderStatus : "Delivered" }).count()
+            const userCount = await userSchema.find({isBlocked : false, isVerified : true}).count()
+            const productCount = await productSchema.find({status : true}).count()
+
+            const dailyGrowth = ((( todayIncome - yesterdayIncome ) / yesterdayIncome ) * 100).toFixed( 1 )  
             res.render( 'admin/dashboard', {
-                admin : req.session.admin
+                admin : req.session.admin,
+                todayIncome : todayIncome,
+                dailyGrowth : dailyGrowth,
+                totalRevenue : totalRevenue,
+                revenueCurrentMonth : revenueCurrentMonth,
+                monthlyGrowth : monthlyGrowth,
+                paymentMethodAmount : paymentMethodAmount,
+                userCount : userCount,
+                ordersToShip : ordersToShip,
+                completedOrders : completedOrders,
+                productCount : productCount
             } )
         } catch (error) {
             console.log(error.message);
         }
-        
+
     },
 
     getUserList : async( req, res ) => {
@@ -52,7 +92,6 @@ module.exports = {
 
         try {
             const userId = req.params.id
-            // console.log(userId,'user');
             const userData = await userSchema.findById(userId)
             await userData.updateOne({ $set : {isBlocked : true}})
 

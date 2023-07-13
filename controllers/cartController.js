@@ -42,7 +42,6 @@ module.exports = {
 
                         // if Product exists in cart
                         const exist = cart.items.find( item => item.productId == productId );
-                        
                         if( exist ) {
                             // Checking stock quantity with cart quantity
                             const availableQuantity = stockQuantity - exist.quantity
@@ -67,7 +66,7 @@ module.exports = {
                                 );
                                 // increasing product count in session
                                 req.session.productCount++
-                            res.status( 200 ).json({  success : true, 
+                                res.status( 200 ).json({  success : true, 
                                                     message : 'Added to cart',
                                                     newItem : true,
                                                     login : true });

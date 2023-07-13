@@ -1,0 +1,116 @@
+
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+<style>
+    .dropdown-menu a:hover{
+        color: white!important;
+        cursor: pointer;
+    }
+    .pagination-btn{
+    padding: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    }
+    .pagination-btn a{
+        text-decoration: none;
+        color: #ececec;
+    }
+    .pagination-btn a :hover{
+        color: #111;
+    }
+    .pagination-btn button:hover{
+        color: #111;
+    }
+    .pagination-btn button:active{
+        background-color: #fff;
+        color: #111!important;
+    }
+    
+</style>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- <div><a class="badge badge-outline-primary" href="/admin/sales-report?seeAll=true">See All</a></div> -->
+
+<div class="row mt-5">
+    <div class="col-12 grid-margin">
+        <div class="row">
+        <form action="/admin/sales-report">
+            <label for="birthday">From :</label>
+            <input style="background-color: #dcdcdc; border-radius: 5px; border: none; padding: 0px 10px;" value type="date" id="from" name="from">
+            <label class="ml-3" for="birthday">To :</label>
+            <input style="background-color: #dcdcdc; border-radius: 5px; border: none; padding: 0px 10px;" type="date" id="to" name="to">
+            <button class="btn btn-primary ml-3">filter</button>
+        </form>
+        <button type="button" onclick="printDiv('Print')" class="btn btn-info btn-icon-text mx-auto mb-1"> Print <i class="mdi mdi-printer btn-icon-append"></i>
+        </button>
+    </div>
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Recent sales</h4>
+          <div class="table-responsive" id="Print">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> Date </th>
+                  <th> OrderId </th>
+                  <th> Payment </th>
+                  <th> Amount </th>
+                  <th> Order Status </th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <% for ( let order of orders ) { %>
+                <tr>
+                  <td> <%= moment(order.date).format(shortDateFormat) %> </td>
+                  <td> <%= order._id %> </td>
+                  <td> <%= order.paymentMethod %> </td>
+                  <td> <%= order.totalPrice %> </td>
+                  <td id="order-status-<%= order._id %>"> <% if(order.orderStatus) { %> <%= order.orderStatus %> <% } else { %> Pending <% } %> </td>
+                </tr>
+                <% } %>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination buttons -->
+     
+
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+
+<!-- The popup message modal -->
+<div id="popupModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-content bg-light text-dark">
+      <div class="modal-body">
+      <h5 id="modalHead" class="modal-title"></h5><br>
+      <p id="modalContent"></p>
+      </div>
+  </div>
+  </div>
+</div>
+
+<script>
+    function printDiv( divName ) {
+        const printContents = document.getElementById( divName ).innerHTML
+        const originalContents = document.body.innerHTML
+        document.body.innerHTML = printContents;
+        window.print()
+        document.body.innerHTML = originalContents
+
+    }
+</script>
+
+
+<%- include('../includes/admin/adminFooter.ejs') %>

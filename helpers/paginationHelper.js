@@ -1,9 +1,10 @@
-const ITEMS_PER_PAGE = 1
-const USERS_PER_PAGE = 2
-const BANNER_PER_PAGE = 1
-const ORDER_PER_PAGE = 5
-const CATEGORY_PER_PAGE = 2
-const PRODUCT_PER_PAGE = 2
+//product Items
+const ITEMS_PER_PAGE = 6
+const USERS_PER_PAGE = 6
+const BANNER_PER_PAGE = 4
+const ORDER_PER_PAGE = 6
+const CATEGORY_PER_PAGE = 6
+const PRODUCT_PER_PAGE = 6
 
 module.exports = {
     ITEMS_PER_PAGE,

@@ -28,20 +28,29 @@ module.exports = {
 
     // Shop page GET
     getShop : async( req, res ) => {
-
         try {
-            let page = Number(req.query.page);
-            if (isNaN(page) || page < 1) {
+
+            const { cat, brand, price, sort } = req.query
+            let page = Number( req.query.page );
+            if ( isNaN(page) || page < 1 ) {
             page = 1;
             }
-            const productCount = await productSchema.find({ status : true }).count()
-            const products = await productSchema.find({ status: true })
-            .skip( ( page - 1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
+            const condition = { status : true }
 
+            if ( cat ){
+                condition.category = cat
+            }
+            if( brand ) {
+                condition.brand = brand
+            }
+
+            const productCount = await productSchema.find({ status : true }).count()
+            const products = await productSchema.find( condition )
+            .skip( ( page - 1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
             const category = await categorySchema.find({ status: true }) 
             const brands = await productSchema.distinct( 'brand' )
 
-            const startingNo = (( page - 1) * paginationHelper.ITEMS_PER_PAGE) + 1
+            const startingNo = (( page - 1) * paginationHelper.ITEMS_PER_PAGE ) + 1
             const endingNo = startingNo + paginationHelper.ITEMS_PER_PAGE
 
             res.render( 'shop/shop', {
@@ -56,7 +65,9 @@ module.exports = {
                 prevPage : page -1,
                 lastPage : Math.ceil( productCount / paginationHelper.ITEMS_PER_PAGE ),
                 startingNo : startingNo,
-                endingNo : endingNo
+                endingNo : endingNo,
+                cat : cat,
+                brand : brand
             })
               
         } catch ( error ) {
@@ -68,7 +79,7 @@ module.exports = {
     getSingleProduct : async( req, res ) => {
 
         try {
-            const product = await productSchema.find({ _id : req.params.id, status : true }).populate( 'category' )         
+            const product = await productSchema.find({ _id : req.params.id, status : true }).populate( 'category' )       
             const related = await productSchema.find({ status : true }).limit( 4 )
             res.render( 'shop/single-product', {
                 product : product,

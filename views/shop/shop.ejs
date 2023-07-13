@@ -25,9 +25,8 @@
                                         <div class="shop__sidebar__categories">
                                             <ul class="nice-scroll">
                                                 <% for( let item of category ) { %>
-                                                <li><a href="#"><%= item.category %></a></li>
+                                                <li><a href="/shop?cat=<%= item._id %><% if (brand){%>&&brand=<%= brand %><% } %>"><%= item.category %></a></li>
                                                 <% } %>
-                                                <!-- <li><a href="#">Men (20)</a></li> -->
                                                 
                                             </ul>
                                         </div>
@@ -43,33 +42,13 @@
                                         <div class="shop__sidebar__brand">
                                             <ul>
                                                 <% for( let item of brands ) { %>
-                                                <li><a href="#"><%= item %></a></li>
+                                                <li><a href="shop?brand=<%= item %><% if ( cat ) { %>&&cat=<%= cat %><% } %>"><%= item %></a></li>
                                                 <% } %>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
-                                </div>
-                                <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__price">
-                                            <ul>
-                                                <li><a href="#">₹0.00 - ₹50.00</a></li>
-                                                <li><a href="#">₹50.00 - ₹100.00</a></li>
-                                                <li><a href="#">₹100.00 - ₹150.00</a></li>
-                                                <li><a href="#">₹150.00 - ₹200.00</a></li>
-                                                <li><a href="#">₹200.00 - ₹250.00</a></li>
-                                                <li><a href="#">250.00+</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -84,12 +63,12 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__right">
-                                <p>Sort by Price:</p>
+                                <!-- <p>Sort by Price:</p>
                                 <select>
                                     <option value="">Low To High</option>
-                                    <option value="">₹0 - ₹55</option>
-                                    <option value="">₹55 - ₹100</option>
-                                </select>
+                                    <option value="">₹ 0 - ₹ 55</option>
+                                    <option value="">₹ 55 - ₹ 100</option>
+                                </select> -->
                             </div>
                         </div>
                     </div>
@@ -189,12 +168,11 @@
 
         try {
 
-            const response = await axios.post('/add-to-cart',{productId})
-            console.log(response.data,'data');
-            if( !response.data.login ){
+            const response = await axios.post('/add-to-cart',{ productId })
+            if( !response.data.login ) {
                 return window.location.href = '/login'
             } 
-            if( response.data.outOfStock){
+            if( response.data.outOfStock ) {
                 const bdy = document.body
                 const modal = document.getElementById('modalCookie1')
                 const successModal = document.getElementById("successModal");
@@ -213,16 +191,15 @@
                 });
             }
             if( response.data.newItem === true ){
-                console.log(response.data.newItem, 'new');
+                console.log(response.data.newItem, 'new' );
                 const count = document.getElementById('cartCount')
                 
-                currentCount = parseInt(count.innerHTML)
-                console.log(currentCount);
+                currentCount = parseInt( count.innerHTML )
                 
                 updatedCount = currentCount + 1
                 count.innerHTML = updatedCount                 
             }
-        } catch (error) {
+        } catch ( error ) {
             console.log(error.message);
         }
     }

@@ -35,16 +35,17 @@ module.exports = {
                 address : addressId,
             })
             const ordered = await order.save()
-            await cartSchema.deleteOne({ userId : user })
-            req.session.productCount = 0
-
-            for( const items of cartProducts ){
-                const { productId, quantity } = items
-                await productSchema.updateOne({_id : productId},
-                    { $inc : { quantity :  -quantity  }})
-            } 
+            
             if(  paymentMethod === 'COD' ){
                 // COD
+                await cartSchema.deleteOne({ userId : user })
+                req.session.productCount = 0
+
+                for( const items of cartProducts ){
+                    const { productId, quantity } = items
+                    await productSchema.updateOne({_id : productId},
+                        { $inc : { quantity :  -quantity  }})
+                } 
                  res.json({ success : true})
             } else
             if( paymentMethod === 'razorpay'){
@@ -68,10 +69,8 @@ module.exports = {
             await orderSchema.updateOne({_id : order.receipt},{
                 $set : { orderStatus : 'Confirmed'}
             })
-            console.log(2);
             res.json({paid : true})
         } else {
-            console.log(1);
             res.json({paid : false})
         }
     },
@@ -79,10 +78,38 @@ module.exports = {
     getConfirmOrder : async( req, res ) => {
         try{
             const { user } = req.session
-            const orders = await orderSchema.find({ userId : user}).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
+            const products =  await cartHelper.totalCartPrice( user )
+            const productItems = products[0].items
+            console.log(productItems,' product Items');
+            const cartProducts = productItems.map( ( items ) => ({
+                productId : items.productId,
+                quantity : items.quantity,
+                price : ( items.totalPrice / items.quantity )
+            }))
+            console.log(cartProducts,' cart products');
+            const orders = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
+            console.log(orders,'orders');
+            if( orders.orderStatus === "Pending"){
+                await orderSchema.updateOne({ _id : orders._id },{
+                    $set : {
+                        orderStatus : "Confirmed"
+                    }
+                })
+            }
+                await cartSchema.deleteOne({ userId : user })
+                req.session.productCount = 0
+
+                for( const items of cartProducts ){
+                    const { productId, quantity } = items
+                    await productSchema.updateOne({_id : productId},
+                        { $inc : { quantity :  -quantity  }})
+                } 
+            
+            const lastOrder = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
+
             res.render( 'shop/confirm-order', {
-                order : orders,
-                products : orders[0].products,
+                order : lastOrder,
+                products : lastOrder[0].products,
             })
         }catch( error ){
             console.log( error.message );
@@ -204,6 +231,32 @@ module.exports = {
         } catch ( error ) {
             console.log( error.message );
         }
+    },
+
+    getSalesReport : async ( req, res ) => {
+        
+        const { from, to } = req.query
+        const conditions = {}
+        if( from && to){
+            conditions.date = {
+                $gte : from,
+                $lte : to
+            }
+        } else if ( from ) {
+            conditions.date = {
+                $gte : from
+            }
+        } else if ( to ){
+            conditions.date = {
+                $lte : to
+            }
+        }
+        const orders = await orderSchema.find(conditions).sort({date : -1})
+        res.render('admin/sales-report',{
+            admin : true,
+            orders : orders
+        })  
+
     }
 
 }

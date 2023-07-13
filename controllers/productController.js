@@ -65,7 +65,7 @@ module.exports = {
             page = 1;
             }
             const productsCount = await productSchema.find().count()
-            const products = await productSchema.find().populate('category')
+            const products = await productSchema.find().populate( 'category' )
             .skip(( page - 1 ) * paginationHelper.PRODUCT_PER_PAGE ).limit( paginationHelper.PRODUCT_PER_PAGE )
             res.render('admin/products',{
                 admin : req.session.admin,
@@ -78,8 +78,8 @@ module.exports = {
                 lastPage : Math.ceil( productsCount / paginationHelper.PRODUCT_PER_PAGE )
             })
 
-        } catch (error) { 
-            console.log(error.message);
+        } catch ( error ) { 
+            console.log( error.message );
         }
 
     },
@@ -90,36 +90,36 @@ module.exports = {
             await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : false}})
             res.redirect('/admin/products')
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
     restoreProduct : async( req, res ) => {
 
         try {
-            await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : true} })
-            res.redirect('/admin/products')
+            await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : true } })
+            res.redirect( '/admin/products' )
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
     getEditProdut : async( req, res ) => {
 
         try {
-            const product = await productSchema.findOne({ _id : req.params.id }).populate('category')
+            const product = await productSchema.findOne({ _id : req.params.id }).populate( 'category' )
             const category = await categorySchema.find()
             res.render( 'admin/edit-products', {
                 product : product,
                 categories : category,
                 admin : req.session.admin,
-                err : req.flash('err')
+                err : req.flash( 'err' )
             } )
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
@@ -128,43 +128,43 @@ module.exports = {
         try {
             const id = req.query.id
             const image = req.query.imageId
-            await productSchema.updateOne({_id : id},{ $pull : {image : image}})
-            fs.unlink( path.join( __dirname, '../public/images/product-images/' ) + image , (err) => {
+            await productSchema.updateOne({ _id : id },{ $pull : { image : image }})
+            fs.unlink( path.join( __dirname, '../public/images/product-images/' ) + image , ( err ) => {
                 if( err ) {
-                   console.log(err.message);
+                   console.log( err.message );
                 }
             })
             res.redirect(`/admin/edit-product/${id}`)
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     },
 
     editProduct : async( req, res ) => {
 
         try {
-            const existingProduct = await productSchema.findById(req.body.productId)
+            const existingProduct = await productSchema.findById( req.body.productId )
             if( req.files ) {
 
-                for(let file of req.files) {
+                for( let file of req.files ) {
                     if( 
                         file.mimetype !== 'image/jpg' &&
                         file.mimetype !== 'image/jpeg' &&
                         file.mimetype !== 'image/png' &&
                         file.mimetype !== 'image/gif'
                         ){
-                            req.flash('err','Check the image type')
+                            req.flash( 'err','Check the image type' )
                             return res.redirect(`/admin/edit-product/${existingProduct._id}`)
                         }
                 }
                 const images = existingProduct.image
-                req.files.forEach(element => {
-                    images.push(element.filename)
+                req.files.forEach( element => {
+                    images.push( element.filename )
                 });
                 var img = images
             }
-            await productSchema.updateOne( {_id : req.body.productId},
+            await productSchema.updateOne( { _id : req.body.productId },
                 {
                     $set : {
                         name : req.body.name,
@@ -176,10 +176,10 @@ module.exports = {
                         image : img
                     }
                 })
-            res.redirect( '/admin/products')
+            res.redirect( '/admin/products' )
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     }
 }

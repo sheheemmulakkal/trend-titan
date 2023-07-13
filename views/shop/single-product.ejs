@@ -64,7 +64,7 @@
                             <a style="cursor: pointer;" onclick="addToCart('<%= product[0]._id %>')" class="primary-btn text-white">add to cart</a>
                         </div>
                         <div class="product__details__btns__option">
-                            <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
+                            <a style="cursor: pointer;" onclick="addtoWishlist('<%= product[0]._id %>')"><i class="fa fa-heart"></i> add to wishlist</a>
                         </div>
                         <div class="product__details__last__option">
                             <h5><span>Guaranteed Safe Checkout</span></h5>
@@ -157,6 +157,11 @@
         } catch (error) {
             console.log(response.status);
         }
+    }
+
+    async function addtoWishlist( productId ){
+        console.log('helloooooo');
+        const response = await axios.post( '/add-to-wishlist',{ productId })
     }
 </script>
 

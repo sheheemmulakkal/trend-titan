@@ -1,0 +1,135 @@
+<%- include('../includes/userHead.ejs') %>
+<%- include('../includes/userNavbar.ejs') %>
+
+ 
+<style>
+    .shop-now a:hover{
+        color: #111;
+    }
+</style>
+<section class="shopping-cart spad mt-5">
+    <div class="container">
+        <% if( list && list.length > 0){ %>
+            <div class="row" id="cart-table">
+                <div class="col-12">
+                    <div class="shopping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for ( let product of list[0].products ) { %>
+
+                                <tr id="wishlist-row-<%= product._id %>">
+                                    <td class="product__cart__item">
+                                        <div class="product__cart__item__pic">
+                                            <img src="/images/product-images/<%= product.image[0] %>" width="100" alt="">
+                                        </div>
+                                        <div class="product__cart__item__text">
+                                            <h6><%= product.name %></h6>
+                                            <h5 id="price-<%= product._id %>">₹ <%= product.price %></h5>
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="cart__close"><button onclick="removeCart('<%= product._id %>')" style="cursor: pointer;" class="btn btn-dark rounder-0">Add to cart</button></i></td>
+                                    <td class="cart__close"><i onclick="removeCart('<%= product._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn">
+                                <a href="/shop">Continue Shopping</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        <% } else { %>
+            <div class="col-12 mt-5">
+                <h1 class="text-center"><b>Cart is empty...</b></h1>
+                <br>
+                <h3 class="text-center shop-now" ><a href="/shop">Shop now</a></h3>
+            </div>
+        <% } %>
+        <div style="display: none;" class="col-12 mt-5" id="empty-cart">
+            <h1 class="text-center"><b>Wishlist is empty...</b></h1>
+            <br>
+            <h3 class="text-center shop-now" ><a href="/shop">Shop now</a></h3>
+        </div>
+    </div>
+</section>
+
+
+
+<div class="modal fade top rounded-0" style="background-color: #000000a2;" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-dialog-centered modal-full-width modal-full-width" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header bg-danger rounded-0">
+        <h5 class="modal-title" id="successModalLabel">OOPS!!!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Oops! It seems you've reached the maximum quantity of products available for purchase.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    async function addToCart( productId ){
+
+        try {
+            
+            const response = await axios.post('/add-to-cart',{ productId })
+            if( !response.data.login ) {
+                return window.location.href = '/login'
+            } 
+            if( response.data.outOfStock ) {
+                const bdy = document.body
+                const modal = document.getElementById('modalCookie1')
+                const successModal = document.getElementById("successModal");
+
+                // Show the success modal
+                successModal.classList.add("show");
+                successModal.style.display = "block";
+                bdy.style.overflow = 'hidden'
+                
+                // Hide the success modal when clicked anywhere
+                successModal.addEventListener("click", () => {
+                    successModal.classList.remove("show");
+                    successModal.style.display = "none";
+                    bdy.style.overflow = 'auto'
+                    
+                });
+            }
+            if( response.data.newItem === true ){
+                console.log(response.data.newItem, 'new' );
+                const count = document.getElementById('cartCount')
+                
+                currentCount = parseInt( count.innerHTML )
+                console.log( currentCount );
+                
+                updatedCount = currentCount + 1
+                count.innerHTML = updatedCount                 
+            }
+        } catch ( error ) {
+            console.log(error.message);
+        }
+    }
+</script>
+
+<%- include('../includes/userFooter.ejs') %>
+<%- include('../includes/end.ejs') %>

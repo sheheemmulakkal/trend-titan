@@ -14,7 +14,7 @@ module.exports = {
     razorpayPayment : async ( orderId, totalPrice ) => {
         const id = ""+orderId
         const order = await instance.orders.create({
-            amount: totalPrice,
+            amount: totalPrice*100,
             currency: "INR",
             receipt: id
         })

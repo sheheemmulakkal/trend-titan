@@ -48,7 +48,7 @@ module.exports = {
                 }
               ])
               return totalPrice
-              
+
         } catch (error) {
             console.log(error.message);
         }
@@ -65,11 +65,11 @@ module.exports = {
                     // if cart have more quantity than stock the cart qty will reduce to stock quantity
                     if( items && items.productId.quantity > 0 && items.productId.quantity < items.quantity ){
                         newQuantity = items.productId.quantity
-                        const item = await cartSchema.updateOne({ userId : user, 'items.productId' : items.productId._id},
+                        await cartSchema.updateOne({ userId : user, 'items.productId' : items.productId._id},
                         { $set : { 'items.$.quantity' : newQuantity }}) 
                         // if stock quantity is 0 then item will remove from cart
                     } else if ( items && items.productId.quantity < 1) {
-                        const remove = await cartSchema.updateOne({ userId : user , 'items.productId' : items.productId._id },
+                        await cartSchema.updateOne({ userId : user , 'items.productId' : items.productId._id },
                         { $pull : { items : { productId : items.productId._id}}})
                         return 1
                     }

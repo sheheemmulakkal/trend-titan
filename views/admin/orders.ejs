@@ -79,6 +79,13 @@
                             <% } %>
                         </div>
                     </div>
+                    <% } else if ( order.orderStatus === 'Pending' ) { %>
+                        <div class="dropdown" id="dropdown-<%= order._id %>">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Dropdown </button>
+                            <div class="dropdown-menu bg-light text-dark" aria-labelledby="dropdownMenuButton1">
+                                <a id="cancelled-<%= order._id %>" onclick="changeOrderStatus('Cancelled','<%= order._id %>')" class="text-dark dropdown-item">Cancelled</a>
+                            </div>
+                        </div>
                     <% } %>
                   </td>
                   <td> 
@@ -182,9 +189,5 @@
 
     }
 </script>
-
-
-
-
 
   <%- include('../includes/admin/adminFooter.ejs') %>

@@ -4,6 +4,7 @@ const express = require('express');
 const shopController = require( '../controllers/shopController' )
 const cartController = require( '../controllers/cartController')
 const orderController = require( '../controllers/orderController' )
+const wishlistController = require( '../controllers/wishlistController' )
 const isAuth = require( '../middleware/isAuth');
 const { isArgumentsObject } = require('util/types');
 const { is } = require('date-fns/locale');
@@ -20,6 +21,9 @@ router.get( '/cart', isAuth.userAuth, cartController.getCart )
 router.post( '/add-to-cart', cartController.addToCart )
 router.post( '/decrease-cart', isAuth.userAuth, cartController.decCart )
 router.patch( '/removeCartItem', isAuth.userAuth, cartController.removeCartItem )
+
+router.post( '/add-to-wishlist', isAuth.userAuth, wishlistController.addtToWishlist )
+router.get ( '/wishlist', isAuth.userAuth, wishlistController.getWishlist )
 
 router.get( '/checkout', isAuth.userAuth, shopController.getCheckout )
 router.get( '/add-checkout-address', isAuth.userAuth, shopController.getCheckoutAddAddress)
