@@ -80,15 +80,15 @@ module.exports = {
             const { user } = req.session
             const products =  await cartHelper.totalCartPrice( user )
             const productItems = products[0].items
-            console.log(productItems,' product Items');
+
             const cartProducts = productItems.map( ( items ) => ({
                 productId : items.productId,
                 quantity : items.quantity,
                 price : ( items.totalPrice / items.quantity )
             }))
-            console.log(cartProducts,' cart products');
+
             const orders = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
-            console.log(orders,'orders');
+
             if( orders.orderStatus === "Pending"){
                 await orderSchema.updateOne({ _id : orders._id },{
                     $set : {
@@ -251,10 +251,12 @@ module.exports = {
                 $lte : to
             }
         }
-        const orders = await orderSchema.find(conditions).sort({date : -1})
-        res.render('admin/sales-report',{
+        const orders = await orderSchema.find( conditions ).sort({ date : -1 })
+        res.render( 'admin/sales-report', {
             admin : true,
-            orders : orders
+            orders : orders,
+            from : from,
+            to : to
         })  
 
     }

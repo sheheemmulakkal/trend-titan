@@ -27,18 +27,34 @@ module.exports = {
             const previousMonthStartDate = new Date(currentYear, currentMonth - 1, 1, 0, 0, 0);
             const previousMonthEndDate = new Date(currentYear, currentMonth, 0, 23, 59, 59);
             
-            const revenueCurrentMonth = await dashboardHelper.currentMonthRevenue( currentMonthStartDate, now )
-            const revenuePreviousMonth = await dashboardHelper.previousMonthRevenue( previousMonthStartDate, previousMonthEndDate )
-            const monthlyGrowth = revenuePreviousMonth === 0 ? 100 : ((( revenueCurrentMonth - revenuePreviousMonth ) / revenuePreviousMonth ) * 100).toFixed(1);
-            const paymentMethodAmount = await dashboardHelper.paymentMethodAmount() 
+            
+            const promises = [
+                dashboardHelper.currentMonthRevenue( currentMonthStartDate, now ),
+                dashboardHelper.previousMonthRevenue( previousMonthStartDate, previousMonthEndDate ),
+                dashboardHelper.paymentMethodAmount(),
+                dashboardHelper.todayIncome( today, now ),
+                dashboardHelper.yesterdayIncome( today, yesterday ),
+                dashboardHelper.totalRevenue(),
+                orderSchema.find({ orderStatus : "Confirmed" }).count(),
+                orderSchema.find({ orderStatus : "Delivered" }).count(),
+                userSchema.find({isBlocked : false, isVerified : true}).count(),
+                productSchema.find({status : true}).count()
+            ]
+            
+            const results = await Promise.all( promises )
 
-            const todayIncome = await dashboardHelper.todayIncome( today, now )
-            const yesterdayIncome = await dashboardHelper.yesterdayIncome( today, yesterday )
-            const totalRevenue = await dashboardHelper.totalRevenue()
-            const ordersToShip = await orderSchema.find({ orderStatus : "Confirmed" }).count()
-            const completedOrders = await orderSchema.find({ orderStatus : "Delivered" }).count()
-            const userCount = await userSchema.find({isBlocked : false, isVerified : true}).count()
-            const productCount = await productSchema.find({status : true}).count()
+            const revenueCurrentMonth = results[0]
+            const revenuePreviousMonth = results[1]
+            const paymentMethodAmount = results[2]
+            const todayIncome = results[3]
+            const yesterdayIncome = results[4]
+            const totalRevenue = results[5]
+            const ordersToShip = results[6]
+            const completedOrders = results[7]
+            const userCount = results[8]
+            const productCount = results[9]
+
+            const monthlyGrowth = revenuePreviousMonth === 0 ? 100 : ((( revenueCurrentMonth - revenuePreviousMonth ) / revenuePreviousMonth ) * 100).toFixed(1);
 
             const dailyGrowth = ((( todayIncome - yesterdayIncome ) / yesterdayIncome ) * 100).toFixed( 1 )  
             res.render( 'admin/dashboard', {
@@ -82,8 +98,8 @@ module.exports = {
                 lastPage : Math.ceil( userCount / paginationHelper.USERS_PER_PAGE ) 
             } )
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
 
     },
@@ -92,8 +108,8 @@ module.exports = {
 
         try {
             const userId = req.params.id
-            const userData = await userSchema.findById(userId)
-            await userData.updateOne({ $set : {isBlocked : true}})
+            const userData = await userSchema.findById( userId )
+            await userData.updateOne({ $set : { isBlocked : true }})
 
             // Checks if the user is in same browser 
             if( req.session.user === userId ){
@@ -102,18 +118,18 @@ module.exports = {
             }
             
             const sessions = req.sessionStore.sessions;
-            for (const sessionId in sessions) {
-            const session = JSON.parse(sessions[sessionId]);
-            if (session.user === userId) {
+            for ( const sessionId in sessions ) {
+            const session = JSON.parse( sessions[sessionId] );
+            if ( session.user === userId ) {
                 delete sessions[sessionId];
                 break; 
             }
             }
             
-            res.json( {success : true} )
+            res.json( { success : true } )
             
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
        
     },
@@ -122,13 +138,13 @@ module.exports = {
         try {
             
             const userId = req.params.id
-            const userData = await userSchema.findById(userId)
-            await userData.updateOne({ $set : {isBlocked : false}})
+            const userData = await userSchema.findById( userId )
+            await userData.updateOne({ $set : { isBlocked : false }})
 
-            res.json( {success : true} )
+            res.json( { success : true } )
 
-        } catch (error) {
-            console.log(error.message);
+        } catch ( error ) {
+            console.log( error.message );
         }
     }
 
