@@ -24,6 +24,7 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__categories">
                                             <ul class="nice-scroll">
+                                                <li><a href="/shop?<% if (brand){%>&&brand=<%= brand %><% } %>">All</a></li>
                                                 <% for( let item of category ) { %>
                                                 <li><a href="/shop?cat=<%= item._id %><% if (brand){%>&&brand=<%= brand %><% } %>"><%= item.category %></a></li>
                                                 <% } %>
@@ -41,6 +42,7 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__brand">
                                             <ul>
+                                                <li><a href="shop?<% if ( cat ) { %>&&cat=<%= cat %><% } %>">All</a></li>
                                                 <% for( let item of brands ) { %>
                                                 <li><a href="shop?brand=<%= item %><% if ( cat ) { %>&&cat=<%= cat %><% } %>"><%= item %></a></li>
                                                 <% } %>
