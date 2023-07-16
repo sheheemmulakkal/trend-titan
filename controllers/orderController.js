@@ -235,7 +235,11 @@ module.exports = {
 
     getSalesReport : async ( req, res ) => {
         
-        const { from, to } = req.query
+        const { from, to, seeAll } = req.query
+        let page = Number(req.query.page);
+            if (isNaN(page) || page < 1) {
+            page = 1;
+            }
         const conditions = {}
         if( from && to){
             conditions.date = {
@@ -251,12 +255,26 @@ module.exports = {
                 $lte : to
             }
         }
-        const orders = await orderSchema.find( conditions ).sort({ date : -1 })
+
+        const orderCount = await orderSchema.count()
+        const limit = seeAll === "seeAll" ? orderCount : paginationHelper.SALES_PER_PAGE ;
+      
+
+        const orders = await orderSchema.find( conditions )
+        .skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit(limit).sort({ date : -1 }).sort({ date : -1 })
+
         res.render( 'admin/sales-report', {
             admin : true,
             orders : orders,
             from : from,
-            to : to
+            to : to,
+            seeAll : seeAll,
+            currentPage : page,
+            hasNextPage : page * paginationHelper.SALES_PER_PAGE < orderCount,
+            hasPrevPage : page > 1,
+            nextPage : page + 1,
+            prevPage : page -1,
+            lastPage : Math.ceil( orderCount / paginationHelper.SALES_PER_PAGE )
         })  
 
     }

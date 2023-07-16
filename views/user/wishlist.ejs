@@ -34,7 +34,7 @@
                                         </div>
                                     </td>
                                     
-                                    <td class="cart__close"><button onclick="removeCart('<%= product._id %>')" style="cursor: pointer;" class="btn btn-dark rounder-0">Add to cart</button></i></td>
+                                    <td class="cart__close"><button onclick="addToCart('<%= product._id %>')" style="cursor: pointer;" class="btn btn-dark rounder-0">Add to cart</button></i></td>
                                     <td class="cart__close"><i onclick="removeCart('<%= product._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
                                 </tr>
                                 <% } %>
@@ -101,7 +101,7 @@
                 const bdy = document.body
                 const modal = document.getElementById('modalCookie1')
                 const successModal = document.getElementById("successModal");
-
+                
                 // Show the success modal
                 successModal.classList.add("show");
                 successModal.style.display = "block";
@@ -117,6 +117,7 @@
             }
             if( response.data.newItem === true ){
                 console.log(response.data.newItem, 'new' );
+                console.log(1);
                 const count = document.getElementById('cartCount')
                 
                 currentCount = parseInt( count.innerHTML )

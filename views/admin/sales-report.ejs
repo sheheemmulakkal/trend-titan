@@ -31,18 +31,23 @@
 
 <div class="main-panel">
     <div class="content-wrapper">
-        <!-- <div><a class="badge badge-outline-primary" href="/admin/sales-report?seeAll=true">See All</a></div> -->
+      <% if ( seeAll ) { %>
+        <div><a class="badge badge-outline-primary" href="/admin/sales-report">Show less</a></div>
+        <% } else { %>
+          <div><a class="badge badge-outline-primary" href="/admin/sales-report?seeAll=seeAll">Show all</a></div>
+      <% } %>
 
 <div class="row mt-5">
     <div class="col-12 grid-margin">
         <div class="row">
-        <form action="/admin/sales-report" id="sales-report-form">
+        <form action="/admin/sales-report<% if(seeAll){ %>?seeAll=seeAll<% } %>" id="sales-report-form">
             <label for="birthday">From :</label>
             <input style="background-color: #dcdcdc; border-radius: 5px; border: none; padding: 0px 10px;" value="<%= from %>" type="date" id="from" name="from">
             <label class="ml-3" for="birthday">To :</label>
             <input style="background-color: #dcdcdc; border-radius: 5px; border: none; padding: 0px 10px;" value="<%= to %>" type="date" id="to" name="to">
             <button class="btn btn-primary ml-3" type="submit">filter</button>
         </form>
+        
         <button type="button" onclick="printDiv('Print')" class="btn btn-info btn-icon-text mx-auto mb-1"> Print <i class="mdi mdi-printer btn-icon-append"></i>
         </button>
     </div>
@@ -79,7 +84,24 @@
       </div>
 
       <!-- Pagination buttons -->
-     
+      <% if( !seeAll ) { %>
+
+        <div class="pagination-btn">
+          <% if( currentPage !== 1 ) { %> 
+          <a href="/admin/sales-report?page=1"><button type="button" class="btn btn-outline-secondary 1">1</button></a>
+        <% } %>
+        <% if( currentPage > 2 ) { %>
+            <a href="/admin/sales-report?page=<%= prevPage %>"><button type="button" class="btn btn-outline-secondary 2"><%= prevPage %></button></a> 
+        <% } %>
+        <a href="/admin/sales-report?page=<%= currentPage %>"><button type="button" class="btn btn-outline-secondary 3 active"><%= currentPage %></button></a>
+        <% if( hasNextPage ) { %>
+            <a href="/admin/sales-report?page=<%= nextPage %>"><button type="button" class="btn btn-outline-secondary 4"><%= nextPage %></button></a> 
+        <% } %>    
+        <% if( nextPage !== lastPage && currentPage !== lastPage ) { %>
+            <a href="/admin/sales-report?page=<%= lastPage %>"><button type="button" class="btn btn-outline-secondary 5"><%= lastPage %></button></a>
+        <% } %>
+    </div>
+    <% } %>
 
     </div>
   </div>

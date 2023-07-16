@@ -5,6 +5,7 @@ const BANNER_PER_PAGE = 4
 const ORDER_PER_PAGE = 6
 const CATEGORY_PER_PAGE = 6
 const PRODUCT_PER_PAGE = 6
+const SALES_PER_PAGE = 10
 
 module.exports = {
     ITEMS_PER_PAGE,
@@ -12,5 +13,6 @@ module.exports = {
     BANNER_PER_PAGE,
     ORDER_PER_PAGE,
     CATEGORY_PER_PAGE,
-    PRODUCT_PER_PAGE
+    PRODUCT_PER_PAGE,
+    SALES_PER_PAGE
 }
