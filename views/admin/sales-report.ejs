@@ -55,7 +55,7 @@
         <div class="card-body">
           <h4 class="card-title">Recent sales</h4>
           <div class="table-responsive" id="Print">
-            <table class="table">
+            <table class="table" id="sales-table">
               <thead>
                 <tr>
                   <th> Date </th>
@@ -124,6 +124,12 @@
 </div>
 
 <script>
+  $(document).ready(function() {
+        $('#sales-table').DataTable();
+    });
+</script>
+<script>
+
 
   const dateForm = document.getElementById('sales-report-form')
   

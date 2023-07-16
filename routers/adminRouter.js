@@ -2,15 +2,16 @@ const express = require( 'express' )
 const path = require( 'path' )
 
 const authController = require( '../controllers/authController' )
-const adminController = require( '../controllers/adminController')
-const productController = require( '../controllers/productController')
-const categoryController = require('../controllers/categoryController')
-const bannerController = require( '../controllers/bannerController')
+const adminController = require( '../controllers/adminController' )
+const productController = require( '../controllers/productController' )
+const categoryController = require( '../controllers/categoryController' )
+const bannerController = require( '../controllers/bannerController' )
+const couponController = require( '../controllers/couponController' )
 const multer = require('multer')
-const isAuth = require ( '../middleware/isAuth')
-const upload = require( '../middleware/multer')
+const isAuth = require ( '../middleware/isAuth' )
+const upload = require( '../middleware/multer' )
 
-const orderController = require('../controllers/orderController')
+const orderController = require( '../controllers/orderController' )
 const router = express.Router()
 
 // Routes 
@@ -52,6 +53,13 @@ router.get( '/restore-banner/:id', isAuth.adminAuth, bannerController.restoreBan
 router.get( '/orders', isAuth.adminAuth, orderController.getAdminOrderlist )
 router.patch( '/change-order-status', isAuth.adminAuth, orderController.changeOrderStatus )
 router.get( '/order-products/:id', isAuth.adminAuth, orderController.adminOrderProducts )
+
+router.get( '/coupons', isAuth.adminAuth, couponController.getCoupons )
+router.get( '/add-coupon', isAuth.adminAuth, couponController.getAddCoupon )
+router.post( '/add-coupon', isAuth.adminAuth, couponController.addCoupon )
+router.get( '/edit-coupon/:id' ,isAuth.adminAuth, couponController.getEditCoupon )
+router.post( '/edit-coupon', isAuth.adminAuth, couponController.editCoupon )
+router.patch( '/cancel-coupon', isAuth.adminAuth, couponController.cancelCoupon )
 
 router.get( '/sales-report', isAuth.adminAuth, orderController.getSalesReport )
 

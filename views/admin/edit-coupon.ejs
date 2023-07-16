@@ -1,0 +1,67 @@
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+
+<% var sdate = new Date(coupon.startingDate).toISOString().split('T')[0] %>
+<% var edate = new Date(coupon.expiryDate).toISOString().split('T')[0] %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+      <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Edit Coupon</h4>
+            <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
+  
+            <form id="coupon-form" class="forms-sample" action="/admin/edit-coupon" method="POST" >
+              <div class="form-group">
+                <label >Coupon name</label>
+                <input type="text" class="form-control" id="coupon-name" name="name" value="<%= coupon.name %>" placeholder="Coupon name" required>
+              </div>
+              <div class="form-group">
+                <label >Coupon description</label>
+                <input type="text" class="form-control" id="coupon-description" name="description" value="<%= coupon.description %>" placeholder="Coupon description" required>
+              </div>
+              <div class="form-group">
+                <label >Starting date</label>
+                <input type="date" class="form-control" id="Starting-date" name="startingDate" value="<%= sdate %>" placeholder="Starting date" required>
+              </div>
+              <div class="form-group">
+                <label >Expiry date</label>
+                <input type="date" class="form-control" id="expiry-date" name="expiryDate" value="<%= edate %>" placeholder="Expiry date" required>
+              </div>
+
+              <div class="form-group">
+                <label >Minimum amount</label>
+                <input type="number" class="form-control" id="minimum-amount" name="minimumAmount" value="<%= coupon.minimumAmount %>" placeholder="Minimum amount" required>
+              </div>
+
+              <div class="form-group">
+                <label for="discount-type">Discount type</label>
+                <select style="color: #fff" class="form-control" name="discountType" value="<%= coupon.discountType %>" id="discount-type" required>
+                  <option style="color: #fff;" value="percentage">Percentage</option>
+                  <option style="color: #fff" value="fixed-amount">Fixed amount</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label >Discount</label>
+                <input type="number" class="form-control" id="discount" name="discount" value="<%= coupon.discount %>" placeholder="Discount" required>
+              </div>
+              <input type="hidden" name="id" value="<%= coupon._id %>" id="">
+              
+  
+              <button type="submit" class="btn btn-primary mr-2">Submit</button>
+              <a href="/admin/coupons"><button type="button" class="btn  mr-2">Cancel</button></a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+</div>
+
+
+
+<%- include('../includes/admin/adminFooter.ejs') %>

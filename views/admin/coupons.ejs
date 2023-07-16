@@ -1,0 +1,167 @@
+
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+
+<style>
+    .pagination-btn{
+    padding: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    }
+    .pagination-btn a{
+        text-decoration: none;
+        color: #ececec;
+    }
+    .pagination-btn a :hover{
+        color: #111;
+    }
+    .pagination-btn button:hover{
+        color: #111;
+    }
+    .pagination-btn button:active{
+        background-color: #fff;
+        color: #111!important;
+    }
+    .category-name span p{
+        width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    } 
+    .modal-content p{
+        width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    @media( max-width : 499px){
+        .modal-content p{
+        width: calc(100% - 44px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    }
+</style>
+
+<% var now = Date.now() %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div><a class="badge badge-outline-primary" href="/admin/add-coupon">Add coupons</a></div>
+ <!-- ======================== Table ========================= -->
+        <div class="row mt-5">
+            <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                <h4 class="card-title">Category</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                    <thead>
+                        <tr>
+                            <th> Coupon Name </th>
+                            <th> description </th>
+                            <th> Starting date </th>
+                            <th> Expiry date </th>
+                            <th> Minimum amount </th>
+                            <th> Discount type </th>
+                            <th> Discount </th>
+                            <th>  </th>
+                            <th> Status </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                           <% if( coupons && coupons.length > 0 ){ %>
+                            <% for ( let coupon of coupons ) { %>
+                                
+                                <% if( coupon.startingDate < now && coupon.expiryDate > now && coupon.status ) { var active = "Active" } else if( coupon.startingDate > now && coupon.status ) { var active = "Upcoming"} else if( coupon.expiryDate < now && coupon.status ) { var active = "Expired"} %>
+
+                                <tr>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= coupon.name %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= coupon.description %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= moment(coupon.startingDate).format(shortDateFormat) %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= moment(coupon.expiryDate).format(shortDateFormat) %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= coupon.minimumAmount %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= coupon.discountType %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= coupon.discount %></span>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/edit-coupon/<%= coupon._id %>"><button type="button" class="btn btn-dark btn-icon-text">Edit<i class="mdi mdi-file-check btn-icon-append"></i>
+                                        </button></a>
+                                    </td>
+
+                                    <td>
+                                        <% if( coupon.status ){ %>
+                                            <span id="active-<%= coupon._id%>" class="<% if( active === 'Active' ) {%>text-success<% } else if ( active === 'Upcoming' ) {%>text-primary<% } else {%>text-warning<% } %>"><%= active %></span>                           
+                                        <% } else { %>
+                                            <span class="text-danger">Cancelled</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if( (active === "Active" || active === "Upcoming") && coupon.status ) { %>
+                                            <div id="cancel-<%= coupon._id %>" style="cursor: pointer;" class="badge"><a class="badge badge-outline-danger" onclick="cancelCoupon('<%= coupon._id %>')">Cancel</a></div>        
+                                        <% } %>                            
+                                    </td>
+                                </tr>
+                            <% } %>
+                           <% } %>
+                        
+                        
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+
+            <!-- Pagination buttons -->
+           
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    async function cancelCoupon( couponId ){
+        const cancelbtn = document.getElementById(`cancel-${couponId}`)
+        const spanbtn = document.getElementById(`active-${couponId}`)
+        const cancelmsg = document.getElementById(`cancelspn-${couponId}`)
+        console.log(cancelbtn);
+        console.log(spanbtn);
+        console.log(cancelmsg);
+        try {
+            const response = await axios.patch('/admin/cancel-coupon',{ couponId })
+            console.log(response);
+            if ( response.data.cancelled ) {
+                console.log();
+                cancelbtn.style.display = 'none'
+                spanbtn.className = ''
+                spanbtn.innerHTML = 'Cancelled'
+                spanbtn.style.color = '#dc3545'                
+
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+</script>
+
+
+<%- include('../includes/admin/adminFooter.ejs') %>
