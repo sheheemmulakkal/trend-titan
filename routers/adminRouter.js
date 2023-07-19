@@ -61,6 +61,7 @@ router.get( '/edit-coupon/:id' ,isAuth.adminAuth, couponController.getEditCoupon
 router.post( '/edit-coupon', isAuth.adminAuth, couponController.editCoupon )
 router.patch( '/cancel-coupon', isAuth.adminAuth, couponController.cancelCoupon )
 
+
 router.get( '/sales-report', isAuth.adminAuth, orderController.getSalesReport )
 
 

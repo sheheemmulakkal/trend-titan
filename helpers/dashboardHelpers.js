@@ -200,6 +200,42 @@ const paymentMethodAmount = async () => {
 
 }
 
+const dailyChart = async () => {
+    const dailyOrders = await orderSchema.aggregate([
+        {
+            $match : {
+                orderStatus : {
+                    $ne : "pending"
+                }
+            }
+        },
+        {
+            $group : {
+                _id : {
+                    $dateToString : {
+                        format : "%Y-%m-%d",
+                        date : "$date"
+                    },
+                },
+                dailyrevenue : {
+                    $sum : "$totalPrice"
+                }
+            }
+        },
+        {
+            $sort : {
+                _id : 1
+            }
+        },
+        {
+            $limit : 14
+        }
+    ])
+
+    const result =  dailyOrders || 0
+    return result
+}
+
 
 module.exports = {
     yesterdayIncome,
@@ -207,5 +243,6 @@ module.exports = {
     totalRevenue,
     currentMonthRevenue,
     previousMonthRevenue,
-    paymentMethodAmount
+    paymentMethodAmount,
+    dailyChart
 }

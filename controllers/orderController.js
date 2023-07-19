@@ -15,7 +15,9 @@ module.exports = {
         try {
             const { user } = req.session
             const products =  await cartHelper.totalCartPrice( user )
+            
             const { paymentMethod } = req.body
+   
             const { addressId } = req.body
             const productItems = products[0].items
 
@@ -24,6 +26,7 @@ module.exports = {
                 quantity : items.quantity,
                 price : ( items.totalPrice / items.quantity )
             }))
+            
             const totalPrice = products[0].total 
             paymentMethod === 'COD' ? orderStatus = 'Confirmed' : orderStatus = 'Pending';
             const order = new orderSchema({
@@ -35,20 +38,24 @@ module.exports = {
                 address : addressId,
             })
             const ordered = await order.save()
+
+            // Decreasing quantity
+            for( const items of cartProducts ){
+                
+                const { productId, quantity } = items
+
+                await productSchema.updateOne({_id : productId},
+                    { $inc : { quantity :  -quantity  }})
+                } 
+            // Deleting cart
+            await cartSchema.deleteOne({ userId : user })
+            req.session.productCount = 0
             
             if(  paymentMethod === 'COD' ){
                 // COD
-                await cartSchema.deleteOne({ userId : user })
-                req.session.productCount = 0
-
-                for( const items of cartProducts ){
-                    const { productId, quantity } = items
-                    await productSchema.updateOne({_id : productId},
-                        { $inc : { quantity :  -quantity  }})
-                } 
-                 res.json({ success : true})
-            } else
-            if( paymentMethod === 'razorpay'){
+                
+                    return res.json({ success : true})
+            } else if( paymentMethod === 'razorpay'){
                 // Razorpay 
                 const payment = await paymentHelper.razorpayPayment( ordered._id, totalPrice )
                 res.json({ payment : payment , success : false  })
@@ -79,14 +86,7 @@ module.exports = {
         try{
             const { user } = req.session
             const products =  await cartHelper.totalCartPrice( user )
-            const productItems = products[0].items
-
-            const cartProducts = productItems.map( ( items ) => ({
-                productId : items.productId,
-                quantity : items.quantity,
-                price : ( items.totalPrice / items.quantity )
-            }))
-
+            
             const orders = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
 
             if( orders.orderStatus === "Pending"){
@@ -96,14 +96,14 @@ module.exports = {
                     }
                 })
             }
-                await cartSchema.deleteOne({ userId : user })
-                req.session.productCount = 0
+                // await cartSchema.deleteOne({ userId : user })
+                // req.session.productCount = 0
 
-                for( const items of cartProducts ){
-                    const { productId, quantity } = items
-                    await productSchema.updateOne({_id : productId},
-                        { $inc : { quantity :  -quantity  }})
-                } 
+                // for( const items of cartProducts ){
+                //     const { productId, quantity } = items
+                //     await productSchema.updateOne({_id : productId},
+                //         { $inc : { quantity :  -quantity  }})
+                // } 
             
             const lastOrder = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
 
@@ -119,14 +119,28 @@ module.exports = {
 
     getAdminOrderlist : async( req, res ) => {
         try{
+            const { sortData, sortOrder } = req.query
             let page = Number(req.query.page);
             if (isNaN(page) || page < 1) {
             page = 1;
             }
+            const sort = {}
+
+            if( sortData ) {
+                if( sortOrder === "Ascending" ){
+                    sort[sortData] = 1
+                } else {
+                    sort[sortData] = -1
+                }
+            } else {
+                sort['date'] = -1
+            }
+            
+            
 
             const ordersCount = await orderSchema.find().count()
             const orders = await orderSchema.find()
-                .skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit( paginationHelper.ORDER_PER_PAGE ).sort({ date : -1 })
+                .sort(sort).skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit( paginationHelper.ORDER_PER_PAGE )
                 .populate( 'userId' ).populate( 'products.productId' ).populate( 'address' )
             res.render( 'admin/orders', {
                 orders : orders,
@@ -136,7 +150,9 @@ module.exports = {
                 hasPrevPage : page > 1,
                 nextPage : page + 1,
                 prevPage : page -1,
-                lastPage : Math.ceil( ordersCount / paginationHelper.ORDER_PER_PAGE )
+                lastPage : Math.ceil( ordersCount / paginationHelper.ORDER_PER_PAGE ),
+                sortData : sortData,
+                sortOrder : sortOrder
             })
         }catch( error ){
             console.log( error.message );
@@ -235,7 +251,7 @@ module.exports = {
 
     getSalesReport : async ( req, res ) => {
         
-        const { from, to, seeAll } = req.query
+        const { from, to, seeAll, sortData, sortOrder } = req.query
         let page = Number(req.query.page);
             if (isNaN(page) || page < 1) {
             page = 1;
@@ -255,26 +271,39 @@ module.exports = {
                 $lte : to
             }
         }
+        const sort = {}
+
+        if( sortData ) {
+            if( sortOrder === "Ascending" ){
+                sort[sortData] = 1
+            } else {
+                sort[sortData] = -1
+            }
+        } else {
+            sort['date'] = -1
+        }
 
         const orderCount = await orderSchema.count()
         const limit = seeAll === "seeAll" ? orderCount : paginationHelper.SALES_PER_PAGE ;
       
 
         const orders = await orderSchema.find( conditions )
-        .skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit(limit).sort({ date : -1 }).sort({ date : -1 })
+        .sort( sort ).skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit(limit)
 
         res.render( 'admin/sales-report', {
             admin : true,
             orders : orders,
             from : from,
-            to : to,
+            to : to, 
             seeAll : seeAll,
             currentPage : page,
             hasNextPage : page * paginationHelper.SALES_PER_PAGE < orderCount,
             hasPrevPage : page > 1,
             nextPage : page + 1,
             prevPage : page -1,
-            lastPage : Math.ceil( orderCount / paginationHelper.SALES_PER_PAGE )
+            lastPage : Math.ceil( orderCount / paginationHelper.SALES_PER_PAGE ),
+            sortData : sortData,
+            sortOrder : sortOrder
         })  
 
     }

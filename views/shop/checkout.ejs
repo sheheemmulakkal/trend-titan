@@ -107,7 +107,7 @@
                 method : 'post',
                 data : { addressId, paymentMethod },
                 success : ( order ) => {
-                    alert( order )
+                   
                     if( order.success ){
                         location.href = '/confirm-order'
                     } else {

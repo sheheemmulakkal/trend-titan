@@ -5,9 +5,9 @@ const shopController = require( '../controllers/shopController' )
 const cartController = require( '../controllers/cartController')
 const orderController = require( '../controllers/orderController' )
 const wishlistController = require( '../controllers/wishlistController' )
+const couponController = require( '../controllers/couponController' )
 const isAuth = require( '../middleware/isAuth');
-const { isArgumentsObject } = require('util/types');
-const { is } = require('date-fns/locale');
+
 
 const router = express.Router();
 
@@ -31,6 +31,8 @@ router.post( '/add-checkout-address', isAuth.userAuth, shopController.checkoutAd
 
 router.post( '/place-order', isAuth.userAuth, orderController.placeOrder )
 router.get( '/confirm-order', isAuth.userAuth, orderController.getConfirmOrder)
+
+router.post( '/apply-coupon', isAuth.userAuth, couponController.applyCoupon )
 
 router.post( '/verify-payment', isAuth.userAuth, orderController.razorpayVerifyPayment)
 

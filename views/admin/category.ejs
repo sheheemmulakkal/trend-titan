@@ -48,30 +48,30 @@
     <div class="content-wrapper">
 
         <!-- ======= Form ======== -->
-
+        
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Add category</h4>
-                <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
-                <% if( err.length > 0 ) { %>
-                    <div id="catExist" class="alert alert-danger"><%= err %></div> <!-- Error container exist category -->
-                <% } %>
-                <form class="forms-sample" action="/admin/add-category" method="POST" id="category">
-                  <div class="form-group">
-                    <input type="text" name="category" class="form-control" id="category-field" placeholder="Add category" required>
-                  </div>
-                  <button type="submit" class="btn btn-primary mr-2">Add</button>    
-                </form>
-              </div>
+                <div class="card-body">
+                    <h4 class="card-title">Add category</h4>
+                    <div id="errorContainer" class="alert alert-danger" style="display: none;"></div> <!-- Error container -->
+                    <% if( err.length > 0 ) { %>
+                        <div id="catExist" class="alert alert-danger"><%= err %></div> <!-- Error container exist category -->
+                        <% } %>
+                        <form class="forms-sample" action="/admin/add-category" method="POST" id="category">
+                            <div class="form-group">
+                                <input type="text" name="category" class="form-control" id="category-field" placeholder="Add category" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary mr-2">Add</button>    
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <!-- ======================== success model ========================= -->
-          
-        <% if( success.length > 0 ) { %>
-            <!-- The popup message modal -->
-            <div id="popupModal" class="modal fade" tabindex="-1">
+            
+            <!-- ======================== success model ========================= -->
+            
+            <% if( success.length > 0 ) { %>
+                <!-- The popup message modal -->
+                <div id="popupModal" class="modal fade" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content bg-dark text-white">
                     <div class="modal-body">
@@ -84,13 +84,60 @@
         <% } %>
   
   
-
-
+        
+        
         <!-- ======================== Table ========================= -->
-        <div class="row mt-5">
-            <div class="col-12 grid-margin">
-            <div class="card">
-                <div class="card-body">
+        <div class=" row   mt-3">
+            <div class="col-3 col-sm-6">
+              <div class="row m-0">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <div class="col-sm-12">
+                      <form action="/admin/category">
+                      <select class="form-control" name="sortData">
+                        <option value="category" >Category</option>
+                        
+                      </select>
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="col-md-4">
+                  <div class="form-group row">
+                    <div class="col-sm-12">
+                      <select class="form-control" name="sortOrder">
+                        <option>Ascending</option>
+                        <option>Descending</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="sort form-group "><button class=" btn btn-primary form-control">
+                  sort
+                </button></div>
+              </form>  
+              </div>
+            </div>
+        
+            </div>
+        
+            <div style="margin-top: -10px;" class="card">
+            <div class="card-body">
+        
+              <div class=" col-3 col-sm-6 grid-margin">
+                <div class="form-group col-6 mr-1">
+                  <form action="/admin/category">
+                  <div class="input-group">
+                    <input type="text" class="form-control" value="<%= search %>" name="search" placeholder="Search here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-sm btn-primary" type="submit">Search</button>
+                    </div>
+                  </div>
+                  </form>
+                </div>
+              </div>
+
                 <h4 class="card-title">Category</h4>
                 <div class="table-responsive">
                     <table class="table">
@@ -130,17 +177,27 @@
             <!-- Pagination buttons -->
             <div class="pagination-btn">
                 <% if( currentPage !== 1 ) { %> 
-                  <a href="/admin/category?page=1"><button type="button" class="btn btn-outline-secondary 1">1</button></a>
+                    <a 
+                    href="/admin/category?page=1<% if( search ) { %>&search=<%= search %><% } %><% if ( sortData ) {%>&sortData=<%= sortData %><% } %><% if ( sortOrder ) {%>&sortOrder=<%= sortOrder %><% } %>"
+                    ><button type="button" class="btn btn-outline-secondary 1">1</button></a>
                 <% } %>
                 <% if( currentPage > 2 ) { %>
-                    <a href="/admin/category?page=<%= prevPage %>"><button type="button" class="btn btn-outline-secondary 2"><%= prevPage %></button></a> 
+                    <a 
+                    href="/admin/category?page=<%= prevPage %><% if( search ) { %>&search=<%= search %><% } %><% if ( sortData ) {%>&sortData=<%= sortData %><% } %><% if ( sortOrder ) {%>&sortOrder=<%= sortOrder %><% } %>"
+                        ><button type="button" class="btn btn-outline-secondary 2"><%= prevPage %></button></a> 
                 <% } %>
-                <a href="/admin/category?page=<%= currentPage %>"><button type="button" class="btn btn-outline-secondary 3 active"><%= currentPage %></button></a>
+                    <a 
+                    href="/admin/category?page=<%= currentPage %><% if( search ) { %>&search=<%= search %><% } %><% if ( sortData ) {%>&sortData=<%= sortData %><% } %><% if ( sortOrder ) {%>&sortOrder=<%= sortOrder %><% } %>"
+                    ><button type="button" class="btn btn-outline-secondary 3 active"><%= currentPage %></button></a>
                 <% if( hasNextPage ) { %>
-                    <a href="/admin/category?page=<%= nextPage %>"><button type="button" class="btn btn-outline-secondary 4"><%= nextPage %></button></a> 
+                    <a 
+                    href="/admin/category?page=<%= nextPage %><% if( search ) { %>&search=<%= search %><% } %><% if ( sortData ) {%>&sortData=<%= sortData %><% } %><% if ( sortOrder ) {%>&sortOrder=<%= sortOrder %><% } %>"
+                        ><button type="button" class="btn btn-outline-secondary 4"><%= nextPage %></button></a> 
                 <% } %>    
                 <% if( nextPage !== lastPage && currentPage !== lastPage ) { %>
-                    <a href="/admin/category?page=<%= lastPage %>"><button type="button" class="btn btn-outline-secondary 5"><%= lastPage %></button></a>
+                    <a 
+                    href="/admin/category?page=<%= lastPage %><% if( search ) { %>&search=<%= search %><% } %><% if ( sortData ) {%>&sortData=<%= sortData %><% } %><% if ( sortOrder ) {%>&sortOrder=<%= sortOrder %><% } %>"
+                        ><button type="button" class="btn btn-outline-secondary 5"><%= lastPage %></button></a>
                 <% } %>
             </div>
 

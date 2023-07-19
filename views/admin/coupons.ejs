@@ -49,11 +49,67 @@
     <div class="content-wrapper">
         <div><a class="badge badge-outline-primary" href="/admin/add-coupon">Add coupons</a></div>
  <!-- ======================== Table ========================= -->
-        <div class="row mt-5">
-            <div class="col-12 grid-margin">
-            <div class="card">
-                <div class="card-body">
-                <h4 class="card-title">Category</h4>
+ <div class=" row   mt-3">
+            
+        
+        
+    <div class="col-3 col-sm-6">
+      <div class="row m-0">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <form action="/admin/coupons">
+              <select class="form-control" name="sortData">
+                <option value="name" >Name</option>
+                <option value="startingDate" >Starting Date</option>
+                <option value="expiryDate" >Expiry Date</option>
+                <option value="minimumAmount" >Minimum Amount</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <select class="form-control" name="sortOrder">
+                <option>Ascending</option>
+                <option>Descending</option>
+                
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="sort form-group "><button class=" btn btn-primary form-control">
+          sort
+        </button></div>
+      </form>
+
+        
+      </div>
+      
+
+    </div>
+
+    </div>
+
+    <div style="margin-top: -10px;" class="card">
+    <div class="card-body">
+
+      <div class=" col-3 col-sm-6 grid-margin">
+        <div class="form-group col-6 mr-1">
+          <form action="/admin/coupons">
+          <div class="input-group">
+            <input type="text" class="form-control" value="<%= search %>" name="search" placeholder="Search here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-sm btn-primary" type="submit">Search</button>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+                <h4 class="card-title">Coupons</h4>
                 <div class="table-responsive">
                     <table class="table">
                     <thead>

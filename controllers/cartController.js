@@ -1,6 +1,7 @@
 const cartSchema = require( '../models/cartModel' );
 const productSchema = require( '../models/productModel' );
-const cartHelper = require( '../helpers/cartHelper' )
+const couponSchema = require( '../models/couponModel' )  
+const cartHelper = require( '../helpers/cartHelper' );
 
 
 
@@ -14,9 +15,12 @@ module.exports = {
             }
             const updatedCart = await cartSchema.findOne({ userId : user }).populate( 'items.productId' );
             const totalPrice = await cartHelper.totalCartPrice( user )
+
+            const availableCoupons = await couponSchema.find({ status : true , startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() } })
             res.render( 'shop/cart', {
                 cartItems : updatedCart,
-                totalAmount : totalPrice
+                totalAmount : totalPrice,
+                availableCoupons : availableCoupons
             });
         } catch ( error ) {
             console.log( error.message );

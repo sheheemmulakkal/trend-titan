@@ -60,13 +60,34 @@ module.exports = {
     getProductsList : async( req, res ) => {
 
         try {
+            const { search, sortData, sortOrder } = req.query
             let page = Number(req.query.page);
             if (isNaN(page) || page < 1) {
             page = 1;
             }
-            const productsCount = await productSchema.find().count()
-            const products = await productSchema.find().populate( 'category' )
-            .skip(( page - 1 ) * paginationHelper.PRODUCT_PER_PAGE ).limit( paginationHelper.PRODUCT_PER_PAGE )
+            const sort = {}
+            const condition = {}
+            if( sortData ) {
+                if( sortOrder === "Ascending" ){
+                    sort[sortData] = 1
+                } else {
+                    sort[sortData] = -1
+                }
+            }
+            
+            
+            if ( search ){
+                condition.$or = [
+                    { name : { $regex : search, $options : "i" }},
+                    { brand : { $regex : search, $options : "i" }},
+                    { description : { $regex : search, $options : "i" }},
+                    
+                ]
+            }
+
+            const productsCount = await productSchema.find( condition ).count()
+            const products = await productSchema.find( condition ).populate( 'category' )
+            .sort( sort ).skip(( page - 1 ) * paginationHelper.PRODUCT_PER_PAGE ).limit( paginationHelper.PRODUCT_PER_PAGE )
             res.render('admin/products',{
                 admin : req.session.admin,
                 products : products,
@@ -75,7 +96,10 @@ module.exports = {
                 hasPrevPage : page > 1,
                 nextPage : page + 1,
                 prevPage : page -1,
-                lastPage : Math.ceil( productsCount / paginationHelper.PRODUCT_PER_PAGE )
+                lastPage : Math.ceil( productsCount / paginationHelper.PRODUCT_PER_PAGE ),
+                search : search,
+                sortData : sortData,
+                sortOrder : sortOrder
             })
 
         } catch ( error ) { 

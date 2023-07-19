@@ -6,6 +6,43 @@
     .shop-now a:hover{
         color: #111;
     }
+
+    .container-modal {
+    padding: 2rem 0rem;
+  }
+
+  .modal-dialog {
+    position: fixed;
+    top: auto;
+    left: auto;
+    right: 0.5rem;
+    bottom: 0;
+    margin-bottom: 0.5rem;
+    min-width: 300px;
+    max-width: 400px;
+    overflow-y: auto;
+  }
+
+  .modal-body {
+    max-height: calc(100vh - 210px);
+  }
+
+  .notice {
+    padding: 0rem 1rem;
+
+    h4 {
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .icon {
+    font-size: 3rem;
+  }
+
 </style>
 <section class="shopping-cart spad mt-5">
     <div class="container">
@@ -73,12 +110,18 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="cart__discount">
-                        <h6>Discount codes</h6>
-                        <form action="#">
-                            <input type="text" placeholder="Coupon code">
-                            <button type="submit">Apply</button>
+                        <h6>Discount Coupons</h6>
+                        <form id="coupon-form">
+                            <input id="coupon-input" type="text" placeholder="Coupon code">
+                            <button onclick="applyCoupon(event)" >Apply</button>
                         </form>
+                        <div id="coupon-message" class="coupon-message"></div>
                     </div>
+                    <div class="container">
+                        <button type="button" class="btn btn-danger rounded-0 badge-dar mb-2" data-toggle="modal" data-target="#discountModal">
+                          Show Available coupons
+                        </button>  
+                      </div>
                     <div class="cart__total">
                         <h6>Cart total</h6>
                         <ul>
@@ -125,9 +168,53 @@
 
 
 
+<!-- Coupon modal -->
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      
+      <% if( availableCoupons && availableCoupons.length > 0) { %>
+        <% for( coupon of availableCoupons ) { %>
+
+            <div class="modal-content rounded-0">
+                <div class="modal-body text-center">
+                    <div class="icon text-danger">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="notice">
+                        <% if( coupon.discountType === 'percentage') { %>
+                            <h4>Get <%= coupon.discount %>% Discount</h4>
+                        <% } else if( coupon.discountType === 'fixed-amount' ) { %>
+                            <h4>Get ₹ <%= coupon.discount %> Discount</h4>
+                        <% } %>
+                        <p>This coupon only available for purchase above ₹ <%= coupon.minimumAmount %></p>
+                        <p>And valid from <%= moment(coupon.startingDate).format(shortDateFormat) %> to <%= moment(coupon.expiryDate).format(shortDateFormat) %> </p>
+                        <p>Use promo code <span class="badge badge-info"><%= coupon.name %></span> at checkout.</p>
+                    </div>
+                    <div class="code"></div>
+                </div>
+            </div>
+        <% } %>
+    <% } %>
+      
+    </div>
+  </div>
+  
+  
+
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
+
+$(document).ready(function() {  
+  $('#discountModal').modal('show');
+});
+    
 
     // Cheking the quantity... If quantity is 1 it will hide left arrow
     window.addEventListener('DOMContentLoaded', () => {
@@ -141,6 +228,32 @@
         }
     });
     });
+
+    const couponForm = document.getElementById( 'coupon-form' )
+    async function applyCoupon(event){
+        event.preventDefault()
+        
+        const couponCode = document.getElementById( 'coupon-input' ).value.trim()
+        const invalidRegex = /[ .]/
+        if( invalidRegex.test(couponCode) || couponCode === ""){
+            alert('Enter a valid Coupon name')
+            return
+        }
+        const response = await axios.post('/apply-coupon',{ couponCode })
+        console.log(response.data);
+        if( response.data.success) {
+            const couponMessage = document.getElementById( 'coupon-message' )
+            couponMessage.innerHTML = '<p>Coupon applied</p>'
+        } else {
+            const couponMessage = document.getElementById( 'coupon-message' )
+            couponMessage.innerHTML = `<p class="text-danger" >${response.data.message}</p>`
+
+        }
+
+    }
+
+
+
     const totalCartPrice = document.getElementById('total')
     const subtotalCartPrice = document.getElementById('subtotal')
     const cartTable = document.getElementById('cart-table')
@@ -188,7 +301,7 @@
             if( response.data.success === true){
                 console.log(response.data.totalPrice);
                 const currentQty = parseInt(qty.val())
-                const updatedQty = currentQty+1
+                const updatedQty = currentQty + 1
                 const totalPrice = updatedQty * price
                 updatedQty > 1 ? dec.show() : null ;
                 total.innerHTML = `₹ ${totalPrice}`

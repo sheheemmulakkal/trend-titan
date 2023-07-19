@@ -11,14 +11,33 @@ module.exports = {
     getCategory : async ( req, res ) => {
 
         try {
+
+            const { search, sortData, sortOrder } = req.query
             let page = Number(req.query.page);
             if (isNaN(page) || page < 1) {
             page = 1;
             }
 
-            const categoryCount = await categorySchema.find().count()
-            const category = await categorySchema.find()
-            .skip(( page - 1 ) * paginationHelper.CATEGORY_PER_PAGE ).limit( paginationHelper.CATEGORY_PER_PAGE )
+            const condition = {}
+
+            if ( search ){
+                condition.$or = [
+                    { category : { $regex : search, $options : "i" }}
+                    
+                ]
+            }
+            const sort = {}
+            if( sortData ) {
+                if( sortOrder === "Ascending" ){
+                    sort[sortData] = 1
+                } else {
+                    sort[sortData] = -1
+                }
+            }
+
+            const categoryCount = await categorySchema.find( condition ).count()
+            const category = await categorySchema.find( condition )
+            .sort( sort ).skip(( page - 1 ) * paginationHelper.CATEGORY_PER_PAGE ).limit( paginationHelper.CATEGORY_PER_PAGE )
             res.render( 'admin/category', {
                 admin : req.session.admin,
                 category : category,
@@ -29,7 +48,10 @@ module.exports = {
                 hasPrevPage : page > 1,
                 nextPage : page + 1,
                 prevPage : page -1,
-                lastPage : Math.ceil( categoryCount / paginationHelper.CATEGORY_PER_PAGE )
+                lastPage : Math.ceil( categoryCount / paginationHelper.CATEGORY_PER_PAGE ),
+                search : search,
+                sortData : sortData,
+                sortOrder : sortOrder
             } )
 
         } catch (error) {

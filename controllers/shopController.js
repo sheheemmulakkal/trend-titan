@@ -30,7 +30,9 @@ module.exports = {
     getShop : async( req, res ) => {
         try {
 
-            const { cat, brand, price, sort } = req.query
+            const { cat, brand, price, sort, search } = req.query
+
+            console.log(req.query);
             let page = Number( req.query.page );
             if ( isNaN(page) || page < 1 ) {
             page = 1;
@@ -43,7 +45,15 @@ module.exports = {
             if( brand ) {
                 condition.brand = brand
             }
+            if( search ) {
+                condition.$or = [
+                    { name : { $regex : search, $options : "i" }},
+                    { description : { $regex : search, $options : "i" }},
+                    
+                ]
+            }
 
+            console.log(condition, ' condition');
             const productCount = await productSchema.find({ status : true }).count()
             const products = await productSchema.find( condition )
             .skip( ( page - 1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
@@ -67,7 +77,8 @@ module.exports = {
                 startingNo : startingNo,
                 endingNo : endingNo,
                 cat : cat,
-                brand : brand
+                brand : brand,
+                search : search
             })
               
         } catch ( error ) {

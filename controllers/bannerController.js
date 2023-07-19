@@ -7,12 +7,22 @@ module.exports = {
     getBannerManagement : async ( req, res ) => {
 
         try {
+            const { search } = req.query
             let page = Number(req.query.page);
             if (isNaN(page) || page < 1) {
             page = 1;
             }
-            const bannersCount = await bannerSchema.find().count()
-            const banners = await bannerSchema.find()
+            const condition = {}
+
+            if ( search ){
+                condition.$or = [
+                    { typeHead : { $regex : search, $options : "i" }},
+                    { mainHead : { $regex : search, $options : "i" }},
+                    { description : { $regex : search, $options : "i" }}
+                ]
+            }
+            const bannersCount = await bannerSchema.find( condition ).count()
+            const banners = await bannerSchema.find( condition )
             .skip(( page - 1 ) * paginationHelper.BANNER_PER_PAGE ).limit( paginationHelper.BANNER_PER_PAGE )
 
             res.render( 'admin/banner-management',{
@@ -24,7 +34,8 @@ module.exports = {
                 hasPrevPage : page > 1,
                 nextPage : page + 1,
                 prevPage : page -1,
-                lastPage : Math.ceil( bannersCount / paginationHelper.BANNER_PER_PAGE )
+                lastPage : Math.ceil( bannersCount / paginationHelper.BANNER_PER_PAGE ),
+                search : search
             })
 
         } catch(error) {

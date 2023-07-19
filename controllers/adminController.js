@@ -38,7 +38,9 @@ module.exports = {
                 orderSchema.find({ orderStatus : "Confirmed" }).count(),
                 orderSchema.find({ orderStatus : "Delivered" }).count(),
                 userSchema.find({isBlocked : false, isVerified : true}).count(),
-                productSchema.find({status : true}).count()
+                productSchema.find({status : true}).count(),
+                dashboardHelper.dailyChart()
+                
             ]
             
             const results = await Promise.all( promises )
@@ -53,7 +55,9 @@ module.exports = {
             const completedOrders = results[7]
             const userCount = results[8]
             const productCount = results[9]
+            const dailyChart = results[10]
 
+        
             const monthlyGrowth = revenuePreviousMonth === 0 ? 100 : ((( revenueCurrentMonth - revenuePreviousMonth ) / revenuePreviousMonth ) * 100).toFixed(1);
 
             const dailyGrowth = ((( todayIncome - yesterdayIncome ) / yesterdayIncome ) * 100).toFixed( 1 )  
@@ -68,7 +72,8 @@ module.exports = {
                 userCount : userCount,
                 ordersToShip : ordersToShip,
                 completedOrders : completedOrders,
-                productCount : productCount
+                productCount : productCount,
+                dailyChart : dailyChart 
             } )
         } catch (error) {
             console.log(error.message);
@@ -79,13 +84,36 @@ module.exports = {
     getUserList : async( req, res ) => {
 
         try {
+
+            const { search, sortData, sortOrder } = req.query
+
             let page = Number(req.query.page);
             if (isNaN(page) || page < 1) {
             page = 1;
             }
-            const userCount = await userSchema.find({ isAdmin : 0 }).count()
-            const userList = await userSchema.find({ isAdmin : 0 })
-            .skip(( page - 1 ) * paginationHelper.USERS_PER_PAGE ).limit( paginationHelper.USERS_PER_PAGE )
+            const condition = { isAdmin : 0}
+
+            const sort = {}
+            if( sortData ) {
+                if( sortOrder === "Ascending" ){
+                    sort[sortData] = 1
+                } else {
+                    sort[sortData] = -1
+                }
+            }
+
+            if( search ) {
+                condition.$or = [
+                    { firstName : { $regex : search, $options : "i" }},
+                    { lastName : { $regex : search, $options : "i" }},
+                    { email : { $regex : search, $options : "i" }},
+                    { mobile : { $regex : search, $options : "i" }},
+                ]
+            }
+
+            const userCount = await userSchema.find( condition ).count()
+            const userList = await userSchema.find( condition )
+            .sort( sort ).skip(( page - 1 ) * paginationHelper.USERS_PER_PAGE ).limit( paginationHelper.USERS_PER_PAGE )
 
             res.render( 'admin/userList', {
                 userList : userList,
@@ -95,7 +123,10 @@ module.exports = {
                 hasPrevPage : page > 1,
                 nextPage : page + 1,
                 prevPage : page -1,
-                lastPage : Math.ceil( userCount / paginationHelper.USERS_PER_PAGE ) 
+                lastPage : Math.ceil( userCount / paginationHelper.USERS_PER_PAGE ),
+                search : search,
+                sortData : sortData,
+                sortOrder : sortOrder
             } )
             
         } catch ( error ) {

@@ -4,11 +4,32 @@ const couponSchema = require( '../models/couponModel' )
 module.exports = {
     getCoupons : async ( req, res ) => {
         try {
-            const coupons = await couponSchema.find()
+            const { search, sortData, sortOrder  } = req.query
+            const condition = {}
 
+            if ( search ){
+                condition.$or = [
+                    { name : { $regex : search, $options : "i" }},
+                    { description : { $regex : search, $options : "i" }},
+                    { discountType : { $regex : search, $options : "i" }},
+                    
+                ]
+            }
+            const sort = {}
+            if( sortData ) {
+                if( sortOrder === "Ascending" ){
+                    sort[sortData] = 1
+                } else {
+                    sort[sortData] = -1
+                }
+            }
+            
+
+            const coupons = await couponSchema.find( condition ).sort( sort )
             res.render( 'admin/coupons',{
                 admin : true,
-                coupons : coupons
+                coupons : coupons,
+                search : search
             })
         } catch (error) {
             console.log(error.message);
@@ -29,7 +50,6 @@ module.exports = {
 
             const exist = await couponSchema.findOne({ name : name.toUpperCase()})
             if( exist ){
-                console.log('coupon already exist');
                 req.flash('err','Coupon name already exist..')
                 return res.redirect('/admin/add-coupon')
             }
@@ -41,7 +61,9 @@ module.exports = {
                 expiryDate : expiryDate,
                 minimumAmount : minimumAmount,
                 discountType : discountType,
-                discount : discount
+                discount : discount,
+                sortData : sortData,
+                sortOrder : sortOrder
             })
             await coupon.save()
             res.redirect('/admin/coupons')
@@ -92,6 +114,48 @@ module.exports = {
                 }
             })
             res.json({ cancelled : true })
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    applyCoupon : async ( req, res ) => {
+        try {
+            const { couponCode } = req.body
+            const { user } = req.session
+
+            const coupon = await couponSchema.find({ name : couponCode, status : true })
+
+            
+            if( coupon && coupon.length > 0 ) {
+
+                console.log(1);
+                const now = new Date()
+                if( coupon[0].expiryDate >= now && coupon[0].startingDate <= now ){
+
+                    console.log(2);
+                    const userExist = coupon[0].users.some( userId  => userId.toString == user )
+                    if( userExist ){
+
+                        console.log(4);
+                        res.status(409).json({ success : false, message : 'Coupon already used by the user' })
+                    } else {
+
+                        
+                        res.json({ success : true, message : "Available"  })
+                    }
+                } else {
+
+                    console.log(6);
+                    res.json({ success : false, message : 'Invalid Coupon, out dated'})
+                }
+            } else {
+
+                console.log(7);
+                res.json({ success : false, message : 'Invalid Coupon'})
+            } 
+             
+            
         } catch (error) {
             console.log(error.message);
         }

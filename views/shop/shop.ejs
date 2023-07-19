@@ -9,8 +9,8 @@
             <div class="col-lg-3">
                 <div class="shop__sidebar">
                     <div class="shop__sidebar__search">
-                        <form action="#">
-                            <input type="text" placeholder="Search...">
+                        <form action="/shop?" method="get">
+                            <input type="text" name="search" placeholder="Search..." value="<%= search %>">
                             <button type="submit"><span class="icon_search"></span></button>
                         </form>
                     </div>
@@ -24,9 +24,9 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__categories">
                                             <ul class="nice-scroll">
-                                                <li><a href="/shop?<% if (brand){%>&&brand=<%= brand %><% } %>">All</a></li>
+                                                <li><a href="/shop?<% if (brand){%>&&brand=<%= brand %><% } %><% if (search){%>&search=<%= search %><% } %>">All</a></li>
                                                 <% for( let item of category ) { %>
-                                                <li><a href="/shop?cat=<%= item._id %><% if (brand){%>&&brand=<%= brand %><% } %>"><%= item.category %></a></li>
+                                                <li><a href="/shop?cat=<%= item._id %><% if (brand){%>&&brand=<%= brand %><% } %><% if (search){%>&search=<%= search %><% } %>"><%= item.category %></a></li>
                                                 <% } %>
                                                 
                                             </ul>
@@ -42,9 +42,9 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__brand">
                                             <ul>
-                                                <li><a href="shop?<% if ( cat ) { %>&&cat=<%= cat %><% } %>">All</a></li>
+                                                <li><a href="shop?<% if ( cat ) { %>&&cat=<%= cat %><% } %><% if (search){%>&search=<%= search %><% } %>">All</a></li>
                                                 <% for( let item of brands ) { %>
-                                                <li><a href="shop?brand=<%= item %><% if ( cat ) { %>&&cat=<%= cat %><% } %>"><%= item %></a></li>
+                                                <li><a href="shop?brand=<%= item %><% if ( cat ) { %>&&cat=<%= cat %><% } %><% if (search){%>&search=<%= search %><% } %>"><%= item %></a></li>
                                                 <% } %>
                                             </ul>
                                         </div>
@@ -112,23 +112,23 @@
                     <div class="col-lg-12">
                         <div class="product__pagination">
                             <% if( currentPage !== 1 ) { %> 
-                                <a href="/shop?page=1">1</a>
+                                <a href="/shop?page=1<% if (brand){%>&&brand=<%= brand %><% } %><% if (search){%>&search=<%= search %><% } %>">1</a>
                             <% } %>
                             <% if( (currentPage > 3) ){ %>
                                 <span>...</span>
                             <% } %>
                             <% if( currentPage > 2 ) { %>
-                                <a href="/shop?page=<%= prevPage %>"><%= prevPage %></a> 
+                                <a href="/shop?page=<%= prevPage %><% if (brand){%>&&brand=<%= brand %><% } %><% if (search){%>&search=<%= search %><% } %>"><%= prevPage %></a> 
                             <% } %>
-                            <a href="/shop?page=<%= currentPage %>" class="active"><%= currentPage %></a>
+                            <a href="/shop?page=<%= currentPage %><% if (brand){%>&&brand=<%= brand %><% } %><% if (search){%>&search=<%= search %><% } %>" class="active"><%= currentPage %></a>
                             <% if( hasNextPage ) { %>
-                                <a href="/shop?page=<%= nextPage %>"><%= nextPage %></a> 
+                                <a href="/shop?page=<%= nextPage %><% if (brand){%>&&brand=<%= brand %><% } %><% if (search){%>&search=<%= search %><% } %>"><%= nextPage %></a> 
                             <% } %>
                             <% if( (lastPage - currentPage > 2) ){ %>
                                 <span>...</span>
                             <% } %>    
                             <% if( nextPage !== lastPage && currentPage !== lastPage ) { %>
-                                <a href="/shop?page=<%= lastPage %>"><%= lastPage %></a>
+                                <a href="/shop?page=<%= lastPage %><% if (brand){%>&&brand=<%= brand %><% } %><% if (search){%>&search=<%= search %><% } %>"><%= lastPage %></a>
                             <% } %>
                             
                             

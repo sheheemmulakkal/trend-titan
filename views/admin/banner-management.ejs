@@ -30,6 +30,18 @@
         <div><a class="badge badge-outline-primary" href="/admin/add-banner">Add Banner</a></div>
         <div class="row mt-5">
             <div class="col-12 grid-margin">
+
+              <div class="form-group col-4">
+                <form action="/admin/banner">
+                <div class="input-group">
+                  <input type="text" class="form-control" value="<%= search %>" name="search" placeholder="Search here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button class="btn btn-sm btn-primary" type="submit">Search</button>
+                  </div>
+                </div>
+              </form>
+              </div>
+
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Banners</h4>
@@ -98,17 +110,17 @@
               <!-- Pagination buttons -->
               <div class="pagination-btn">
                 <% if( currentPage !== 1 ) { %> 
-                  <a href="/admin/banner?page=1"><button type="button" class="btn btn-outline-secondary 1">1</button></a>
+                  <a href="/admin/banner?page=1<% if( search ) { %>&search=<%= search %><% } %>"><button type="button" class="btn btn-outline-secondary 1">1</button></a>
                 <% } %>
                 <% if( currentPage > 2 ) { %>
-                    <a href="/admin/banner?page=<%= prevPage %>"><button type="button" class="btn btn-outline-secondary 2"><%= prevPage %></button></a> 
+                    <a href="/admin/banner?page=<%= prevPage %><% if( search ) { %>&search=<%= search %><% } %>"><button type="button" class="btn btn-outline-secondary 2"><%= prevPage %></button></a> 
                 <% } %>
-                <a href="/admin/banner?page=<%= currentPage %>"><button type="button" class="btn btn-outline-secondary 3 active"><%= currentPage %></button></a>
+                <a href="/admin/banner?page=<%= currentPage %><% if( search ) { %>&search=<%= search %><% } %>"><button type="button" class="btn btn-outline-secondary 3 active"><%= currentPage %></button></a>
                 <% if( hasNextPage ) { %>
-                    <a href="/admin/banner?page=<%= nextPage %>"><button type="button" class="btn btn-outline-secondary 4"><%= nextPage %></button></a> 
+                    <a href="/admin/banner?page=<%= nextPage %><% if( search ) { %>&search=<%= search %><% } %>"><button type="button" class="btn btn-outline-secondary 4"><%= nextPage %></button></a> 
                 <% } %>    
                 <% if( nextPage !== lastPage && currentPage !== lastPage ) { %>
-                    <a href="/admin/banner?page=<%= lastPage %>"><button type="button" class="btn btn-outline-secondary 5"><%= lastPage %></button></a>
+                    <a href="/admin/banner?page=<%= lastPage %><% if( search ) { %>&search=<%= search %><% } %>"><button type="button" class="btn btn-outline-secondary 5"><%= lastPage %></button></a>
                 <% } %>
               </div>
 
