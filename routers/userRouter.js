@@ -19,4 +19,8 @@
  router.patch( '/cancel-order', isAuth.userAuth, orderController.userCancelOrder )  
  router.get( '/view-order-products/:id', isAuth.userAuth, orderController.userOrderProducts )  
 
+ router.get( '/wallet', isAuth.userAuth, userController.getWalletHistory )
+ router.post( '/add-to-wallet', isAuth.userAuth, userController.addToWallet )
+ router.post( '/verify-payment', isAuth.userAuth, userController.razorpayVerifyPayment )
+
  module.exports = router   

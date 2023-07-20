@@ -16,11 +16,16 @@ module.exports = {
     placeOrder : async ( req, res ) => {
         try {
             const { user } = req.session
+            
             const products =  await cartHelper.totalCartPrice( user )
             
-            const { paymentMethod } = req.body
+            const { paymentMethod, addressId, walletAmount } = req.body
+            let walletBalance
+            if( walletAmount ){
+                walletBalance = Number(walletAmount)
+            }
    
-            const { addressId } = req.body
+           
             const productItems = products[0].items
 
             const cartProducts = productItems.map( ( items ) => ({
@@ -40,7 +45,24 @@ module.exports = {
                 })
             }
             const totalPrice = discounted && discounted.discountedTotal ? discounted.discountedTotal : totalAmount[0].total
+            let walletUsed, amountPayable
+            
+            if( walletAmount ) {
+                if( totalPrice > walletBalance ) {
+                    amountPayable = totalPrice - walletBalance
+                    walletUsed = walletBalance
+                } else if( walletBalance > totalPrice ) {
+                    amountPayable = 0
+                    walletUsed = totalPrice
+                }
+            } else {
+                amountPayable = totalPrice
+            }
+
+
+
             paymentMethod === 'COD' ? orderStatus = 'Confirmed' : orderStatus = 'Pending';
+            if( amountPayable === 0) { orderStatus = 'Confirmed' }
             const order = new orderSchema({
                 userId : user,
                 products : cartProducts,
@@ -48,6 +70,8 @@ module.exports = {
                 paymentMethod : paymentMethod,
                 orderStatus : orderStatus,
                 address : addressId,
+                walletUsed : walletUsed,
+                amountPayable : amountPayable
             })
             const ordered = await order.save()
             
@@ -64,13 +88,28 @@ module.exports = {
             await cartSchema.deleteOne({ userId : user })
             req.session.productCount = 0
             
-            if(  paymentMethod === 'COD' ){
+            if(  paymentMethod === 'COD' || amountPayable === 0 ){
                 // COD
-                
+                    if( walletAmount ) {
+                        
+                        await userSchema.updateOne({ _id : user }, {
+                            $inc : {
+                                wallet : -walletUsed
+                            },
+                            $push : {
+                                walletHistory : {
+                                    date : Date.now(),
+                                    amount : -walletUsed,
+                                    message : 'Used for purachse'
+                                }
+                            }
+                        })
+
+                    }
                     return res.json({ success : true})
             } else if( paymentMethod === 'razorpay'){
                 // Razorpay 
-                const payment = await paymentHelper.razorpayPayment( ordered._id, totalPrice )
+                const payment = await paymentHelper.razorpayPayment( ordered._id, amountPayable )
                 res.json({ payment : payment , success : false  })
             }
         } catch ( error ) {
@@ -80,6 +119,7 @@ module.exports = {
 
     razorpayVerifyPayment : async( req, res ) => {
         const { response , order } = req.body
+        const { user } = req.session
         let hmac = crypto.createHmac( 'sha256', RAZORPAY_KEY_SECRET )
         hmac.update( response.razorpay_order_id + '|' + response.razorpay_payment_id )
         hmac = hmac.digest( 'hex' )
@@ -89,6 +129,21 @@ module.exports = {
             await orderSchema.updateOne({_id : order.receipt},{
                 $set : { orderStatus : 'Confirmed'}
             })
+            const orders = await orderSchema.findOne({ _id : order.receipt })
+            if ( orders.walletUsed ) {
+                await userSchema.updateOne({ _id : user},{
+                    $inc : {
+                        wallet : -orders.walletUsed
+                    },
+                    $push : {
+                        walletHistory : {
+                            data : Date.now(),
+                            amount : -orders.walletUsed,
+                            message : 'Used for purachse'
+                        }
+                    }
+                })
+            }
             
             res.json({paid : true})
         } else {
@@ -99,7 +154,7 @@ module.exports = {
     getConfirmOrder : async( req, res ) => {
         try{
             const { user } = req.session
-            const products =  await cartHelper.totalCartPrice( user )
+             await cartHelper.totalCartPrice( user )
             
             const orders = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
 
@@ -110,15 +165,7 @@ module.exports = {
                     }
                 })
             }
-                // await cartSchema.deleteOne({ userId : user })
-                // req.session.productCount = 0
-
-                // for( const items of cartProducts ){
-                //     const { productId, quantity } = items
-                //     await productSchema.updateOne({_id : productId},
-                //         { $inc : { quantity :  -quantity  }})
-                // } 
-            
+                
             const lastOrder = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
 
             res.render( 'shop/confirm-order', {
@@ -240,7 +287,8 @@ module.exports = {
             const order = await orderSchema.findOne({ _id : id }).populate( 'products.productId' ).populate( 'address' )
             res.render( 'user/order-products', {
                 order : order,
-                products : order.products
+                products : order.products,
+                now : new Date()
             })
             
         } catch ( error ) {

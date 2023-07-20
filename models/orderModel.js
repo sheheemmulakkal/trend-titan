@@ -36,6 +36,16 @@ const orderSchema = Schema({
         required : true
     },
 
+    walletUsed : {
+        type : Number,
+        required : false
+    },
+
+    amountPayable : {
+        type : Number,
+        required : false
+    },
+
     orderStatus : {
         type : String,
         default : 'Pending'
@@ -50,7 +60,9 @@ const orderSchema = Schema({
     date : {
         type : Date,
         default : Date.now
-    }
+    },
+
+
 })
 
 module.exports = mongoose.model('order',orderSchema)

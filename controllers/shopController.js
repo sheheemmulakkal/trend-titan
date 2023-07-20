@@ -109,6 +109,7 @@ module.exports = {
             const { user } = req.session
             const cartAmount = await cartHelper.totalCartPrice( user )
             const cart = await cartSchema.findOne({ userId : user })
+            const userDetails = await userSchema.findOne({ _id : user })
             let discounted
             if( cart && cart.coupon && cartAmount && cartAmount.length > 0 ) {
                 discounted = await couponHelper.discountPrice( cart.coupon, cartAmount[0].total )
@@ -119,7 +120,8 @@ module.exports = {
             res.render( 'shop/checkout', {
                 cartAmount : cartAmount,
                 address : addresses,
-                discounted : discounted
+                discounted : discounted,
+                user : userDetails
             })
         } catch ( error ) {
             console.log( error.message );

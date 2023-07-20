@@ -64,6 +64,7 @@
                                 <a id="bio-link" class=" d-block mb-2" onclick="editButton()">Edit Bio</a>
                                 <a id="addresses-link" class=" d-block mb-2" href="/user/address">Manage Addresses</a>
                                 <a id="password-link" class=" d-block mb-2" href="/user/change-password">Change Password</a>
+                                <a id="password-link" class=" d-block mb-2" href="/user/wallet">Wallet history</a>
                             </div>                          
                         </div>
                     </div>
@@ -93,8 +94,12 @@
                         <div id="save" style="display: none;" onclick="update()" class="mt-4 btn btn-dark rounded-0">Save changes</div>
                     </form>
                     <div class="col-12 mt-5">
-                        <a style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 25px 50px;margin-inline: 10px;" class="text-primary fw-700"> Wallet Balance : ₹ 0</a>
-                        <a style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 25px 50px;margin-inline: 10px;" class="text-success fw-700"> Wallet History</a>
+                        <a style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 25px 50px;margin-inline: 10px;" class="text-primary fw-700">
+                             Wallet Balance : ₹ <% if( user.wallet) { %><%= user.wallet %><%} else { %>0<% } %>
+                        </a>
+                        <a href="/user/wallet" style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 25px 50px;margin-inline: 10px;" class="text-success fw-700">
+                             Wallet History
+                        </a>
                     </div>
                 </div>
             </div>

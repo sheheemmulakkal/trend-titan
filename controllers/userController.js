@@ -1,6 +1,8 @@
-
+const crypto = require( 'crypto' )
 const userSchema = require( '../models/userModel' )
 const addressSchema = require( '../models/addressModel' )
+const paymentHelper = require( '../helpers/paymentHelper' )
+
 
 module.exports = {
 
@@ -120,7 +122,47 @@ module.exports = {
         } catch( error ){
             console.log( error.message );
         }
-    } 
+    },
+
+    getWalletHistory : async ( req, res ) => {
+        const { user } = req.session
+        const userDetails = await userSchema.findOne({ _id : user })
+        console.log(userDetails);
+        res.render('user/wallet',{
+            user : userDetails
+        })
+    },
+
+    addToWallet : async ( req, res ) => {
+        try {
+            const { amount } = req.body
+            const  Id = crypto.randomBytes(8).toString('hex')
+
+            const payment = await paymentHelper.razorpayPayment( Id, amount )
+            res.json({ payment : payment , success : true  })
+
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    razorpayVerifyPayment : async( req, res ) => {
+        const { user } = req.session
+        const { order } = req.body
+        await userSchema.updateOne({ _id : user }, {
+            $inc : {
+                wallet : ( order.amount ) / 100
+            },
+            $push : {
+                walletHistory : {
+                    date : Date.now(),
+                    amount : ( order.amount ) / 100,
+                    message : "Deposit from payment gateway"
+                }
+            }
+        })
+        res.json({ paid : true })
+    }
     
 }
 

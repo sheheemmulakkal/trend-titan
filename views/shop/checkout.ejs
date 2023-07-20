@@ -42,6 +42,20 @@
                                 <li>Discount <span><% if( discounted ) { %>- ₹ <%= discounted.discountAmount %> <% } else { %>₹ 0<% } %></span></li>
                                 <li>Total <span><% if( discounted ) { %>₹ <%= discounted.discountedTotal %><% } else { %>₹ <%= cartAmount[0].total %><% } %></span></li>
                             </ul>
+                            <% if( user.wallet && user.wallet > 0 ) { %>
+                                <ul class="checkout__total__all">
+                                    <li> 
+                                        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                                            <div>
+                                                <input type="checkbox" id="wallet" name="wallet" value="<%= user.wallet %>">
+                                                <label style="font-weight: 700;" for="wallet">Use wallet balance</label>
+                                            </div>
+                                            <div><span> ₹ <%= user.wallet %> </span></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <hr style="height: 1px;background-color: #83837f;border: none;">
+                            <% } %>
                             <div style="display: flex; flex-direction: column; font-weight: 700;">
                                 <h6 class="mb-3"><b>Payment Method</b></h6>
                                 <div>
@@ -92,6 +106,16 @@
       try {
         const addressRadio = document.querySelector('input[name="addressId"]:checked');
         const paymentMethodRadio = document.querySelector('input[name="paymentMethod"]:checked');
+        const walletCheckbox = document.querySelector('input[name="wallet"]:checked');
+        let walletAmount
+        if( walletCheckbox ) {
+             walletAmount = walletCheckbox.value
+        }
+
+        
+        console.log(walletCheckbox);
+
+       
 
         if (!addressRadio || !paymentMethodRadio) {
             alert("Please select an address and payment method.");
@@ -106,7 +130,7 @@
             $.ajax({
                 url : '/place-order',
                 method : 'post',
-                data : { addressId, paymentMethod },
+                data : { addressId, paymentMethod, walletAmount },
                 success : ( order ) => {
                    
                     if( order.success ){
