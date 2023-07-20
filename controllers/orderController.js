@@ -254,7 +254,8 @@ module.exports = {
             const userDetails = await userSchema.findOne({ _id : user }) 
             res.render( 'user/orders', {
                 orders : orders,
-                user : userDetails
+                user : userDetails,
+                now : new Date()
             })
         } catch ( error ) {
             console.log( error.message );
@@ -264,11 +265,42 @@ module.exports = {
     userCancelOrder :  async ( req, res ) => {
         try {
             const { orderId, status } = req.body
+            const { user } = req.session
             const order = await orderSchema.findOne({ _id : orderId })
             for( let products of order.products ){
                 await productSchema.updateOne({ _id : products.productId }, {
                     $inc : { quantity : products.quantity }
                 })
+            }
+
+            if( order.orderStatus !== "Pending" && order.paymentMethod === 'razorpay' ) {
+                await userSchema.updateOne({ _id : user },{
+                    $inc : {
+                        wallet : order.totalPrice
+                    },
+                    $push : {
+                        walletHistory : {
+                            date : Date.now(),
+                            amount : order.walletUsed,
+                            message : "Deposited while canecelled order"
+                        }
+                    }
+                })
+            } else if( order.orderStatus !== "Pending" && order.paymentMethod === 'COD' ) {
+                if( order.walletUsed && order.walletUsed > 0 ) {
+                    await userSchema.updateOne({ _id : user },{
+                        $inc : {
+                            wallet : order.walletUsed
+                        },
+                        $push : {
+                            walletHistory : {
+                                date : Date.now(),
+                                amount : order.walletUsed,
+                                message : "Deposited while cancelled order"
+                            }
+                        }
+                    })
+                }
             }
 
             await orderSchema.findOneAndUpdate({ _id : orderId },
@@ -288,7 +320,6 @@ module.exports = {
             res.render( 'user/order-products', {
                 order : order,
                 products : order.products,
-                now : new Date()
             })
             
         } catch ( error ) {
@@ -368,6 +399,42 @@ module.exports = {
             sortOrder : sortOrder
         })  
 
-    }
+    },
+
+    returnOrder : async( req, res ) => {
+        const { orderId } = req.body
+        const { user } = req.session
+        const order = await orderSchema.findOne({ _id : orderId })
+        // console.log(order);
+
+        for ( let products of order.products ) {
+            await productSchema.updateOne({ _id : products.productId }, {
+                $inc : {
+                    quantity : products.quantity
+                }
+            })
+        }
+
+        await orderSchema.updateOne({ _id : orderId },{
+            $set : {
+                orderStatus : "Returned"
+            }
+        })
+        await userSchema.updateOne({ _id : user }, {
+            $inc : {
+                wallet : order.totalPrice
+            },
+            $push : {
+                walletHistory : {
+                    date : new Date(),
+                    amount : order.totalPrice,
+                    message : "Deposit on order return"
+                }
+            }
+        })
+
+
+        res.json({ success : true })
+    } 
 
 }

@@ -43,6 +43,11 @@
         color: white;
     }
 </style>
+
+
+
+
+
 <div class="main-div m-5">
 <section class="font-1">
     <div class="container profile-container p-5">
@@ -58,7 +63,7 @@
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>total</th>
-                            <th></th>
+                            
                         </thead>
                         <tbody>
                             <% for ( let product of products ){ %>
@@ -72,7 +77,7 @@
                             <td><%= product.price %></td>
                             <td><%= product.quantity %></td>
                             <td><%= total %></td>
-                            <td></td>
+                            
                             
                             </tr>
                             <% } %>
@@ -91,6 +96,22 @@
     <!--/.container-->
 </section>
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+    // async function returnProduct( orderId, productId, quantity, price ) {
+
+    //     const response = await axios.patch( '/user/return-product', {
+    //         orderId,
+    //         productId,
+    //         quantity,
+    //         price
+    //     } ) 
+    // }
+
+</script>
 
 <%- include('../includes/userFooter.ejs') %>
 <%- include('../includes/end.ejs') %>

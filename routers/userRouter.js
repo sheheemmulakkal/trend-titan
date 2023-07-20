@@ -23,4 +23,6 @@
  router.post( '/add-to-wallet', isAuth.userAuth, userController.addToWallet )
  router.post( '/verify-payment', isAuth.userAuth, userController.razorpayVerifyPayment )
 
+router.patch( '/return-order', isAuth.userAuth, orderController.returnOrder )
+
  module.exports = router   

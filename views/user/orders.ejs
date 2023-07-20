@@ -61,6 +61,9 @@
                         </thead>
                         <tbody>
                             <% for ( let order of orders ){ %>
+                                <% var timeDiff = now - order.date  %>
+                                <% var days = timeDiff / ( 1000 * 60 * 60 * 24 ) %>
+
                             <tr>
                                 <td>
                                     <%= moment(order.date).format(shortDateFormat) %> 
@@ -77,7 +80,13 @@
                             </td>
                             <td> <%= order.totalPrice %></td>
                             <td id="order-status-<%= order._id %>"><%= order.orderStatus %></td>
-                            <td> <% if( order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled') { %><% } else { %> <button style="font-size: 12px;" id="cancel-<%= order._id %>" onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger rounded-0"> Cancel</button> <% } %></td>
+                            <td> <% if( order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled' || order.orderStatus === 'Returned') { %><% } else { %> 
+                                    <button style="font-size: 12px;" id="cancel-<%= order._id %>" onclick="cancelOrder('<%= order._id %>')" class="btn btn-danger rounded-0"> Cancel</button> 
+                                <% } %>
+                                <% if( order.orderStatus === 'Delivered' && days < 30 ) { %>
+                                    <button style="font-size: 12px;" id="return-<%= order._id %>" onclick="returnOrder('<%= order._id %>')" class="btn btn-info rounded-0">Return</button>
+                                <% } %>
+                            </td>
                             <td><a  style="font-size: 12px;" class="btn btn-dark rounded-0" href="/user/view-order-products/<%= order._id %>">View products</a></td>
                             </tr>
                             <% } %>
@@ -110,6 +119,14 @@
         } catch (error) {
             console.log(error.message);
         }
+    }
+
+    async function returnOrder ( orderId ) {
+        const response = await axios.patch( '/user/return-order',{
+            orderId
+        })
+
+
     }
 </script>
 
