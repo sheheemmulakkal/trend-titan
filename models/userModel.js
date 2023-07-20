@@ -63,6 +63,24 @@ const userSchema = Schema({
     address : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : 'address'
+    }],
+
+    wallet : {
+        type : Number,
+        default : 0
+    },
+
+    walletHistory : [{
+        date : {
+            type : Date,
+        },
+        amount : {
+            type : Number
+        },
+        message : {
+            type : String
+        }
+
     }]
 })
 

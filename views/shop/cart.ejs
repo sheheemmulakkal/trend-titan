@@ -126,7 +126,8 @@
                         <h6>Cart total</h6>
                         <ul>
                             <li>Subtotal <span id="subtotal">₹ <%= totalAmount[0].total %></span></li>
-                            <li>Total <span id="total">₹ <%= totalAmount[0].total %></span></li>
+                            <li>Coupon discount <span id="coupon-discount"><% if( discounted ) { %>- ₹ <%= discounted.discountAmount %> <% } else { %>₹ 0<% } %></span></li>
+                            <li>Total <span id="total"><% if( discounted ) { %>₹ <%= discounted.discountedTotal %><% } else { %>₹ <%= totalAmount[0].total %><% } %></span></li>
                         </ul>
                         <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                     </div>
@@ -193,13 +194,13 @@
                         <% } %>
                         <p>This coupon only available for purchase above ₹ <%= coupon.minimumAmount %></p>
                         <p>And valid from <%= moment(coupon.startingDate).format(shortDateFormat) %> to <%= moment(coupon.expiryDate).format(shortDateFormat) %> </p>
-                        <p>Use promo code <span class="badge badge-info"><%= coupon.name %></span> at checkout.</p>
+                        <p>Use promo code <spans style="font-size: medium;" class="badge badge-info"><%= coupon.name %></span></p>
                     </div>
                     <div class="code"></div>
                 </div>
             </div>
         <% } %>
-    <% } %>
+        <% } %>
       
     </div>
   </div>
@@ -211,50 +212,56 @@
 
 <script>
 
-$(document).ready(function() {  
-  $('#discountModal').modal('show');
-});
     
-
     // Cheking the quantity... If quantity is 1 it will hide left arrow
     window.addEventListener('DOMContentLoaded', () => {
-    const qtyInputs = document.querySelectorAll('input[id^="qty-"]');
+        const qtyInputs = document.querySelectorAll('input[id^="qty-"]');
     qtyInputs.forEach((qtyInput) => {
+        console.log(1111);
         const productId = qtyInput.id.split('-')[1];
         const span = document.getElementById(`dec-${productId}`);
         const quantity = parseInt(qtyInput.value);
         if (quantity < 2) {
-        span.style.display = 'none';
+            span.style.display = 'none';
         }
     });
-    });
+});
 
-    const couponForm = document.getElementById( 'coupon-form' )
+
+const couponForm = document.getElementById( 'coupon-form' )
     async function applyCoupon(event){
         event.preventDefault()
-        
+        const totalCartPrice = document.getElementById('total')
+        const couponDiscount = document.getElementById('coupon-discount')
+        const total = Number(document.getElementById('total').innerHTML.split(" ")[1])
+        console.log(typeof total);
         const couponCode = document.getElementById( 'coupon-input' ).value.trim()
         const invalidRegex = /[ .]/
         if( invalidRegex.test(couponCode) || couponCode === ""){
             alert('Enter a valid Coupon name')
             return
         }
-        const response = await axios.post('/apply-coupon',{ couponCode })
-        console.log(response.data);
+        const response = await axios.post('/apply-coupon',{ couponCode, total })
+
         if( response.data.success) {
             const couponMessage = document.getElementById( 'coupon-message' )
             couponMessage.innerHTML = '<p>Coupon applied</p>'
+            if( response.data.discounted ) {
+                    totalCartPrice.innerHTML = `₹ ${response.data.discounted.discountedTotal}`
+                    couponDiscount.innerHTML =  `-₹ ${response.data.discounted.discountAmount}`
+                } 
         } else {
+            console.log(response.data.message);
             const couponMessage = document.getElementById( 'coupon-message' )
             couponMessage.innerHTML = `<p class="text-danger" >${response.data.message}</p>`
-
         }
+        
 
     }
 
 
-
     const totalCartPrice = document.getElementById('total')
+    console.log(totalCartPrice);
     const subtotalCartPrice = document.getElementById('subtotal')
     const cartTable = document.getElementById('cart-table')
     const emptyCart = document.getElementById('empty-cart')
@@ -268,6 +275,12 @@ $(document).ready(function() {
     async function addToCart( productId ){
 
         try {
+            const totalCartPrice = document.getElementById('total')
+            const subtotalCartPrice = document.getElementById('subtotal')
+            const couponDiscount = document.getElementById('coupon-discount')
+            const cartTable = document.getElementById('cart-table')
+            const emptyCart = document.getElementById('empty-cart')
+            const stockOut = document.getElementById('stockOut')
             const qty = $(`#qty-${productId}`)
             const dec = $(`#dec-${productId}`)
             const priceTag = document.getElementById(`price-${productId}`).innerHTML.split(" ")
@@ -300,6 +313,7 @@ $(document).ready(function() {
             }
             if( response.data.success === true){
                 console.log(response.data.totalPrice);
+                console.log(response.data.discounted);
                 const currentQty = parseInt(qty.val())
                 const updatedQty = currentQty + 1
                 const totalPrice = updatedQty * price
@@ -307,6 +321,12 @@ $(document).ready(function() {
                 total.innerHTML = `₹ ${totalPrice}`
                 totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
                 subtotalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                if( response.data.discounted ) {
+                    totalCartPrice.innerHTML = `₹ ${response.data.discounted.discountedTotal}`
+                    couponDiscount.innerHTML =  `-₹ ${response.data.discounted.discountAmount}`
+                } else {
+                    totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                }
                 qty.val(updatedQty)
             }  
             
@@ -317,6 +337,12 @@ $(document).ready(function() {
 
         async function decreaseCart(productId) {
                 try {
+                    const totalCartPrice = document.getElementById('total')
+                    const subtotalCartPrice = document.getElementById('subtotal')
+                    const couponDiscount = document.getElementById('coupon-discount')
+                    const cartTable = document.getElementById('cart-table')
+                    const emptyCart = document.getElementById('empty-cart')
+                    const stockOut = document.getElementById('stockOut')
                     const qty = $(`#qty-${productId}`)
                     const total = document.getElementById(`total-${productId}`)
                     const dec = $(`#dec-${productId}`)
@@ -330,13 +356,21 @@ $(document).ready(function() {
                         const updatedQty = currentQty-1
                         const totalPrice = totalNumber - price
                         total.innerHTML = `₹ ${totalPrice}`
-                            if(updatedQty < 2 ){
-                                dec.hide()
-                            }
-                            // console.log(response.data.totalPrice[0].total);
+                        if(updatedQty < 2 ){
+                            dec.hide()
+                        }
+                        // console.log(response.data.totalPrice[0].total);
+                        totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                        subtotalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                        qty.val(updatedQty)
+                        console.log(response.data.discounted);
+                        if( response.data.discounted ) {
+                            console.log(222);
+                            totalCartPrice.innerHTML = `₹ ${response.data.discounted.discountedTotal}`
+                            couponDiscount.innerHTML =  `-₹ ${response.data.discounted.discountAmount}`
+                        } else {
                             totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
-                            subtotalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
-                            qty.val(updatedQty)
+                        }
                         }
                     
                 } catch (error) {
@@ -345,23 +379,42 @@ $(document).ready(function() {
             }
         
             async function removeCart(itemId){
+                const totalCartPrice = document.getElementById('total')
+                    const subtotalCartPrice = document.getElementById('subtotal')
+                    const couponDiscount = document.getElementById('coupon-discount')
+                    const cartTable = document.getElementById('cart-table')
+                    const emptyCart = document.getElementById('empty-cart')
+                    const stockOut = document.getElementById('stockOut')
                 const response = await axios.patch('/removeCartItem',{ itemId })
                 if( response.data.success ){
                     const item = document.getElementById(`cart-row-${itemId}`) 
                     item.style.display = 'none'
+                    
                 }
                 if( response.data.removeItem === true ){
                         const count = document.getElementById('cartCount')
                         currentCount = parseInt(count.innerHTML)
                         updatedCount = currentCount - 1
                         count.innerHTML = updatedCount   
-                        if(updatedCount == 0 ){ cartTable.style.display = 'none'; emptyCart.style.display = 'block'}
-                        totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
-                        subtotalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                        if(updatedCount == 0 ){ 
+                            console.log(updatedCount, ' updated count');
+                            cartTable.style.display = 'none'; emptyCart.style.display = 'block'}
+                        
                     }
-            }
+                    if( response.data.discounted ) {
+                           
+                            totalCartPrice.innerHTML = `₹ ${response.data.discounted.discountedTotal}`
+                            couponDiscount.innerHTML =  `-₹ ${response.data.discounted.discountAmount}`
+                        } else {
+                            totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
+                        }
+                }
     
 
+            $(document).ready(function() {  
+              $('#discountModal').modal('show');
+            });
+    
 </script>
 
 <%- include('../includes/userFooter.ejs') %>

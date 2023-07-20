@@ -16,6 +16,7 @@ module.exports = {
     getAdminHome : async( req, res ) => {
         
         try {
+            
             const today = new Date();
             today.setHours( 0, 0, 0, 0 )
             const yesterday = new Date(today)
@@ -39,7 +40,8 @@ module.exports = {
                 orderSchema.find({ orderStatus : "Delivered" }).count(),
                 userSchema.find({isBlocked : false, isVerified : true}).count(),
                 productSchema.find({status : true}).count(),
-                dashboardHelper.dailyChart()
+                dashboardHelper.dailyChart(),
+                dashboardHelper.categorySales()
                 
             ]
             
@@ -56,6 +58,7 @@ module.exports = {
             const userCount = results[8]
             const productCount = results[9]
             const dailyChart = results[10]
+            const categorySales = results[11]
 
         
             const monthlyGrowth = revenuePreviousMonth === 0 ? 100 : ((( revenueCurrentMonth - revenuePreviousMonth ) / revenuePreviousMonth ) * 100).toFixed(1);
@@ -73,7 +76,8 @@ module.exports = {
                 ordersToShip : ordersToShip,
                 completedOrders : completedOrders,
                 productCount : productCount,
-                dailyChart : dailyChart 
+                dailyChart : dailyChart,
+                categorySales : categorySales
             } )
         } catch (error) {
             console.log(error.message);

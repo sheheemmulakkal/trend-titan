@@ -39,7 +39,8 @@
                             </ul>
                             <ul class="checkout__total__all">
                                 <li>Subtotal <span>₹ <%= cartAmount[0].total %></span></li>
-                                <li>Total <span>₹ <%= cartAmount[0].total %></span></li>
+                                <li>Discount <span><% if( discounted ) { %>- ₹ <%= discounted.discountAmount %> <% } else { %>₹ 0<% } %></span></li>
+                                <li>Total <span><% if( discounted ) { %>₹ <%= discounted.discountedTotal %><% } else { %>₹ <%= cartAmount[0].total %><% } %></span></li>
                             </ul>
                             <div style="display: flex; flex-direction: column; font-weight: 700;">
                                 <h6 class="mb-3"><b>Payment Method</b></h6>

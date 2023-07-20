@@ -9,7 +9,8 @@
     }
     .profile-container {
         /* border: .5px solid #6e6e6e2f; */
-        box-shadow: 0px 10px 40px 0px rgba(56,74,235,0.2);
+        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        /* box-shadow: 0px 10px 40px 0px rgba(56,74,235,0.2); */
     }
     section {
         width: 80%;
@@ -42,6 +43,7 @@
         background-color: #7a7a7a;
         color: white;
     }
+    
 </style>
 <div class="main-div m-5">
     <section class="font-1">
@@ -90,9 +92,16 @@
                         </div>
                         <div id="save" style="display: none;" onclick="update()" class="mt-4 btn btn-dark rounded-0">Save changes</div>
                     </form>
+                    <div class="col-12 mt-5">
+                        <a style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 25px 50px;margin-inline: 10px;" class="text-primary fw-700"> Wallet Balance : ₹ 0</a>
+                        <a style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 25px 50px;margin-inline: 10px;" class="text-success fw-700"> Wallet History</a>
+                    </div>
                 </div>
             </div>
             <!--/.row-->
+        </div>
+        <div class="wallet">
+
         </div>
         <!--/.container-->
     </section>

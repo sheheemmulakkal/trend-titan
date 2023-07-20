@@ -2,6 +2,7 @@ const cartSchema = require( '../models/cartModel' );
 const productSchema = require( '../models/productModel' );
 const couponSchema = require( '../models/couponModel' )  
 const cartHelper = require( '../helpers/cartHelper' );
+const couponHelper = require( '../helpers/couponHelper' );
 
 
 
@@ -9,18 +10,26 @@ module.exports = {
     getCart : async( req, res ) => {
         try {
             const { user } = req.session;   
+             let discounted
             const productCount = await cartHelper.updateQuantity( user )
             if( productCount === 1 ){
                 req.session.productCount--
             }
             const updatedCart = await cartSchema.findOne({ userId : user }).populate( 'items.productId' );
             const totalPrice = await cartHelper.totalCartPrice( user )
+            if( updatedCart && updatedCart.coupon && totalPrice && totalPrice.length > 0 ) {
+                discounted = await couponHelper.discountPrice( updatedCart.coupon, totalPrice[0].total )
+            }
+
 
             const availableCoupons = await couponSchema.find({ status : true , startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() } })
+
             res.render( 'shop/cart', {
                 cartItems : updatedCart,
                 totalAmount : totalPrice,
-                availableCoupons : availableCoupons
+                availableCoupons : availableCoupons,
+                discounted : discounted
+
             });
         } catch ( error ) {
             console.log( error.message );
@@ -56,7 +65,13 @@ module.exports = {
                                 );
                                 //total price of cart
                                 const totalPrice = await cartHelper.totalCartPrice( userId )
-                                res.status( 200 ).json({ success : true, message : 'Added to cart' ,login : true, totalPrice : totalPrice });
+
+                                let discounted
+                                if( cart.coupon && totalPrice && totalPrice.length > 0 ) {
+                                    discounted = await couponHelper.discountPrice( cart.coupon, totalPrice[0].total )
+                                }
+
+                                res.status( 200 ).json({ success : true, message : 'Added to cart' ,login : true, totalPrice : totalPrice, discounted : discounted });
                             } else {
                                 //If cart quantity and availabe quantity are same
                                 res.json({ message : "Oops! It seems you've reached the maximum quantity of products available for purchase.",
@@ -113,7 +128,13 @@ module.exports = {
             { $inc : { 'items.$.quantity' : -1 }}
             )
             const totalPrice = await cartHelper.totalCartPrice( user )
-            res.status( 200 ).json({ success : true, message : 'cart item decreased', totalPrice : totalPrice });
+            const cart = await cartSchema.findOne({ userId : user})
+            let discounted
+            if( cart.coupon && totalPrice && totalPrice.length > 0 ) {
+                discounted = await couponHelper.discountPrice( cart.coupon, totalPrice[0].total )
+            }
+
+            res.status( 200 ).json({ success : true, message : 'cart item decreased', totalPrice : totalPrice, discounted : discounted });
         } catch ( error ) {
             console.log( error.message );
         }
@@ -127,8 +148,16 @@ module.exports = {
             await cartSchema.updateOne({ userId : user, 'items._id': itemId },
                 { $pull : { items : { _id : itemId }}})
                 req.session.productCount--
+                if( req.session.productCount === 0 ){
+                    await cartSchema.deleteOne({ userId : user})
+                }
                 const totalPrice = await cartHelper.totalCartPrice(user)
-                res.status( 200 ).json({ success : true, message : 'Item removed', removeItem : true, totalPrice : totalPrice })
+                const cart = await cartSchema.findOne({ userId : user})
+                let discounted
+                if( cart && cart.coupon && totalPrice && totalPrice.length > 0 ) {
+                    discounted = await couponHelper.discountPrice( cart.coupon, totalPrice[0].total )
+                }
+                res.status( 200 ).json({ success : true, message : 'Item removed', removeItem : true, totalPrice : totalPrice, discounted : discounted })
         } catch ( error ) {
             console.log( error.message );
         }

@@ -62,5 +62,72 @@
 </div>
 
 
+<script>
+  const formCoupon = document.getElementById('coupon-form')
+  formCoupon.addEventListener('submit', ( event ) => {
+  const errorContainer = document.getElementById('errorContainer')
+  const name = document.getElementById('coupon-name').value.trim()
+  const description = document.getElementById('coupon-description').value.trim()
+  const startingDate = document.getElementById('Starting-date').value.trim()
+  const expiryDate = document.getElementById('expiry-date').value.trim()
+  const minimumAmount = document.getElementById('minimum-amount').value.trim()
+  const discountType = document.getElementById('discount-type').value.trim()
+  const discount = document.getElementById('discount').value.trim()
+  errorContainer.innerHTML = ""
+  errorContainer.style.display = 'none'
+  console.log(name);
+  const now = new Date()
+  if( !name || !description || !startingDate || !expiryDate || !minimumAmount || !discountType || !discount ) {
+    console.log(1);
+    event.preventDefault()
+    errorContainer.innerHTML = "All fields should be filled"
+    errorContainer.style.display = 'block'
+  }
+  
+  if( name.length < 5 ) {
+    console.log(2);
+    event.preventDefault()
+    errorContainer.innerHTML = "Name should contains atleast 4 letters"
+    errorContainer.style.display = 'block'
+  }
+  
+  const pattern = /^[a-zA-Z0-9]+$/
+  if( !pattern.test(name)){
+    console.log(3);
+    event.preventDefault()
+    errorContainer.innerHTML = "Name should not contains symbols or spaces"
+    errorContainer.style.display = 'block'
+  }
+  
+  if( startingDate > expiryDate || expiryDate < now  ) {
+    console.log(4);
+    event.preventDefault()
+    errorContainer.innerHTML = "Enter a valid date"
+    errorContainer.style.display = 'block'
+  }
+  
+  if( minimumAmount < 0 ) {
+    console.log(5);
+    event.preventDefault()
+    errorContainer.innerHTML = "Minimum Amount cannot be negative"
+    errorContainer.style.display = 'block'
+  }
+  
+  if( discountType === "percentage" && ( discount > 100 || discount < 0)  ) {
+    console.log(6);
+    event.preventDefault()
+    errorContainer.innerHTML = "Percentage cannot be greater than 100 or less than zero"
+    errorContainer.style.display = 'block'
+  }
+  console.log(7);
+  
+  
+})
+
+
+
+
+</script>
+
 
 <%- include('../includes/admin/adminFooter.ejs') %>

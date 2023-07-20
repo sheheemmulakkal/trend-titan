@@ -5,7 +5,9 @@ const productSchema = require ( '../models/productModel' )
 const userSchema = require( '../models/userModel' )
 const cartHelper = require( '../helpers/cartHelper' )
 const paginationHelper = require( '../helpers/paginationHelper' )
-const paymentHelper = require( '../helpers/paymentHelper')
+const paymentHelper = require( '../helpers/paymentHelper' )
+const couponHelper = require( '../helpers/couponHelper' )
+const couponSchema = require('../models/couponModel')
 const { RAZORPAY_KEY_SECRET } = process.env
 
 
@@ -26,8 +28,18 @@ module.exports = {
                 quantity : items.quantity,
                 price : ( items.totalPrice / items.quantity )
             }))
-            
-            const totalPrice = products[0].total 
+            const cart = await cartSchema.findOne({ userId : user })
+            const totalAmount = await cartHelper.totalCartPrice( user )
+            let discounted
+            if( cart && cart.coupon && totalAmount && totalAmount.length > 0 ) {
+                discounted = await couponHelper.discountPrice( cart.coupon, totalAmount[0].total )
+                await couponSchema.updateOne({ _id : cart.coupon},{
+                    $push : {
+                        users : user
+                    }
+                })
+            }
+            const totalPrice = discounted && discounted.discountedTotal ? discounted.discountedTotal : totalAmount[0].total
             paymentMethod === 'COD' ? orderStatus = 'Confirmed' : orderStatus = 'Pending';
             const order = new orderSchema({
                 userId : user,
@@ -38,6 +50,7 @@ module.exports = {
                 address : addressId,
             })
             const ordered = await order.save()
+            
 
             // Decreasing quantity
             for( const items of cartProducts ){
@@ -76,6 +89,7 @@ module.exports = {
             await orderSchema.updateOne({_id : order.receipt},{
                 $set : { orderStatus : 'Confirmed'}
             })
+            
             res.json({paid : true})
         } else {
             res.json({paid : false})

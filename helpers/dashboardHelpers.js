@@ -9,7 +9,7 @@ const todayIncome = async( today, now ) => {
                     $gte : today,
                     $lt : now
                 }
-            }
+        }
         },
         {
             $unwind : "$products"
@@ -236,6 +236,58 @@ const dailyChart = async () => {
     return result
 }
 
+const categorySales = async () => {
+    const catSales = await orderSchema.aggregate([
+        {
+            $match : { 
+                orderStatus : 
+                {
+                    $ne : "Pending"
+                }
+            }
+        },
+        {
+            $unwind : "$products"
+        },
+        {
+            $lookup :
+            { 
+                from : "products", 
+                localField : "products.productId", 
+                foreignField : "_id",
+                as : "categories"
+            }
+        },
+        {
+            $unwind : "$categories"
+        },
+        {
+            $lookup :
+            { 
+                from : "categories", 
+                localField : "categories.category", 
+                foreignField : "_id", 
+                as: "category"
+            } 
+        },
+        {
+            $unwind : "$category"
+        },
+        {
+            $group : 
+                {
+                _id: "$category.category", 
+                qty : 
+                    {
+                        $sum : "$products.quantity"
+                    }
+                }
+        }
+    ])
+    console.log(catSales);
+    return catSales
+}
+
 
 module.exports = {
     yesterdayIncome,
@@ -244,5 +296,6 @@ module.exports = {
     currentMonthRevenue,
     previousMonthRevenue,
     paymentMethodAmount,
-    dailyChart
+    dailyChart,
+    categorySales
 }

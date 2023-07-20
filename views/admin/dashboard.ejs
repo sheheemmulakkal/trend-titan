@@ -115,7 +115,7 @@
         <div class="col-lg-6 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
-              <h4 class="card-title">Line chart</h4>
+              <h4 class="card-title">Last two week sales</h4>
               <canvas id="lineChart" style="height:250px"></canvas>
             </div>
           </div>
@@ -126,14 +126,14 @@
         <div class="col-sm-4 grid-margin">
           <div class="card">
             <div class="card-body">
-              <h5>Revenue</h5>
+              <h5>Total Revenue</h5>
               <div class="row">
                 <div class="col-8 col-sm-12 col-xl-8 my-auto">
                   <div class="d-flex d-sm-block d-md-flex align-items-center">
                     <h2 class="mb-0">₹ <%= totalRevenue %></h2>
                     <p class="text-success ml-2 mb-0 font-weight-medium"></p>
                   </div>
-                  <h6 class="text-muted font-weight-normal">11.38% Since last month</h6>
+                  <!-- <h6 class="text-muted font-weight-normal">11.38% Since last month</h6> -->
                 </div>
                 <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
                   <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
@@ -161,25 +161,7 @@
             </div>
           </div>
         </div>
-        <!-- <div class="col-sm-4 grid-margin">
-          <div class="card">
-            <div class="card-body">
-              <h5>Sales</h5>
-              <div class="row">
-                <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                  <div class="d-flex d-sm-block d-md-flex align-items-center">
-                    <h2 class="mb-0">$45850</h2>
-                    <p class="text-success ml-2 mb-0 font-weight-medium">+8.3%</p>
-                  </div>
-                  <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
-                </div>
-                <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                  <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
+        
         <div class="col-sm-4 grid-margin">
           <div class="card">
             <div class="card-body">
@@ -196,6 +178,16 @@
                   <i class="icon-lg mdi mdi-monitor text-success ml-auto"></i>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Category wise sales( in quantity )</h4>
+              <canvas id="barChart" style="height:230px"></canvas>
             </div>
           </div>
         </div>
@@ -407,9 +399,8 @@
 <script>
   const revenue = (<%- JSON.stringify(dailyChart.map(item => item.dailyrevenue)) %>);
   const days = (<%- JSON.stringify(dailyChart.map(item => item._id)) %>);
-  console.log(Array.isArray(revenue)); // true
-  console.log(revenue);
-
+  const catQty = (<%- JSON.stringify(categorySales.map(item => item.qty)) %>);
+  const catName = (<%- JSON.stringify(categorySales.map(item => item._id)) %>);
 
   // console.log(typeof arr);
 
@@ -424,8 +415,35 @@
   var data = {
     labels: days,
     datasets: [{
-      label: '# of Votes',
+      label: 'revenue',
       data: revenue,
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ],
+      borderWidth: 1,
+      fill: false
+    }]
+  };
+  
+  
+  var catData = {
+    labels: catName,
+    datasets: [{
+      label: 'quantity',
+      data: catQty,
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
@@ -720,7 +738,7 @@
     // This will get the first returned node in the jQuery collection.
     var barChart = new Chart(barChartCanvas, {
       type: 'bar',
-      data: data,
+      data: catData,
       options: options
     });
   }

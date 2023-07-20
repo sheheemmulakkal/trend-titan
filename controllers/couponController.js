@@ -1,4 +1,6 @@
 const couponSchema = require( '../models/couponModel' )
+const cartSchema = require( '../models/cartModel' )
+const couponHelper = require( '../helpers/couponHelper' )
 
 
 module.exports = {
@@ -29,7 +31,9 @@ module.exports = {
             res.render( 'admin/coupons',{
                 admin : true,
                 coupons : coupons,
-                search : search
+                search : search,
+                sortData : sortData,
+                sortOrder : sortOrder
             })
         } catch (error) {
             console.log(error.message);
@@ -62,8 +66,7 @@ module.exports = {
                 minimumAmount : minimumAmount,
                 discountType : discountType,
                 discount : discount,
-                sortData : sortData,
-                sortOrder : sortOrder
+                
             })
             await coupon.save()
             res.redirect('/admin/coupons')
@@ -121,37 +124,60 @@ module.exports = {
 
     applyCoupon : async ( req, res ) => {
         try {
-            const { couponCode } = req.body
+            const { couponCode, total } = req.body
             const { user } = req.session
 
             const coupon = await couponSchema.find({ name : couponCode, status : true })
 
-            
+            // If coupon exists
             if( coupon && coupon.length > 0 ) {
 
-                console.log(1);
+      
                 const now = new Date()
+                // if coupon not expired 
                 if( coupon[0].expiryDate >= now && coupon[0].startingDate <= now ){
+                    console.log(coupon[0]);
+                    // Convert the user IDs in the "users" array to strings for comparison
+                    const userIds = coupon[0].users.map((userId) => String(userId));
 
-                    console.log(2);
-                    const userExist = coupon[0].users.some( userId  => userId.toString == user )
+                    // Check if the desiredUserId is present in the array
+                    const userExist = userIds.includes(user);
+                    // If user already used the coupon
                     if( userExist ){
 
-                        console.log(4);
-                        res.status(409).json({ success : false, message : 'Coupon already used by the user' })
+           
+                        res.json({ success : false, message : 'Coupon already used by the user' })
                     } else {
 
-                        
-                        res.json({ success : true, message : "Available"  })
+         
+                        // Checking minimum Amount
+                        if( total < coupon[0].minimumAmount ) {
+                            res.json({ success : false, message : 'Minimums amount not reached'})
+                        } else {
+                            // Success
+                            await cartSchema.updateOne({ userId : user },{
+                            $set : {
+                                coupon : coupon[0]._id
+                            }
+                        })
+                        const cart = await cartSchema.findOne({ userId : user})
+                        let discounted
+                        if( cart.coupon ) {
+                            discounted = await couponHelper.discountPrice( cart.coupon, total )
+                        }
+                        console.log(discounted);
+                        res.json({ success : true, message : "Available", discounted : discounted  })
+                        }
+
                     }
                 } else {
 
-                    console.log(6);
+         
                     res.json({ success : false, message : 'Invalid Coupon, out dated'})
                 }
             } else {
 
-                console.log(7);
+    
                 res.json({ success : false, message : 'Invalid Coupon'})
             } 
              

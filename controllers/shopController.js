@@ -1,11 +1,13 @@
 
 const productSchema = require( '../models/productModel' )
 const categorySchema = require( '../models/categoryModel' )
+const cartSchema = require( '../models/cartModel' )
 const bannerSchema = require( '../models/bannerModel' )
 const userSchema = require( '../models/userModel' )
 const addressSchema = require( '../models/addressModel' )
 const cartHelper = require( '../helpers/cartHelper' )
 const paginationHelper = require( '../helpers/paginationHelper' )
+const couponHelper = require( '../helpers/couponHelper' )
 
 
 module.exports = {
@@ -32,7 +34,6 @@ module.exports = {
 
             const { cat, brand, price, sort, search } = req.query
 
-            console.log(req.query);
             let page = Number( req.query.page );
             if ( isNaN(page) || page < 1 ) {
             page = 1;
@@ -53,7 +54,7 @@ module.exports = {
                 ]
             }
 
-            console.log(condition, ' condition');
+
             const productCount = await productSchema.find({ status : true }).count()
             const products = await productSchema.find( condition )
             .skip( ( page - 1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
@@ -107,11 +108,18 @@ module.exports = {
         try {
             const { user } = req.session
             const cartAmount = await cartHelper.totalCartPrice( user )
+            const cart = await cartSchema.findOne({ userId : user })
+            let discounted
+            if( cart && cart.coupon && cartAmount && cartAmount.length > 0 ) {
+                discounted = await couponHelper.discountPrice( cart.coupon, cartAmount[0].total )
+            }
+            
             const address = await userSchema.findOne({ _id : user }).populate( 'address' )
             const addresses = address.address.reverse()
             res.render( 'shop/checkout', {
                 cartAmount : cartAmount,
-                address : addresses
+                address : addresses,
+                discounted : discounted
             })
         } catch ( error ) {
             console.log( error.message );
