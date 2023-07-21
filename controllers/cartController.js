@@ -38,6 +38,7 @@ module.exports = {
 
     addToCart : async ( req, res ) => {
         try {
+            
             // checking is user logged In
             if( req.session.user ){
                 // If logged in
@@ -108,7 +109,7 @@ module.exports = {
                     }
                 // If product stock is empty
                 } else {
-                    res.status( 404 ).json({ error : true, message : 'Out of stock', login : true });
+                    res.json({ error : true, message : 'Out of stock', login : true, outOfStock : true });
                 }
             // If user not logged in 
             } else {

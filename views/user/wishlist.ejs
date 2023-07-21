@@ -35,7 +35,7 @@
                                     </td>
                                     
                                     <td class="cart__close"><button onclick="addToCart('<%= product._id %>')" style="cursor: pointer;" class="btn btn-dark rounder-0">Add to cart</button></i></td>
-                                    <td class="cart__close"><i onclick="removeCart('<%= product._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
+                                    <td class="cart__close"><i onclick="removeItem('<%= product._id %>')" style="cursor: pointer;" class="fa fa-close"></i></td>
                                 </tr>
                                 <% } %>
                             </tbody>
@@ -53,7 +53,7 @@
             </div>
         <% } else { %>
             <div class="col-12 mt-5">
-                <h1 class="text-center"><b>Cart is empty...</b></h1>
+                <h1 class="text-center"><b>Wishlist is empty...</b></h1>
                 <br>
                 <h3 class="text-center shop-now" ><a href="/shop">Shop now</a></h3>
             </div>
@@ -85,6 +85,23 @@
   </div>
 </div>
 
+<div class="modal fade top rounded-0" style="background-color: #000000a2;" id="successModal1" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-dialog-centered modal-full-width modal-full-width" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header bg-success rounded-0">
+        <h5 class="modal-title" id="successModalLabel">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Product added to cart.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -92,11 +109,9 @@
     async function addToCart( productId ){
 
         try {
-            
+
             const response = await axios.post('/add-to-cart',{ productId })
-            if( !response.data.login ) {
-                return window.location.href = '/login'
-            } 
+
             if( response.data.outOfStock ) {
                 const bdy = document.body
                 const modal = document.getElementById('modalCookie1')
@@ -117,17 +132,48 @@
             }
             if( response.data.newItem === true ){
                 console.log(response.data.newItem, 'new' );
-                console.log(1);
+ 
                 const count = document.getElementById('cartCount')
                 
                 currentCount = parseInt( count.innerHTML )
                 console.log( currentCount );
                 
                 updatedCount = currentCount + 1
-                count.innerHTML = updatedCount                 
+                count.innerHTML = updatedCount
+                
+                const bdy = document.body
+                const modal = document.getElementById('modalCookie1')
+                const successModal = document.getElementById("successModal1");
+                
+                // Show the success modal
+                successModal.classList.add("show");
+                successModal.style.display = "block";
+                bdy.style.overflow = 'hidden'
+                
+                // Hide the success modal when clicked anywhere
+                successModal.addEventListener("click", () => {
+                    successModal.classList.remove("show");
+                    successModal.style.display = "none";
+                    bdy.style.overflow = 'auto'
+                    
+                });
             }
         } catch ( error ) {
             console.log(error.message);
+        }
+    }
+
+    async function removeItem( productId ) {
+        const response = await axios.put('/remove-wishlist-item',{ productId })
+        if ( response.data.success ) {
+            const wrow = document.getElementById(`wishlist-row-${productId}`)
+            wrow.style.display = 'none'
+        }
+        if( response.data.listDelete ){
+            const listTable = document.getElementById('cart-table')
+            const emptyList = document.getElementById('empty-cart')
+            listTable.style.display = 'none'
+            emptyList.style.display = 'block'
         }
     }
 </script>

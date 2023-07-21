@@ -24,6 +24,7 @@ router.patch( '/removeCartItem', isAuth.userAuth, cartController.removeCartItem 
 
 router.post( '/add-to-wishlist', isAuth.userAuth, wishlistController.addtToWishlist )
 router.get ( '/wishlist', isAuth.userAuth, wishlistController.getWishlist )
+router.put( '/remove-wishlist-item', isAuth.userAuth, wishlistController.removeItem )
 
 router.get( '/checkout', isAuth.userAuth, shopController.getCheckout )
 router.get( '/add-checkout-address', isAuth.userAuth, shopController.getCheckoutAddAddress)
