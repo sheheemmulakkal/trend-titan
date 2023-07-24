@@ -48,20 +48,17 @@ module.exports = {
         try {
             const { productId } = req.body
             const { user } = req.session
-            
             await wishlistSchema.findOneAndUpdate({ userId : user },{
                 $pull : {
                     products : productId
                 }
             })
             const wallet = await wishlistSchema.findOne({ userId : user })
-            
             if ( wallet.products.length === 0 ) {
                 await wishlistSchema.deleteOne({ userId : user })
                 return res.json({ success : true, listDelete : true})
             }
             res.json({ success : true})
-
         } catch (error) {
             console.log(error.message);
         }

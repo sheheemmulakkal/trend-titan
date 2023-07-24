@@ -9,21 +9,16 @@ const paginationHelper = require( '../helpers/paginationHelper' )
 module.exports = {
 
     getCategory : async ( req, res ) => {
-
         try {
-
             const { search, sortData, sortOrder } = req.query
             let page = Number(req.query.page);
             if (isNaN(page) || page < 1) {
             page = 1;
             }
-
             const condition = {}
-
             if ( search ){
                 condition.$or = [
-                    { category : { $regex : search, $options : "i" }}
-                    
+                    { category : { $regex : search, $options : "i" }} 
                 ]
             }
             const sort = {}

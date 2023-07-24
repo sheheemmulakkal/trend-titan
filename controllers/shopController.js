@@ -14,15 +14,13 @@ module.exports = {
 
     // Home page GET
     getHome : async( req, res ) => {
-
         try {
             const banners = await bannerSchema.find({ status : true })
             const products = await productSchema.find({ status : true })
             res.render( 'shop/home', {
                 products : products,
                 banners : banners
-            })
-            
+            }) 
         } catch ( error ) {
             console.log( error.message );
         }
@@ -31,15 +29,12 @@ module.exports = {
     // Shop page GET
     getShop : async( req, res ) => {
         try {
-
             const { cat, brand, price, sort, search } = req.query
-
             let page = Number( req.query.page );
             if ( isNaN(page) || page < 1 ) {
             page = 1;
             }
             const condition = { status : true }
-
             if ( cat ){
                 condition.category = cat
             }
@@ -53,17 +48,13 @@ module.exports = {
                     
                 ]
             }
-
-
             const productCount = await productSchema.find({ status : true }).count()
             const products = await productSchema.find( condition )
             .skip( ( page - 1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
             const category = await categorySchema.find({ status: true }) 
             const brands = await productSchema.distinct( 'brand' )
-
             const startingNo = (( page - 1) * paginationHelper.ITEMS_PER_PAGE ) + 1
             const endingNo = startingNo + paginationHelper.ITEMS_PER_PAGE
-
             res.render( 'shop/shop', {
                 products  : products,
                 category : category,
@@ -89,7 +80,6 @@ module.exports = {
 
     // Single product GET
     getSingleProduct : async( req, res ) => {
-
         try {
             const product = await productSchema.find({ _id : req.params.id, status : true }).populate( 'category' )       
             const related = await productSchema.find({ status : true }).limit( 4 )
@@ -97,7 +87,6 @@ module.exports = {
                 product : product,
                 related : related
             })
-
         } catch ( error ) {
             console.log( error.message );
         }
@@ -114,7 +103,6 @@ module.exports = {
             if( cart && cart.coupon && cartAmount && cartAmount.length > 0 ) {
                 discounted = await couponHelper.discountPrice( cart.coupon, cartAmount[0].total )
             }
-            
             const address = await userSchema.findOne({ _id : user }).populate( 'address' )
             const addresses = address.address.reverse()
             res.render( 'shop/checkout', {
@@ -131,7 +119,6 @@ module.exports = {
     getCheckoutAddAddress : async( req, res ) => {
         res.render( 'shop/checkout-address' )
     },
-
     checkoutAddAddress : async ( req, res ) => {
         try{
             const address = new addressSchema({

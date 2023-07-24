@@ -137,10 +137,8 @@ module.exports = {
         try {
             const { amount } = req.body
             const  Id = crypto.randomBytes(8).toString('hex')
-
             const payment = await paymentHelper.razorpayPayment( Id, amount )
             res.json({ payment : payment , success : true  })
-
         } catch (error) {
             console.log(error.message);
         }
@@ -166,55 +164,3 @@ module.exports = {
     
 }
 
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// {
-//     token: { otp: 471279, generatedTime: 2023-06-30T16:03:11.024Z },
-//     address: {
-//       address1: {
-//         _id: new ObjectId("649f02cea0cca98f450fe340"),
-//         fullName: 'shheem',
-//         mobile: 69656596,
-//         landmark: 'malabar',
-//         street: 'shheem',
-//         village: 'oorakam',
-//         city: 'malappuram',
-//         pincode: 25652,
-//         state: 'KERALA',
-//         __v: 0
-//       }
-//     },
-//     _id: new ObjectId("649efcbfccb4904d1b2a242a"),
-//     firstName: 'Muhammed ',
-//     lastName: 'Sheheen',
-//     email: 'shaimonsheheem@gmail.com',
-//     mobile: '9207121935',
-//     password: '$2a$12$T0QffZO.6lGpM8DLzVnVTebOuAZ8tg78Ldhjn4gjhCKLucOzEJSv2',
-//     isAdmin: 0,
-//     isVerified: true,
-//     isBlocked: false,
-//     joinedDate: 2023-06-30T16:03:11.030Z,
-//     __v: 0
-//   }
-//   {
-//     mobile: '9207121935',
-//     password: '$2a$12$T0QffZO.6lGpM8DLzVnVTebOuAZ8tg78Ldhjn4gjhCKLucOzEJSv2',
-//     isAdmin: 0,
-//     isVerified: true,
-//     isBlocked: false,
-//     joinedDate: 2023-06-30T16:03:11.030Z,
-//     __v: 0
-//   }

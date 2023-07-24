@@ -284,7 +284,6 @@ const categorySales = async () => {
                 }
         }
     ])
-    console.log(catSales);
     return catSales
 }
 

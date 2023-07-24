@@ -16,18 +16,13 @@ module.exports = {
     placeOrder : async ( req, res ) => {
         try {
             const { user } = req.session
-            
             const products =  await cartHelper.totalCartPrice( user )
-            
             const { paymentMethod, addressId, walletAmount } = req.body
             let walletBalance
             if( walletAmount ){
                 walletBalance = Number(walletAmount)
             }
-   
-           
             const productItems = products[0].items
-
             const cartProducts = productItems.map( ( items ) => ({
                 productId : items.productId,
                 quantity : items.quantity,
@@ -46,7 +41,6 @@ module.exports = {
             }
             const totalPrice = discounted && discounted.discountedTotal ? discounted.discountedTotal : totalAmount[0].total
             let walletUsed, amountPayable
-            
             if( walletAmount ) {
                 if( totalPrice > walletBalance ) {
                     amountPayable = totalPrice - walletBalance
@@ -74,24 +68,18 @@ module.exports = {
                 amountPayable : amountPayable
             })
             const ordered = await order.save()
-            
-
             // Decreasing quantity
             for( const items of cartProducts ){
-                
                 const { productId, quantity } = items
-
                 await productSchema.updateOne({_id : productId},
                     { $inc : { quantity :  -quantity  }})
                 } 
             // Deleting cart
             await cartSchema.deleteOne({ userId : user })
             req.session.productCount = 0
-            
             if(  paymentMethod === 'COD' || amountPayable === 0 ){
                 // COD
                     if( walletAmount ) {
-                        
                         await userSchema.updateOne({ _id : user }, {
                             $inc : {
                                 wallet : -walletUsed
@@ -104,7 +92,6 @@ module.exports = {
                                 }
                             }
                         })
-
                     }
                     return res.json({ success : true})
             } else if( paymentMethod === 'razorpay'){
@@ -123,8 +110,6 @@ module.exports = {
         let hmac = crypto.createHmac( 'sha256', RAZORPAY_KEY_SECRET )
         hmac.update( response.razorpay_order_id + '|' + response.razorpay_payment_id )
         hmac = hmac.digest( 'hex' )
-
-
         if( hmac === response.razorpay_signature ){
             await orderSchema.updateOne({_id : order.receipt},{
                 $set : { orderStatus : 'Confirmed'}
@@ -154,10 +139,8 @@ module.exports = {
     getConfirmOrder : async( req, res ) => {
         try{
             const { user } = req.session
-             await cartHelper.totalCartPrice( user )
-            
+            await cartHelper.totalCartPrice( user )
             const orders = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
-
             if( orders.orderStatus === "Pending"){
                 await orderSchema.updateOne({ _id : orders._id },{
                     $set : {
@@ -165,9 +148,7 @@ module.exports = {
                     }
                 })
             }
-                
             const lastOrder = await orderSchema.find({ userId : user }).sort({ date : -1 }).limit( 1 ).populate( 'products.productId' ).populate( 'address' )
-
             res.render( 'shop/confirm-order', {
                 order : lastOrder,
                 products : lastOrder[0].products,
@@ -175,7 +156,6 @@ module.exports = {
         }catch( error ){
             console.log( error.message );
         }
-
     },
 
     getAdminOrderlist : async( req, res ) => {
@@ -186,7 +166,6 @@ module.exports = {
             page = 1;
             }
             const sort = {}
-
             if( sortData ) {
                 if( sortOrder === "Ascending" ){
                     sort[sortData] = 1
@@ -196,9 +175,6 @@ module.exports = {
             } else {
                 sort['date'] = -1
             }
-            
-            
-
             const ordersCount = await orderSchema.find().count()
             const orders = await orderSchema.find()
                 .sort(sort).skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit( paginationHelper.ORDER_PER_PAGE )
@@ -272,7 +248,6 @@ module.exports = {
                     $inc : { quantity : products.quantity }
                 })
             }
-
             if( order.orderStatus !== "Pending" && order.paymentMethod === 'razorpay' ) {
                 await userSchema.updateOne({ _id : user },{
                     $inc : {
@@ -302,10 +277,8 @@ module.exports = {
                     })
                 }
             }
-
             await orderSchema.findOneAndUpdate({ _id : orderId },
                 { $set : { orderStatus : status }}) 
-
             const newStatus = await orderSchema.findOne({ _id : orderId })
             res.status( 200 ).json({ success : true, status : newStatus.orderStatus })
         } catch ( error ) {
@@ -321,7 +294,6 @@ module.exports = {
                 order : order,
                 products : order.products,
             })
-            
         } catch ( error ) {
             console.log( error.message );
         }
@@ -336,14 +308,12 @@ module.exports = {
                 products : order.products,
                 admin : true
             })
-            
         } catch ( error ) {
             console.log( error.message );
         }
     },
 
     getSalesReport : async ( req, res ) => {
-        
         const { from, to, seeAll, sortData, sortOrder } = req.query
         let page = Number(req.query.page);
             if (isNaN(page) || page < 1) {
@@ -365,7 +335,6 @@ module.exports = {
             }
         }
         const sort = {}
-
         if( sortData ) {
             if( sortOrder === "Ascending" ){
                 sort[sortData] = 1
@@ -375,14 +344,10 @@ module.exports = {
         } else {
             sort['date'] = -1
         }
-
         const orderCount = await orderSchema.count()
         const limit = seeAll === "seeAll" ? orderCount : paginationHelper.SALES_PER_PAGE ;
-      
-
         const orders = await orderSchema.find( conditions )
         .sort( sort ).skip(( page - 1 ) * paginationHelper.ORDER_PER_PAGE ).limit(limit)
-
         res.render( 'admin/sales-report', {
             admin : true,
             orders : orders,
@@ -398,15 +363,12 @@ module.exports = {
             sortData : sortData,
             sortOrder : sortOrder
         })  
-
     },
 
     returnOrder : async( req, res ) => {
         const { orderId } = req.body
         const { user } = req.session
         const order = await orderSchema.findOne({ _id : orderId })
-        // console.log(order);
-
         for ( let products of order.products ) {
             await productSchema.updateOne({ _id : products.productId }, {
                 $inc : {
@@ -414,7 +376,6 @@ module.exports = {
                 }
             })
         }
-
         await orderSchema.updateOne({ _id : orderId },{
             $set : {
                 orderStatus : "Returned"
@@ -432,8 +393,6 @@ module.exports = {
                 }
             }
         })
-
-
         res.json({ success : true })
     } 
 

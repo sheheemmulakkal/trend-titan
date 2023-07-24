@@ -20,8 +20,6 @@ module.exports = {
             if( updatedCart && updatedCart.coupon && totalPrice && totalPrice.length > 0 ) {
                 discounted = await couponHelper.discountPrice( updatedCart.coupon, totalPrice[0].total )
             }
-
-
             const availableCoupons = await couponSchema.find({ status : true , startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() } })
 
             res.render( 'shop/cart', {
@@ -91,7 +89,6 @@ module.exports = {
                                                     newItem : true,
                                                     login : true });
                         }
-
                     // If cart not exist !!!
                     } else {
                         // Creating new cart for user
@@ -134,7 +131,6 @@ module.exports = {
             if( cart.coupon && totalPrice && totalPrice.length > 0 ) {
                 discounted = await couponHelper.discountPrice( cart.coupon, totalPrice[0].total )
             }
-
             res.status( 200 ).json({ success : true, message : 'cart item decreased', totalPrice : totalPrice, discounted : discounted });
         } catch ( error ) {
             console.log( error.message );

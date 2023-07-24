@@ -5,7 +5,6 @@ const paginationHelper = require( '../helpers/paginationHelper' )
 module.exports = {
 
     getBannerManagement : async ( req, res ) => {
-
         try {
             const { search } = req.query
             let page = Number(req.query.page);
@@ -45,7 +44,6 @@ module.exports = {
     },
 
     getAddBanner : async ( req, res ) => {
-
         res.render( 'admin/add-banner',{
             admin : req.session.admin,
             success : req.flash('success')
@@ -53,9 +51,7 @@ module.exports = {
     },
 
     addingBanner : async( req, res ) => {
-
         try {
-
             const banner = new bannerSchema({
                 mainHead : req.body.mainHead,
                 typeHead : req.body.type,
@@ -72,9 +68,7 @@ module.exports = {
     },
 
     getEditBanner : async( req, res ) => {
-
         try {
-            
             const banner = await bannerSchema.findById(req.params.id)
             res.render( 'admin/edit-banner',{
                 banner : banner,
@@ -89,9 +83,7 @@ module.exports = {
     },
 
     updateBanner : async ( req, res ) => {
-
         try {
-
             const updatedBanner = {
                 mainHead : req.body.mainHead,
                 typeHead : req.body.type,

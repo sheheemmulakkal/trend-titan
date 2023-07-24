@@ -27,7 +27,7 @@
                         <% for(let i = 0 ; i < product[0].image.length; i++) { %>
                         <div class="tab-pane <% if (i === 0) { %>active<% } %>" id="tabs-<%= i+1 %>" role="tabpanel">
                             <div class="product__details__pic__item">
-                                <img src="/images/product-images/<%= product[0].image[i] %>" id="product-image" alt="Product image">
+                                <img src="/images/product-images/<%= product[0].image[i] %>" id="product-image" class="zoom-img-n" alt="Product image">
                             </div>
                         </div>
                         <% } %>
@@ -142,7 +142,7 @@
 
 <script>
 // $("#product-image").ezPlus();
-$(`#product-image %>`).ezPlus({
+$(`.zoom-img-n`).ezPlus({
 
 container: 'ZoomContainer',
 attrImageZoomSrc: 'zoom-image', // attribute to plugin use for zoom

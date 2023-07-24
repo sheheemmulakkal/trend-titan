@@ -51,14 +51,12 @@ module.exports = {
             })
             await product.save()
             res.redirect('/admin/products')
-
         } catch(error){
             console.log(error.message);
         }
     },
  
     getProductsList : async( req, res ) => {
-
         try {
             const { search, sortData, sortOrder } = req.query
             let page = Number(req.query.page);
@@ -74,17 +72,13 @@ module.exports = {
                     sort[sortData] = -1
                 }
             }
-            
-            
             if ( search ){
                 condition.$or = [
                     { name : { $regex : search, $options : "i" }},
                     { brand : { $regex : search, $options : "i" }},
-                    { description : { $regex : search, $options : "i" }},
-                    
+                    { description : { $regex : search, $options : "i" }},  
                 ]
             }
-
             const productsCount = await productSchema.find( condition ).count()
             const products = await productSchema.find( condition ).populate( 'category' )
             .sort( sort ).skip(( page - 1 ) * paginationHelper.PRODUCT_PER_PAGE ).limit( paginationHelper.PRODUCT_PER_PAGE )
@@ -109,29 +103,24 @@ module.exports = {
     },
 
     deleteProduct : async( req, res ) => {
-
         try {
             await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : false}})
             res.redirect('/admin/products')
-            
         } catch ( error ) {
             console.log( error.message );
         }
     },
 
     restoreProduct : async( req, res ) => {
-
         try {
             await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : true } })
             res.redirect( '/admin/products' )
-            
         } catch ( error ) {
             console.log( error.message );
         }
     },
 
     getEditProdut : async( req, res ) => {
-
         try {
             const product = await productSchema.findOne({ _id : req.params.id }).populate( 'category' )
             const category = await categorySchema.find()
@@ -141,14 +130,12 @@ module.exports = {
                 admin : req.session.admin,
                 err : req.flash( 'err' )
             } )
-            
         } catch ( error ) {
             console.log( error.message );
         }
     },
 
     deleteImage : async ( req, res ) => {
-
         try {
             const id = req.query.id
             const image = req.query.imageId
@@ -159,18 +146,15 @@ module.exports = {
                 }
             })
             res.redirect(`/admin/edit-product/${id}`)
-            
         } catch ( error ) {
             console.log( error.message );
         }
     },
 
     editProduct : async( req, res ) => {
-
         try {
             const existingProduct = await productSchema.findById( req.body.productId )
             if( req.files ) {
-
                 for( let file of req.files ) {
                     if( 
                         file.mimetype !== 'image/jpg' &&
@@ -201,7 +185,6 @@ module.exports = {
                     }
                 })
             res.redirect( '/admin/products' )
-            
         } catch ( error ) {
             console.log( error.message );
         }

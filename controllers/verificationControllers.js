@@ -30,7 +30,6 @@ function generateOtp () {
 module.exports = {
 
     sendEmail : (email) => {
-
         try {
             const otp = generateOtp()
 
