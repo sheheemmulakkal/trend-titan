@@ -14,19 +14,12 @@
             <% } else { %>
             <a href="/login">log in</a>
             <% } %>
-            <!-- <a href="#">FAQs</a> -->
+            
         </div>
-        <!-- <div class="offcanvas__top__hover">
-            <span>Usd <i class="arrow_carrot-down"></i></span>
-            <ul>
-                <li>USD</li>
-                <li>EUR</li>
-                <li>USD</li>
-            </ul>
-        </div> -->
+        
     </div>
     <div class="offcanvas__nav__option">
-        <a href="#" class="search-switch"><img src="/user/img/icon/search.png" alt=""></a>
+        
         <a href="/wishlist"><img src="/user/img/icon/heart.png" alt=""></a>
         <a href="/cart"><img src="/user/img/icon/cart.png" alt=""> <span>0</span></a>
         <div class="price">$0.00</div>
@@ -56,16 +49,9 @@
                             <% } else { %>
                             <a href="/login">log in</a>
                             <% } %>
-                            <!-- <a href="#">FAQs</a> -->
+                            
                         </div>
-                        <!-- <div class="header__top__hover">
-                            <span>Usd <i class="arrow_carrot-down"></i></span>
-                            <ul>
-                                <li>USD</li>
-                                <li>EUR</li>
-                                <li>USD</li>
-                            </ul>
-                        </div> -->
+                       
                     </div>
                 </div>
             </div>
@@ -84,27 +70,20 @@
                         <li><a href="/">Home</a></li>
                         <li><a href="/shop">Shop</a></li>
                         <% if(userLoggedin) { %>
-                            <li><a href="#">Pages</a>
-                                <ul class="dropdown">
-                                    <li><a href="/user/profile">My profile</a></li>
-                                    <li><a href="/user/orders">My orders</a></li>
-                                    <li><a href="/cart">Shopping Cart</a></li>
-                                </ul>
+                            <li><a href="/user/profile">Profile</a>
                                 <% } %>
                         </li>
-                        <li><a href="#">Contacts</a></li>
                     </ul>
                 </nav>
             </div>
             <div class="col-lg-3 col-md-3">
                 <div class="header__nav__option">
-                    <a href="#" class="search-switch"><img src="/user/img/icon/search.png" alt=""></a>
+                    
                     <a href="/wishlist"><img src="/user/img/icon/heart.png" alt=""></a>
                     <span id="cartCount" class="badge badge-secondary"><%= productCount %></span>  
                     <a href="/cart"><svg style="color: black;" xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-cart-fill" viewBox="0 0 16 16">
                         <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                       </svg></a>
-                    <!-- <div id="cartPrice" class="price">₹ 0.00</div> -->
                 </div>
             </div>
         </div>
