@@ -2,6 +2,33 @@
 <%- include('../includes/userNavbar.ejs') %>
 
 
+<style>
+    /* Example CSS for the suggestion list */
+#suggestionsList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  position: absolute;
+  background-color: #fff;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  display: none;
+  z-index: 100;
+}
+
+#suggestionsList li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+#suggestionsList li:hover {
+  background-color: #f2f2f2;
+}
+
+</style>
+
 <!-- Shop Section Begin -->
 <section class="shop spad mt-5">
     <div class="container">
@@ -10,8 +37,11 @@
                 <div class="shop__sidebar">
                     <div class="shop__sidebar__search">
                         <form action="/shop?" method="get">
-                            <input type="text" name="search" placeholder="Search..." value="<%= search %>">
-                            <button type="submit"><span class="icon_search"></span></button>
+                            <div class="searchContainer">
+                                <input type="text" name="search" placeholder="Search..." value="<%= search %>" oninput="searchfunction()" id="search-field" autocomplete="off">
+                                <button type="submit"><span class="icon_search"></span></button>
+                            </div>
+                            <ul id="suggestionsList"></ul>
                         </form>
                     </div>
                     <div class="shop__sidebar__accordion">
@@ -166,7 +196,57 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
-    async function addToCart( productId ){
+
+document.addEventListener("click", function(event) {
+  const suggestionsList = document.getElementById("suggestionsList");
+  const inputField = document.getElementById("search-field");
+  
+  // Check if the clicked element is not part of the suggestion list or the input field
+  if (event.target !== inputField && !suggestionsList.contains(event.target)) {
+    suggestionsList.style.display = "none";
+  }
+});
+
+
+    async function searchfunction( ) {
+
+        const searchField = document.getElementById('search-field').value.trim()
+        
+        if ( searchField.length > 0) {
+            const response = await axios.get('/search-suggestion', {params : { searchField : searchField }})
+        
+            try {
+                if( response.data.success ) {
+                    const suggestionsList = document.getElementById('suggestionsList')
+                    suggestionsList.innerHTML = ''
+
+                    response.data.suggestions.forEach(element => {
+                        const li = document.createElement("li")
+                        li.textContent = element.name
+                        li.onclick = function () {
+                            const inputField = document.getElementById('search-field')
+                            inputField.value = element.name
+                            suggestionsList.style.display = 'none'
+                        }
+                        suggestionsList.appendChild(li)
+                    });
+                    suggestionsList.style.display = "block";
+                
+                } else {
+                    suggestionsList.style.display = "none";
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        } else {
+            const suggestionsList = document.getElementById('suggestionsList')
+            if ( suggestionsList ) {
+                suggestionsList.style.display = 'none'
+            } 
+        }
+    } 
+
+async function addToCart( productId ){ 
 
         try {
 

@@ -8,6 +8,7 @@ const addressSchema = require( '../models/addressModel' )
 const cartHelper = require( '../helpers/cartHelper' )
 const paginationHelper = require( '../helpers/paginationHelper' )
 const couponHelper = require( '../helpers/couponHelper' )
+const { search } = require('../routers/shopRouter')
 
 
 module.exports = {
@@ -45,7 +46,6 @@ module.exports = {
                 condition.$or = [
                     { name : { $regex : search, $options : "i" }},
                     { description : { $regex : search, $options : "i" }},
-                    
                 ]
             }
             const productCount = await productSchema.find({ status : true }).count()
@@ -141,6 +141,17 @@ module.exports = {
         } catch ( error ) {
             console.log( error.message ); 
         }
-    }
+    },
+
+    searchSuggestion : async ( req, res ) => {
+        const { searchField } = req.query
+        const suggestions = await productSchema.find({status : true, $or : [
+            { name : { $regex : searchField, $options : "i" }},
+            { description : { $regex : searchField, $options : "i" }}
+            ]
+        },{name : 1}) 
+        res.json({ suggestions : suggestions , success : true }) 
+        console.log(suggestions);
+    }  
 
 }

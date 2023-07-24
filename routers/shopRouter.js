@@ -16,6 +16,7 @@ router.get( '/', shopController.getHome )
 
 router.get( '/shop', shopController.getShop )
 router.get( '/products/:id', shopController.getSingleProduct)
+router.get( '/search-suggestion', shopController.searchSuggestion )
 
 router.get( '/cart', isAuth.userAuth, cartController.getCart )
 router.post( '/add-to-cart', cartController.addToCart )

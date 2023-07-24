@@ -84,7 +84,8 @@
             <button class="btn btn-primary ml-3" type="submit">filter</button>
         </form>
         
-        <button type="button" onclick="printDiv('Print')" class="btn btn-info btn-icon-text mx-auto mb-1"> Print <i class="mdi mdi-printer btn-icon-append"></i>
+        <button type="button" id="excel-export" class="btn btn-success btn-icon-text ml-auto mb-1"> Excel <i class="mdi mdi-printer btn-icon-append"></i>
+        <button type="button" onclick="printDiv('Print')" class="btn btn-info btn-icon-text ml-1 mr-auto mb-1"> Print <i class="mdi mdi-printer btn-icon-append"></i>
         </button>
     </div>
       <div class="card">
@@ -159,11 +160,7 @@
   </div>
 </div>
 
-<script>
-  $(document).ready(function() {
-        $('#sales-table').DataTable();
-    });
-</script>
+
 <script>
 
 
@@ -221,8 +218,69 @@
     });
 
     }
-
 </script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+<script>
+  function formatDateToString(date) {
+  // Ensure we have a valid date object
+  if (!(date instanceof Date) || isNaN(date)) {
+    return "Invalid Date";
+  }
+
+  // Get the day, month, and year components from the date
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = String(date.getFullYear());
+
+  // Concatenate the components with hyphens and return the formatted string
+  return `${day}-${month}-${year}`;
+}
+
+// Example usage:
+const date = new Date(); // Replace this with your date object
+const formattedDate = formatDateToString(date);
+
+
+
+
+  function excelDownload() {
+    // Get the table data
+    var table = document.getElementById("sales-table");
+    var wb = XLSX.utils.table_to_book(table, { sheet: "SheetJS" });
+
+    // Convert the workbook to an array buffer
+    var wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+    // Create a Blob object to store the workbook data
+    var blob = new Blob([wbout], { type: "application/octet-stream" });
+
+    // Generate a temporary anchor element and trigger the download
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    var url = window.URL.createObjectURL(blob);
+    var today = formatDateToString( new Date() )
+    a.href = url;
+    a.download = "MF-"+today+".xlsx";
+    a.click();
+
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+  $(document).ready(function() {
+    // Add an event listener to the button
+    $("#excel-export").on("click", function() {
+      excelDownload();
+    });
+  });
+</script>
+
+
 
 
 <%- include('../includes/admin/adminFooter.ejs') %>
