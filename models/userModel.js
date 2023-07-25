@@ -81,7 +81,17 @@ const userSchema = Schema({
             type : String
         }
 
-    }]
+    }],
+
+    referralCode : {
+        type : String
+    },
+
+    isReferred : {
+        type : String
+    }
+
+
 })
 
 module.exports = mongoose.model( 'user', userSchema )

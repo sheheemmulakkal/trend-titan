@@ -122,7 +122,7 @@ module.exports = {
                     },
                     $push : {
                         walletHistory : {
-                            data : Date.now(),
+                            date : Date.now(),
                             amount : -orders.walletUsed,
                             message : 'Used for purachse'
                         }

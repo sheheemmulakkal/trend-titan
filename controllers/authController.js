@@ -1,7 +1,8 @@
+const bcrypt = require( 'bcryptjs' )
+
 const userSchema = require( '../models/userModel') 
 const cartSchema = require( '../models/cartModel')
 const verificationController = require( './verificationControllers')
-const bcrypt = require( 'bcryptjs' )
 
 
 
@@ -90,15 +91,16 @@ module.exports = {
 
     // Getting user signup page
     getUserSignup : ( req, res ) => {
-
-        res.render( 'auth/userSignup', { err: req.flash( 'userExist' )})
+        const { referral } = req.query
+        res.render( 'auth/userSignup', { err: req.flash( 'userExist' ), referral : referral})
     },
 
     // User Signing Up
     doUserSignup : async ( req, res ) => {
 
         try {
-
+            const { referral } = req.body
+            
             // Checking is there any existing user
             const userData = await userSchema.findOne({ email : req.body.email })
             
@@ -123,8 +125,14 @@ module.exports = {
                             generatedTime : new Date()
                         }
                     })
-
                 await user.save()
+                if( referral ) {
+                    await userSchema.updateOne({ email : req.body.email },{
+                        $set : {
+                            isReferred : referral
+                        }
+                    }) 
+                }
                 req.session.unVerfiedMail = req.body.email
                 res.redirect( '/otp-verification' )
 
@@ -153,9 +161,40 @@ module.exports = {
             //Calculating the expire of the OTP
             const timeDiff =  (new Date(enterTime) - otpCheck.token.generatedTime) / 1000 / 60
             if( timeDiff <= 60 ) {
-
+                const referralCode = verificationController.referralCodeGenerator()
                 // If expiry time is valid setting isVerified as true
-                await userSchema.updateOne({ email : otpCheck.email } , { $set : {isVerified : true} })
+                await userSchema.updateOne({ email : otpCheck.email } , { $set :
+                    {
+                        isVerified : true,
+                        referralCode : referralCode
+                    }
+                })
+                if( otpCheck.isReferred ) {
+                    await userSchema.updateOne({ referralCode : otpCheck.isReferred },{
+                        $inc : {
+                            wallet : 40
+                        },
+                        $push : {
+                            walletHistory : {
+                                date : Date.now(),
+                                amount : 40,
+                                message : 'Referral bonus'
+                            }
+                        }
+                    })
+                    await userSchema.updateOne({ _id : otpCheck._id },{
+                        $inc : {
+                            wallet : 100
+                        },
+                        $push : {
+                            walletHistory : {
+                                date : Date.now(),
+                                amount : 100,
+                                message : 'Join bonus'
+                            }
+                        }
+                    })
+                }
                 req.session.user = otpCheck._id
                 req.session.unVerfiedMail = null
                 res.redirect('/shop')

@@ -30,7 +30,7 @@ module.exports = {
     // Shop page GET
     getShop : async( req, res ) => {
         try {
-            const { cat, brand, price, sort, search } = req.query
+            const { cat, brand, search } = req.query
             let page = Number( req.query.page );
             if ( isNaN(page) || page < 1 ) {
             page = 1;

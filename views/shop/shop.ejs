@@ -39,6 +39,7 @@
                         <form action="/shop?" method="get">
                             <div class="searchContainer">
                                 <input type="text" name="search" placeholder="Search..." value="<%= search %>" oninput="searchfunction()" id="search-field" autocomplete="off">
+                                <input type="hidden" value="<%= cat %>" name ="cat">
                                 <button type="submit"><span class="icon_search"></span></button>
                             </div>
                             <ul id="suggestionsList"></ul>

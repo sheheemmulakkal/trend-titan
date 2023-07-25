@@ -1,4 +1,4 @@
-
+const { v4 : uuidv4 } = require( 'uuid' )
 const nodemailer = require( 'nodemailer' )
 const otpGenerator = require( 'otp-generator' )
 require( 'dotenv' ).config()
@@ -32,7 +32,7 @@ module.exports = {
     sendEmail : (email) => {
         try {
             const otp = generateOtp()
-
+            console.log(otp);
             transporter.sendMail({
                 to : email,
                 from : process.env.USER_MAIL,
@@ -47,8 +47,34 @@ module.exports = {
             console.log(error.message);
         }
 
-    }
+    },
 
+    referralCodeGenerator : () => {
+        // Referral code
+      
+        // Function to generate a random alphanumeric code
+        function generateRandomCode(length) {
+            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let randomCode = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                randomCode += charset[randomIndex];
+            }
+            return randomCode;
+        }
+
+        // Generate a unique user ID (for example, using UUID)
+        const uniqueUserId = uuidv4();
+
+        // Generate a short alphanumeric referral code (6 characters)
+        const referralCode = generateRandomCode(6);
+
+        // Combine user ID and referral code to create the referral ID
+        const referralId = `${uniqueUserId}-${referralCode}`;
+
+        return referralId
+
+    }
     
 
 }
