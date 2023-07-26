@@ -20,7 +20,7 @@ module.exports = {
             const { paymentMethod, addressId, walletAmount } = req.body
             let walletBalance
             if( walletAmount ){
-                walletBalance = Number(walletAmount)
+                walletBalance = Number( walletAmount )
             }
             const productItems = products[0].items
             const cartProducts = productItems.map( ( items ) => ({

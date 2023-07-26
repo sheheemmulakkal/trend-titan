@@ -73,7 +73,6 @@ module.exports = {
                 }
             })
             .skip( ( page - 1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
-            console.log(products);
             const category = await categorySchema.find({ status: true }) 
             const brands = await productSchema.distinct( 'brand' )
             const startingNo = (( page - 1) * paginationHelper.ITEMS_PER_PAGE ) + 1
@@ -116,7 +115,19 @@ module.exports = {
                     match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
                 }
             })      
-            const related = await productSchema.find({ status : true }).limit( 4 )
+            const related = await productSchema.find({ status : true })
+            .populate({
+                path : 'offer',
+                match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+            })
+            .populate({
+                path : 'category',
+                populate : {
+                    path : 'offer',
+                    match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+                }
+            })   
+            .limit( 4 )
             res.render( 'shop/single-product', {
                 product : product,
                 related : related

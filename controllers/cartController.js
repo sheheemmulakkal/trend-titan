@@ -15,11 +15,24 @@ module.exports = {
             if( productCount === 1 ){
                 req.session.productCount--
             }
-            const updatedCart = await cartSchema.findOne({ userId : user }).populate( 'items.productId' );
+            const updatedCart = await cartSchema.findOne({ userId : user }).populate({
+                path : 'items.productId',
+                populate : [{
+                    path : 'category',
+                    populate : {
+                        path : 'offer'
+                    },
+                },
+                    {
+                    path : 'offer'
+                    }
+                ]
+            });
             const totalPrice = await cartHelper.totalCartPrice( user )
             if( updatedCart && updatedCart.coupon && totalPrice && totalPrice.length > 0 ) {
                 discounted = await couponHelper.discountPrice( updatedCart.coupon, totalPrice[0].total )
             }
+            
             const availableCoupons = await couponSchema.find({ status : true , startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() } })
 
             res.render( 'shop/cart', {
