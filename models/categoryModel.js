@@ -12,6 +12,11 @@ const categorySchema = Schema({
         type : Boolean,
         required : true,
         default : true
+    },
+
+    offer : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'offer'
     }
 })
 

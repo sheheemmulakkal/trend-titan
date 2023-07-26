@@ -4,7 +4,10 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const categorySchema = require( '../models/categoryModel')
 const productSchema = require( '../models/productModel' )
+
+const offerSchema = require( '../models/offerModel' )
 const paginationHelper = require( '../helpers/paginationHelper' )
+
 
 
 
@@ -79,8 +82,9 @@ module.exports = {
                     { description : { $regex : search, $options : "i" }},  
                 ]
             }
+            const availableOffers = await offerSchema.find({ status : true, expiryDate : { $gte : new Date() }})
             const productsCount = await productSchema.find( condition ).count()
-            const products = await productSchema.find( condition ).populate( 'category' )
+            const products = await productSchema.find( condition ).populate( 'category' ).populate( 'offer' )
             .sort( sort ).skip(( page - 1 ) * paginationHelper.PRODUCT_PER_PAGE ).limit( paginationHelper.PRODUCT_PER_PAGE )
             res.render('admin/products',{
                 admin : req.session.admin,
@@ -93,7 +97,8 @@ module.exports = {
                 lastPage : Math.ceil( productsCount / paginationHelper.PRODUCT_PER_PAGE ),
                 search : search,
                 sortData : sortData,
-                sortOrder : sortOrder
+                sortOrder : sortOrder,
+                availableOffers : availableOffers
             })
 
         } catch ( error ) { 
@@ -188,5 +193,34 @@ module.exports = {
         } catch ( error ) {
             console.log( error.message );
         }
+    },
+
+    applyProductOffer : async ( req, res ) => {
+        try {
+            const { offerId, productId } = req.body
+            await productSchema.updateOne({ _id : productId },{
+                $set : {
+                    offer : offerId
+                }
+            })
+            res.json({ success : true})
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    removeProductOffer : async ( req, res ) => {
+        try {
+            const { productId } = req.body
+            const remove = await productSchema.updateOne({ _id : productId },{
+                $unset : {
+                    offer : ""
+                }
+            })
+            res.json({ success : true })
+        } catch (error) {
+            console.log(error.message);
+        }
     }
+
 }

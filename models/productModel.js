@@ -43,6 +43,11 @@ const productSchema = Schema({
     status : {
         type : Boolean,
         default : true
+    },
+
+    offer : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'offer'
     }
     
 })

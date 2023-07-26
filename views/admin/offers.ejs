@@ -1,0 +1,209 @@
+
+<%- include('../includes/admin/adminHead.ejs') %>
+<%- include('../includes/admin/adminNavbar.ejs') %>
+
+<style>
+    .pagination-btn{
+    padding: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    }
+    .pagination-btn a{
+        text-decoration: none;
+        color: #ececec;
+    }
+    .pagination-btn a :hover{
+        color: #111;
+    }
+    .pagination-btn button:hover{
+        color: #111;
+    }
+    .pagination-btn button:active{
+        background-color: #fff;
+        color: #111!important;
+    }
+    .category-name span p{
+        width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    } 
+    .modal-content p{
+        width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    @media( max-width : 499px){
+        .modal-content p{
+        width: calc(100% - 44px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    }
+</style>
+
+<% var now = Date.now() %>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div><a class="badge badge-outline-primary" href="/admin/add-offer">Add offer</a></div>
+ <!-- ======================== Table ========================= -->
+ <div class=" row   mt-3">
+            
+        
+        
+    <div class="col-3 col-sm-6">
+      <div class="row m-0">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <form action="/admin/offers">
+              <select class="form-control" name="sortData">
+                <option value="name" >Name</option>
+                <option value="startingDate" >Starting Date</option>
+                <option value="expiryDate" >Expiry Date</option>
+                <option value="minimumAmount" >Minimum Amount</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <select class="form-control" name="sortOrder">
+                <option>Ascending</option>
+                <option>Descending</option>
+                
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="sort form-group "><button class=" btn btn-primary form-control">
+          sort
+        </button></div>
+      </form>
+
+        
+      </div>
+      
+
+    </div>
+
+    </div>
+
+    <div style="margin-top: -10px;" class="card">
+    <div class="card-body">
+
+      <div class=" col-3 col-sm-6 grid-margin">
+        <div class="form-group col-6 mr-1">
+          <form action="/admin/offers">
+          <div class="input-group">
+            <input type="text" class="form-control" value="" name="search" placeholder="Search here..." aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-sm btn-primary" type="submit">Search</button>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+                <h4 class="card-title">Offers</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                    <thead>
+                        <tr>
+                            <th> Offer Name </th>
+                            <th> Starting date </th>
+                            <th> Expiry date </th>
+                            <th> percentage </th>
+                            <th>  </th>
+                            <th> Status </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                           <% if( offers && offers.length > 0 ){ %>
+                            <% for ( let offer of offers ) { %>
+                                
+                                <% if( offer.startingDate < now && offer.expiryDate > now && offer.status ) { var active = "Active" } else if( offer.startingDate > now && offer.status ) { var active = "Upcoming"} else if( offer.expiryDate < now && offer.status ) { var active = "Expired"} %>
+
+                                <tr>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= offer.name %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= moment(offer.startingDate).format(shortDateFormat) %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= moment(offer.expiryDate).format(shortDateFormat) %></span>
+                                    </td>
+                                    <td class="category-name">
+                                        <span class="pl-2"><%= offer.percentage %></span>
+                                    </td>
+                                    
+                                    <td>
+                                        <a href="/admin/edit-offer/<%= offer._id %>"><button type="button" class="btn btn-dark btn-icon-text">Edit<i class="mdi mdi-file-check btn-icon-append"></i>
+                                        </button></a>
+                                    </td>
+
+                                    <td>
+                                        <% if( offer.status ){ %>
+                                            <span id="active-<%= offer._id%>" class="<% if( active === 'Active' ) {%>text-success<% } else if ( active === 'Upcoming' ) {%>text-primary<% } else {%>text-warning<% } %>"><%= active %></span>                           
+                                        <% } else { %>
+                                            <span class="text-danger">Cancelled</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if( (active === "Active" || active === "Upcoming") && offer.status ) { %>
+                                            <div id="cancel-<%= offer._id %>" style="cursor: pointer;" class="badge"><a class="badge badge-outline-danger" onclick="cancelOffer('<%= offer._id %>')">Cancel</a></div>        
+                                        <% } %>                            
+                                    </td>
+                                </tr>
+                            <% } %>
+                           <% } %>
+                        
+                        
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+
+            <!-- Pagination buttons -->
+           
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    async function cancelOffer( offerId ){
+        const cancelbtn = document.getElementById(`cancel-${offerId}`)
+        const spanbtn = document.getElementById(`active-${offerId}`)
+        const cancelmsg = document.getElementById(`cancelspn-${offerId}`)
+        try {
+            const response = await axios.patch('/admin/cancel-offer',{ offerId })
+            console.log(response);
+            if ( response.data.cancelled ) {
+                console.log();
+                cancelbtn.style.display = 'none'
+                spanbtn.className = ''
+                spanbtn.innerHTML = 'Cancelled'
+                spanbtn.style.color = '#dc3545'                
+
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+</script>
+
+
+<%- include('../includes/admin/adminFooter.ejs') %>

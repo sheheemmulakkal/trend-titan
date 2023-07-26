@@ -2,6 +2,7 @@
 
 
 const categorySchema = require( '../models/categoryModel' )
+const offerSchema = require( '../models/offerModel' )
 const paginationHelper = require( '../helpers/paginationHelper' )
 
 
@@ -30,8 +31,9 @@ module.exports = {
                 }
             }
 
+            const availableOffers = await offerSchema.find({ status : true, expiryDate : { $gte : new Date() }})
             const categoryCount = await categorySchema.find( condition ).count()
-            const category = await categorySchema.find( condition )
+            const category = await categorySchema.find( condition ).populate('offer')
             .sort( sort ).skip(( page - 1 ) * paginationHelper.CATEGORY_PER_PAGE ).limit( paginationHelper.CATEGORY_PER_PAGE )
             res.render( 'admin/category', {
                 admin : req.session.admin,
@@ -46,7 +48,8 @@ module.exports = {
                 lastPage : Math.ceil( categoryCount / paginationHelper.CATEGORY_PER_PAGE ),
                 search : search,
                 sortData : sortData,
-                sortOrder : sortOrder
+                sortOrder : sortOrder,
+                availableOffers : availableOffers
             } )
 
         } catch (error) {
@@ -121,6 +124,34 @@ module.exports = {
             }) 
             res.redirect('/admin/category')
             
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    applyCategoryOffer : async ( req, res ) => {
+        try {
+            const { offerId, categoryId } = req.body
+            await categorySchema.updateOne({ _id : categoryId },{
+                $set : {
+                    offer : offerId 
+                }
+            })
+            res.json({ success : true })
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+
+    removeCategoryOffer : async ( req, res ) => {
+        try {
+            const { categoryId } = req.body
+            await categorySchema.updateOne({ _id : categoryId}, {
+                $unset : {
+                    offer : ""
+                }
+            })
+            res.json({ success : true })
         } catch (error) {
             console.log(error.message);
         }
