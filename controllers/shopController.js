@@ -18,6 +18,17 @@ module.exports = {
         try {
             const banners = await bannerSchema.find({ status : true })
             const products = await productSchema.find({ status : true })
+            .populate({
+                path : 'offer',
+                match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+            })
+            .populate({
+                path : 'category',
+                populate : {
+                    path : 'offer',
+                    match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+                }
+            })
             res.render( 'shop/home', {
                 products : products,
                 banners : banners
@@ -50,7 +61,19 @@ module.exports = {
             }
             const productCount = await productSchema.find({ status : true }).count()
             const products = await productSchema.find( condition )
+            .populate({
+                path : 'offer',
+                match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+            })
+            .populate({
+                path : 'category',
+                populate : {
+                    path : 'offer',
+                    match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+                }
+            })
             .skip( ( page - 1 ) * paginationHelper.ITEMS_PER_PAGE ).limit( paginationHelper.ITEMS_PER_PAGE )  // Pagination
+            console.log(products);
             const category = await categorySchema.find({ status: true }) 
             const brands = await productSchema.distinct( 'brand' )
             const startingNo = (( page - 1) * paginationHelper.ITEMS_PER_PAGE ) + 1
@@ -81,7 +104,18 @@ module.exports = {
     // Single product GET
     getSingleProduct : async( req, res ) => {
         try {
-            const product = await productSchema.find({ _id : req.params.id, status : true }).populate( 'category' )       
+            const product = await productSchema.find({ _id : req.params.id, status : true })
+            .populate({
+                path : 'offer',
+                match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+            })
+            .populate({
+                path : 'category',
+                populate : {
+                    path : 'offer',
+                    match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+                }
+            })      
             const related = await productSchema.find({ status : true }).limit( 4 )
             res.render( 'shop/single-product', {
                 product : product,

@@ -90,11 +90,6 @@
                 <div class="shop__product__option">
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="shop__product__option__left">
-                                <p>Showing <%= startingNo %>–<%= endingNo %> of <%= totalCount %> results</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__right">
                                 <!-- <p>Sort by Price:</p>
                                 <select>
@@ -107,8 +102,9 @@
                     </div>
                 </div>
                 <div class="row">
-
                     <% for( let product of products) { %>
+                        
+                        
                     <div class="col-lg-4 col-md-6 col-sm-6">
                         <div class="product__item">
                             <a href="/products/<%= product._id %>">
@@ -129,7 +125,17 @@
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
                                 </div>
-                                <h5>₹ <%= product.price %></h5>
+                                <% if ( product.offer){ var discount = (product.price * product.offer.percentage / 100).toFixed(0)  } else if ( product.category.offer ) {var discount = ( product.price * product.category.offer.percentage / 100 ).toFixed(0) } %>
+                                <% if ( product.offer ) { %>
+                                    <p class="mb-0"><del>₹ <%= product.price %></del></p>
+                                    <h5 class="mb-0">₹ <%= product.price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
+                                <%} else if ( product.category.offer ) { %>
+                                    <p class="mb-0"><del>₹ <%= product.price %></del></p>
+                                    <h5 class="mb-0 fw-700">₹ <%= product.price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
+                                 <% } else { %>
+                                    <h5>₹ <%= product.price %> </h5>
+                                <% } %>
+                                
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,6 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const categorySchema = require( '../models/categoryModel')
 const productSchema = require( '../models/productModel' )
-
 const offerSchema = require( '../models/offerModel' )
 const paginationHelper = require( '../helpers/paginationHelper' )
 

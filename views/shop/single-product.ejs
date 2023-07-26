@@ -51,7 +51,17 @@
                             <i class="fa fa-star-o"></i>
                             <span> - 5 Reviews</span>
                         </div>
-                        <h3>₹ <%= product[0].price %></h3>
+                        <% if ( product[0].offer){ var discount = (product[0].price * product[0].offer.percentage / 100).toFixed(0)  } else if ( product[0].category.offer ) {var discount = ( product[0].price * product[0].category.offer.percentage / 100 ).toFixed(0) } %>
+                        <% if ( product[0].offer ) { %>
+                            
+                            <h3 class="mb-0">₹ <%= product[0].price - discount %> <span class=""> ₹ <%= product[0].price %> </span> </h3>
+                            <h5> <span style="text-decoration: none; color: #fff;" class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
+                        <%} else if ( product[0].category.offer ) { %>
+                            <p class="mb-0"><del>₹ <%= product[0].price %></del></p>
+                            <h5 class="mb-0 fw-700">₹ <%= product[0].price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
+                         <% } else { %>
+                            <h5>₹ <%= product[0].price %> </h5>
+                        <% } %>
                         <!-- <h3>₹270.00 <span>70.00</span></h3> -->
                         <p><%= product[0].description %></p>
                         <div class="product__details__cart__option">
@@ -111,7 +121,16 @@
                             <i class="fa fa-star-o"></i>
                             <i class="fa fa-star-o"></i>
                         </div>
-                        <h5>₹ <%= item.price %></h5>
+                        <% if ( item.offer){ var discount = (item.price * item.offer.percentage / 100).toFixed(0)  } else if ( item.category.offer ) {var discount = ( item.price * item.category.offer.percentage / 100 ).toFixed(0) } %>
+                        <% if ( product.offer ) { %>
+                            <p class="mb-0"><del>₹ <%= item.price %></del></p>
+                            <h5 class="mbitem-0">₹ <%= item.price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
+                        <%} else if ( item.category.offer ) { %>
+                            <p class="mb-0"><del>₹ <%= item.price %></del></p>
+                            <h5 class="mb-0 fw-700">₹ <%= item.price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
+                         <% } else { %>
+                            <h5>₹ <%= item.price %> </h5>
+                        <% } %>
                         <div class="product__color__select">
                             <label for="pc-1">
                                 <input type="radio" id="pc-1">
