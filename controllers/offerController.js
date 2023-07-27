@@ -11,7 +11,6 @@ module.exports = {
                 now : new Date(),
                 admin : true
             })
-            console.log(offers);
         } catch (error) {
             console.log(error.message);
         }

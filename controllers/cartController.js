@@ -37,7 +37,7 @@ module.exports = {
                 }else if ( items.productId.category.offer && items.productId.category.offer.startingDate <= new Date() && items.productId.category.offer.expiryDate >= new Date() ) {
                     items.productId.price = (items.productId.price * ( 1 - ( items.productId.category.offer.percentage / 100 ))).toFixed(0)
                 }
-                console.log(items.productId.price);
+                
                 return items
             })
 
