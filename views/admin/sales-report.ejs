@@ -41,7 +41,7 @@
     <div class="col-12 grid-margin">
       <div class=" row   mt-3">
 
-        <div class="col-3 col-sm-6">
+        <div class="col-12 col-sm-6">
           <div class="row m-0">
             <div class="col-md-6">
               <div class="form-group row">
@@ -66,7 +66,7 @@
               </div>
             </div>
 
-            <div class="sort form-group "><button class=" btn btn-primary form-control">
+            <div class="sort form-group col-md-4 mb-3"><button class=" btn btn-primary form-control">
               sort
             </button></div>
           </form>
@@ -76,17 +76,25 @@
         </div>
 
         <div class="row">
-        <form action="/admin/sales-report<% if(seeAll){ %>?seeAll=seeAll<% } %>" id="sales-report-form">
+        <form class="col-12" action="/admin/sales-report<% if(seeAll){ %>?seeAll=seeAll<% } %>" id="sales-report-form">
+          <div class="col-12 col-sm-6">
+
             <label for="birthday">From :</label>
             <input style="background-color: #dcdcdc; border-radius: 5px; border: none; padding: 0px 10px;" value="<%= from %>" type="date" id="from" name="from">
-            <label class="ml-3" for="birthday">To :</label>
+          </div>
+          <div class="col-12 col-sm-6">
+
+            <label class="" for="birthday">To :</label>
             <input style="background-color: #dcdcdc; border-radius: 5px; border: none; padding: 0px 10px;" value="<%= to %>" type="date" id="to" name="to">
-            <button class="btn btn-primary ml-3" type="submit">filter</button>
+          </div>
+            <button class="btn btn-primary ml-3 mb-3" type="submit">filter</button>
         </form>
-        
-        <button type="button" onclick="excelDownload()" id="excel-export" class="btn btn-success btn-icon-text ml-auto mb-1"> Excel <i class="mdi mdi-printer btn-icon-append"></i>
-        <button type="button" onclick="printDiv('Print')" class="btn btn-info btn-icon-text ml-1 mr-auto mb-1"> Print <i class="mdi mdi-printer btn-icon-append"></i>
-        </button>
+        <div class="ml-3">
+
+          <button type="button" onclick="excelDownload()" id="excel-export" class="btn btn-success btn-icon-text ml-auto mb-1"> Excel <i class="mdi mdi-printer btn-icon-append"></i>
+            <button type="button" onclick="printDiv('Print')" class="btn btn-info btn-icon-text ml-1 mr-auto mb-1"> Print <i class="mdi mdi-printer btn-icon-append"></i>
+            </button>
+        </div>
     </div>
       <div class="card">
         <div class="card-body">

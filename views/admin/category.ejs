@@ -88,7 +88,7 @@
         
         <!-- ======================== Table ========================= -->
         <div class=" row   mt-3">
-            <div class="col-3 col-sm-6">
+            <div class="col-12 col-sm-6">
               <div class="row m-0">
                 <div class="col-md-6">
                   <div class="form-group row">
@@ -96,7 +96,6 @@
                       <form action="/admin/category">
                       <select class="form-control" name="sortData">
                         <option value="category" >Category</option>
-                        
                       </select>
                     </div>
                   </div>
@@ -113,7 +112,7 @@
                   </div>
                 </div>
         
-                <div class="sort form-group "><button class=" btn btn-primary form-control">
+                <div class="sort form-group col-md-4 "><button class=" btn btn-primary form-control">
                   sort
                 </button></div>
               </form>  
@@ -125,8 +124,8 @@
             <div style="margin-top: -10px;" class="card">
             <div class="card-body">
         
-              <div class=" col-3 col-sm-6 grid-margin">
-                <div class="form-group col-6 mr-1">
+              <div style="max-width: unset;" class=" col-3 col-sm-6 grid-margin">
+                <div class="form-group col-sm-6 col-12 mr-1">
                   <form action="/admin/category">
                   <div class="input-group">
                     <input type="text" class="form-control" value="<%= search %>" name="search" placeholder="Search here..." aria-label="Recipient's username" aria-describedby="basic-addon2">

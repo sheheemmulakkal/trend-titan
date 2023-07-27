@@ -43,18 +43,19 @@
         color: white;
     }
 </style>
-<div class="main-div m-5">
+<div class="main-div mt-5">
 <section class="font-1">
-    <div class="container profile-container pt-5">
+    <div class="">
         <div class="row justify-content-center">
-
-            <div class="col-12">
+            <div class="col-lg-3">
+                
+            
+            <div class="">
                 <div class="table">
                     <table>
                         <thead>
                             <th>Date</th>
-                            <th>Order Id</th>
-                            <th>Address</th>
+                            
                             <th>Amount</th>
                             <th>Status</th>
                             <th></th>
@@ -68,16 +69,7 @@
                                 <td>
                                     <%= moment(order.date).format(shortDateFormat) %> 
                                 </td>
-                                <td>
-                                    <%= order._id %>
-                                </td>
-                               <td>
-                                <p><%= order.address.fullName %> <br>
-                                    <%= order.address.mobile %><br>
-                                    <%= order.address.street %>, <%= order.address.village %><br> 
-                                    <%= order.address.pincode %>, <%= order.address.city %>, <%= order.address.state %>
-                                </p>
-                            </td>
+                                
                             <td> <%= order.totalPrice %></td>
                             <td id="order-status-<%= order._id %>"><%= order.orderStatus %></td>
                             <td> <% if( order.orderStatus === 'Delivered' || order.orderStatus === 'Cancelled' || order.orderStatus === 'Returned') { %><% } else { %> 
@@ -94,6 +86,7 @@
                     </table>
                 </div>
 
+                </div>
             </div>
         </div>
         <!--/.row-->
@@ -130,6 +123,7 @@
     }
 </script>
 
-
-<%- include('../includes/userFooter.ejs') %>
+<div class="row overflow">
+    <%- include('../includes/userFooter.ejs') %>
+</div>
 <%- include('../includes/end.ejs') %>

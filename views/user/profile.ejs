@@ -47,7 +47,7 @@
 </style>
 <div class="main-div m-5">
     <section class="font-1">
-        <div class="container profile-container p-5">
+        <div class="">
             <div class="row justify-content-center">
                 <div class="col-lg-3">
                     <div class="row font-1">
@@ -95,18 +95,19 @@
                         </div>
                         <div id="save" style="display: none;" onclick="update()" class="mt-4 btn btn-dark rounded-0">Save changes</div>
                     </form>
-                    <div style="padding-left: 0!important;" class="col-12 mt-5 mb-5">
-                        <a style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 25px 50px;margin-inline: 10px;" class="text-primary fw-700">
+                    <div class="row mt-3">
+                        <a style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 15px 30px;" class="text-primary fw-700">
                              <b>Wallet Balance : ₹ <% if( user.wallet) { %><%= user.wallet %><%} else { %>0<% } %> </b>
                         </a>
-                        
-                        <a href="/user/wallet" style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 25px 50px;margin-inline: 10px;" class="text-success fw-700">
+                    </div>
+                    <div class="row mt-3">
+                        <a href="/user/wallet" style="box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 15px 30px;" class="text-success fw-700">
                              <b>Wallet History </b>
                         </a>
                     </div>
                     <div class="row mt-3">
                         <input type="hidden" id="referralCode" value="http://localhost:3000/signup?referral=<%= user.referralCode %>" readonly>
-                        <p onclick="copyReferralCode()" style=" cursor: pointer; box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 10px 10px;width: fit-content;  margin-inline: 20px;">
+                        <p onclick="copyReferralCode()" style=" cursor: pointer; box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; padding: 10px 10px;">
                             <b>Click here to get the referral link</b>
                         </p>
                     </div>
@@ -117,9 +118,7 @@
             </div>
             <!--/.row-->
         </div>
-        <div class="wallet">
-
-        </div>
+       
         <!--/.container-->
     </section>
 </div>
