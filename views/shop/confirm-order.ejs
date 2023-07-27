@@ -46,33 +46,36 @@
         
     }
     .orderDetails p{
-        font-weight: 700;
+        font-weight: 800;
     }
     .address {
         
     }
     .address p{
-        font-weight: 700;
+        font-weight: 800;
+    }
+    .details p {
+        margin: 0;
     }
 </style>
-<div class="main-div m-5">
+<div class="main-div mt-5 mb-5">
 <section class="font-1">
-    <div class="container profile-container p-5">
+    <div class="">
         <div class="row justify-content-center">
 
             <div class="col-12">
                 <div style="display: flex; justify-content: center;padding-bottom: 20px;">
                     <h3 style="font-weight: 700; color: #1b8f27; padding-bottom: 50px;"><u>Order Confirmed</u></h3>
                 </div>
-                <div class="col-12 row">
-                    <div style="margin-bottom: 20px;" class="col-6  orderDetails pe-5">
+                <div class="col-12 details row">
+                    <div style="margin-bottom: 20px;" class="col-12  orderDetails ">
                         <P>Order Date : <%= moment(order[0].date).format(shortDateFormat) %></P>
                         <P>Order id : <%= order[0]._id %></P>
                         <P>Amount :  <%= order[0].totalPrice %></P>
                         <P>Payment Method : <%= order[0].paymentMethod %></P>
                     </div>
-                    <div class="col-6 address ps-5">
-                        <h5><u>Adress</u></h5>
+                    <div class="col-12 address">
+                        <h5><u><b>Adress</b></u></h5>
                         <P><%= order[0].address.fullName %></P>
                         <P><%= order[0].address.mobile %>, <%= order[0].address.street %>, <%= order[0].address.village %>, <%= order[0].address.city %></P>
                         <P>PIN : <%= order[0].address.pincode %></P>
@@ -80,7 +83,7 @@
                         
                     </div>
                 </div>
-                <div class="table" style="display: flex; flex-direction: column; justify-content: center; margin-top: 100px;">
+                <div class="table" style="display: flex; flex-direction: column; justify-content: center; margin-top: 50px;">
                     <h5 style="font-weight: 700;">Products</h5>
                     <table>
                         <thead>
