@@ -56,11 +56,12 @@ module.exports = {
             const ordersToShip = results[6]
             const completedOrders = results[7]
             const userCount = results[8]
-            const productCount = results[9]
+            const productCount = results[9] 
             const dailyChart = results[10]
             const categorySales = results[11]
 
-        
+            const razorPayAmount = paymentMethodAmount && paymentMethodAmount.length > 0 ? paymentMethodAmount[0].amount.toString() : 0
+            const codPayAmount = paymentMethodAmount && paymentMethodAmount.length > 0 ? paymentMethodAmount[1].amount.toString() : 0
             const monthlyGrowth = revenuePreviousMonth === 0 ? 100 : ((( revenueCurrentMonth - revenuePreviousMonth ) / revenuePreviousMonth ) * 100).toFixed(1);
 
             const dailyGrowth = ((( todayIncome - yesterdayIncome ) / yesterdayIncome ) * 100).toFixed( 1 )  
@@ -71,7 +72,8 @@ module.exports = {
                 totalRevenue : totalRevenue,
                 revenueCurrentMonth : revenueCurrentMonth,
                 monthlyGrowth : monthlyGrowth,
-                paymentMethodAmount : paymentMethodAmount,
+                razorPayAmount : razorPayAmount,
+                codPayAmount : codPayAmount,
                 userCount : userCount,
                 ordersToShip : ordersToShip,
                 completedOrders : completedOrders,
