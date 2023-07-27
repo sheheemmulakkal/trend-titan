@@ -30,17 +30,18 @@ module.exports = {
             });
             const totalPrice = await cartHelper.totalCartPrice( user )
 
-            updatedCart.items.forEach(( items ) => {
-               
-                if( items.productId.offer && items.productId.offer.startingDate <= new Date() && items.productId.offer.expiryDate >= new Date() ) {
-                    items.productId.price = (items.productId.price * ( 1 - ( items.productId.offer.percentage / 100 ))).toFixed(0)
-                }else if ( items.productId.category.offer && items.productId.category.offer.startingDate <= new Date() && items.productId.category.offer.expiryDate >= new Date() ) {
-                    items.productId.price = (items.productId.price * ( 1 - ( items.productId.category.offer.percentage / 100 ))).toFixed(0)
-                }
+            if( updatedCart && updatedCart.items > 0 ){
+                updatedCart.items.forEach(( items ) => {
                 
-                return items
-            })
-
+                    if( items.productId.offer && items.productId.offer.startingDate <= new Date() && items.productId.offer.expiryDate >= new Date() ) {
+                        items.productId.price = (items.productId.price * ( 1 - ( items.productId.offer.percentage / 100 ))).toFixed(0)
+                    }else if ( items.productId.category.offer && items.productId.category.offer.startingDate <= new Date() && items.productId.category.offer.expiryDate >= new Date() ) {
+                        items.productId.price = (items.productId.price * ( 1 - ( items.productId.category.offer.percentage / 100 ))).toFixed(0)
+                    }
+                    
+                    return items
+                })
+            }
             
             if( updatedCart && updatedCart.coupon && totalPrice && totalPrice.length > 0 ) {
                 discounted = await couponHelper.discountPrice( updatedCart.coupon, totalPrice[0].total )
