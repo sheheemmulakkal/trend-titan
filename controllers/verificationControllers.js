@@ -23,7 +23,8 @@ function generateOtp () {
         })
         return otp
     } catch (error) {
-        console.log(error.message);
+        res.redirect('/500')
+
     }
 }
 
@@ -44,7 +45,8 @@ module.exports = {
 
             return otp
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
 
     },

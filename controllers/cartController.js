@@ -41,7 +41,7 @@ module.exports = {
                 return items
             })
 
-            // console.log(updatedCart.items[0]);
+            
             if( updatedCart && updatedCart.coupon && totalPrice && totalPrice.length > 0 ) {
                 discounted = await couponHelper.discountPrice( updatedCart.coupon, totalPrice[0].total )
             }
@@ -56,7 +56,8 @@ module.exports = {
 
             });
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -140,7 +141,8 @@ module.exports = {
             }
             
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -159,7 +161,8 @@ module.exports = {
             }
             res.status( 200 ).json({ success : true, message : 'cart item decreased', totalPrice : totalPrice, discounted : discounted });
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -182,7 +185,8 @@ module.exports = {
                 }
                 res.status( 200 ).json({ success : true, message : 'Item removed', removeItem : true, totalPrice : totalPrice, discounted : discounted })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     }
 }

@@ -120,7 +120,8 @@ module.exports = {
             return totalPrice
 
         } catch (error) {
-            console.log(error.message);
+          res.redirect('/500')
+
         }
     },
 
@@ -147,7 +148,8 @@ module.exports = {
                 return 0
             }
         } catch (error) {
-            console.log(error.message);
+          res.redirect('/500')
+
         }
     }
 }

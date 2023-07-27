@@ -21,7 +21,8 @@ module.exports = {
                 err : req.flash('err')
             } )
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -54,7 +55,8 @@ module.exports = {
             await product.save()
             res.redirect('/admin/products')
         } catch(error){
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
  
@@ -101,7 +103,8 @@ module.exports = {
             })
 
         } catch ( error ) { 
-            console.log( error.message );
+            res.redirect('/500')
+
         }
 
     },
@@ -111,7 +114,8 @@ module.exports = {
             await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : false}})
             res.redirect('/admin/products')
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -120,7 +124,8 @@ module.exports = {
             await productSchema.updateOne({ _id : req.params.id },{ $set :{ status : true } })
             res.redirect( '/admin/products' )
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -135,7 +140,8 @@ module.exports = {
                 err : req.flash( 'err' )
             } )
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -146,12 +152,14 @@ module.exports = {
             await productSchema.updateOne({ _id : id },{ $pull : { image : image }})
             fs.unlink( path.join( __dirname, '../public/images/product-images/' ) + image , ( err ) => {
                 if( err ) {
-                   console.log( err.message );
+                    res.redirect('/500')
+
                 }
             })
             res.redirect(`/admin/edit-product/${id}`)
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -190,7 +198,8 @@ module.exports = {
                 })
             res.redirect( '/admin/products' )
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -204,7 +213,8 @@ module.exports = {
             })
             res.json({ success : true})
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -218,7 +228,8 @@ module.exports = {
             })
             res.json({ success : true })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     }
 

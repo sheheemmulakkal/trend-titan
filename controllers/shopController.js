@@ -96,7 +96,8 @@ module.exports = {
             })
               
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -133,7 +134,8 @@ module.exports = {
                 related : related
             })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
 
     },
@@ -157,7 +159,8 @@ module.exports = {
                 user : userDetails
             })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -184,19 +187,26 @@ module.exports = {
             })
             res.redirect( '/checkout' )
         } catch ( error ) {
-            console.log( error.message ); 
+            res.redirect('/500')
+
         }
     },
 
     searchSuggestion : async ( req, res ) => {
-        const { searchField } = req.query
-        const suggestions = await productSchema.find({status : true, $or : [
-            { name : { $regex : searchField, $options : "i" }},
-            { description : { $regex : searchField, $options : "i" }}
-            ]
-        },{name : 1}) 
-        res.json({ suggestions : suggestions , success : true }) 
-        console.log(suggestions);
+        try {
+            
+            const { searchField } = req.query
+            const suggestions = await productSchema.find({status : true, $or : [
+                { name : { $regex : searchField, $options : "i" }},
+                { description : { $regex : searchField, $options : "i" }}
+                ]
+            },{name : 1}) 
+            res.json({ suggestions : suggestions , success : true }) 
+        } catch (error) {
+            res.redirect('/500')
+
+        }
+        
     }  
 
 }

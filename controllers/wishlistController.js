@@ -28,7 +28,8 @@ module.exports = {
                 res.status(200).json({message : "Added to wishlist"})
             }
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -40,7 +41,8 @@ module.exports = {
                 list : list
             })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -60,7 +62,8 @@ module.exports = {
             }
             res.json({ success : true})
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     }
 

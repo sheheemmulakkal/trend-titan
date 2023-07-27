@@ -33,7 +33,8 @@ module.exports = {
                 sortOrder : sortOrder
             })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -66,7 +67,8 @@ module.exports = {
             await coupon.save()
             res.redirect('/admin/coupons')
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -79,7 +81,8 @@ module.exports = {
                 coupon : coupon
             })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -99,7 +102,8 @@ module.exports = {
             })
             res.redirect('/admin/coupons')
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -113,7 +117,8 @@ module.exports = {
             })
             res.json({ cancelled : true })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -160,7 +165,8 @@ module.exports = {
                 res.json({ success : false, message : 'Invalid Coupon'})
             }   
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     }
 

@@ -53,7 +53,8 @@ module.exports = {
             } )
 
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
 
     },
@@ -76,7 +77,8 @@ module.exports = {
             }
             
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
 
     },
@@ -87,7 +89,8 @@ module.exports = {
             await categorySchema.updateOne({ _id : req.params.id }, { $set : { status : true } })
             res.redirect('/admin/category')
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -97,7 +100,8 @@ module.exports = {
             await categorySchema.updateOne({ _id : req.params.id },{ $set : { status : false}})
             res.redirect('/admin/category')
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
 
     },
@@ -111,7 +115,8 @@ module.exports = {
                 category : category
             })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -125,7 +130,8 @@ module.exports = {
             res.redirect('/admin/category')
             
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -139,7 +145,8 @@ module.exports = {
             })
             res.json({ success : true })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -153,7 +160,8 @@ module.exports = {
             })
             res.json({ success : true })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     }
 }

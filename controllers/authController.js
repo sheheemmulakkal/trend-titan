@@ -72,7 +72,8 @@ module.exports = {
             }
 
         } catch ( err ) {
-            console.log( err.message );
+            res.redirect('/500')
+
         }
 
     },
@@ -84,7 +85,8 @@ module.exports = {
             req.session.user = null
             res.redirect( '/login' )
         } catch (error) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
     
@@ -139,7 +141,7 @@ module.exports = {
             }
 
         }catch( err ) {
-            console.log(err.message);
+           res.redirect('/500')
         }
     },
 
@@ -212,7 +214,8 @@ module.exports = {
         }
         
        } catch ( error ) {
-        console.log( error.messge );
+        res.redirect('/500')
+
        }
 
     },
@@ -254,7 +257,8 @@ module.exports = {
             }
 
         } catch ( error ) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
 
     },
@@ -265,7 +269,8 @@ module.exports = {
             req.session.admin = null
             res.redirect ( '/admin/login' )
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -291,7 +296,8 @@ module.exports = {
                 res.redirect('/forgot-password')
             }
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -329,7 +335,8 @@ module.exports = {
             }
             
            } catch (error) {
-            console.log(error.messge);
+            res.redirect('/500')
+
            }
     },
 
@@ -342,7 +349,7 @@ module.exports = {
                 }})
             res.redirect('/login')
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
         }
     }
 

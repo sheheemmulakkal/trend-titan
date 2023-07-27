@@ -12,7 +12,8 @@ module.exports = {
                 admin : true
             })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -23,7 +24,8 @@ module.exports = {
             admin : true
         })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -62,7 +64,8 @@ module.exports = {
                 offer : offer
             })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -79,7 +82,8 @@ module.exports = {
             })
             res.redirect('/admin/offers')
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -93,7 +97,8 @@ module.exports = {
             })
             res.json({ cancelled : true})
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     }
 }

@@ -10,5 +10,6 @@ module.exports = connection => {
     })
     .catch(err => {
         console.log(err.message);
+        return res.redirect('/500')
     })
 }

@@ -18,6 +18,7 @@ const authRouter = require( './routers/authRouter');
 const adminRouter = require( './routers/adminRouter');
 const userRouter = require( './routers/userRouter');
 const errorRouter = require( './routers/errorRouter');
+const errorController = require( './controllers/errorController' )
     
 app.use( express.json())
 app.use( express.urlencoded({ extended: false }))
@@ -76,7 +77,8 @@ app.use ( authRouter );
 app.use ( shopRouter );
 app.use ( '/admin', adminRouter );
 app.use ( '/user', userRouter );
-app.use ( errorRouter );
+app.use ( '/500', errorController.get500 )
+app.use ( errorController.get404 );
 
 
 app.listen( process.env.PORT || 3000 , () => {

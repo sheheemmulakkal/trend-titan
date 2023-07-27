@@ -13,7 +13,8 @@ module.exports = {
                 user : user
             } )
         }catch(error){
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -41,7 +42,8 @@ module.exports = {
             })
             res.redirect( '/user/address' )   
         }catch( error ){
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -57,7 +59,8 @@ module.exports = {
                 address : user[0].address
             })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -72,7 +75,8 @@ module.exports = {
             })
             res.status( 200 ).json({ success : true })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -82,7 +86,8 @@ module.exports = {
             const address = await addressSchema.findOne({ _id : addressId })
             res.render( 'user/edit-address', { address : address })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -104,7 +109,8 @@ module.exports = {
             })
             res.redirect( '/user/address' )   
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -120,17 +126,23 @@ module.exports = {
             })
             res.json({ success : true })
         } catch( error ){
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
     getWalletHistory : async ( req, res ) => {
-        const { user } = req.session
-        const userDetails = await userSchema.findOne({ _id : user })
-        console.log(userDetails);
-        res.render('user/wallet',{
-            user : userDetails
-        })
+        try {
+            const { user } = req.session
+            const userDetails = await userSchema.findOne({ _id : user })
+            res.render('user/wallet',{
+                user : userDetails
+            })
+            
+        } catch (error) {
+           res.redirect('/500')
+            
+        }
     },
 
     addToWallet : async ( req, res ) => {
@@ -140,7 +152,8 @@ module.exports = {
             const payment = await paymentHelper.razorpayPayment( Id, amount )
             res.json({ payment : payment , success : true  })
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 

@@ -38,7 +38,8 @@ module.exports = {
             })
 
         } catch(error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
         
     },
@@ -63,7 +64,8 @@ module.exports = {
             res.redirect( '/admin/banner' )
             
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -78,7 +80,8 @@ module.exports = {
             } ) 
 
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -108,7 +111,8 @@ module.exports = {
             res.redirect( '/admin/banner' )
 
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
       }
     },
 
@@ -119,7 +123,8 @@ module.exports = {
             res.redirect('/admin/banner')
             
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     },
 
@@ -130,7 +135,8 @@ module.exports = {
             res.redirect('/admin/banner')
             
         } catch (error) {
-            console.log(error.message);
+            res.redirect('/500')
+
         }
     }
 }

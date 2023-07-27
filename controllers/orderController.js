@@ -100,7 +100,8 @@ module.exports = {
                 res.json({ payment : payment , success : false  })
             }
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -154,7 +155,8 @@ module.exports = {
                 products : lastOrder[0].products,
             })
         }catch( error ){
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -192,7 +194,8 @@ module.exports = {
                 sortOrder : sortOrder
             })
         }catch( error ){
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -218,7 +221,8 @@ module.exports = {
             const newStatus = await orderSchema.findOne({ _id : orderId })
             res.status( 200 ).json({ success : true, status : newStatus.orderStatus })
        } catch ( error ) {
-            console.log(error.message);
+        res.redirect('/500')
+
        }
     },
 
@@ -234,7 +238,8 @@ module.exports = {
                 now : new Date()
             })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -282,7 +287,8 @@ module.exports = {
             const newStatus = await orderSchema.findOne({ _id : orderId })
             res.status( 200 ).json({ success : true, status : newStatus.orderStatus })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -295,7 +301,8 @@ module.exports = {
                 products : order.products,
             })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
@@ -309,7 +316,8 @@ module.exports = {
                 admin : true
             })
         } catch ( error ) {
-            console.log( error.message );
+            res.redirect('/500')
+
         }
     },
 
