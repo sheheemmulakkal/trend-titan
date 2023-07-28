@@ -44,7 +44,7 @@
   }
 
 </style>
-<section style="" class="shopping-cart spad mt-5">
+<section class="shopping-cart spad mt-5">
     <div class="container">
         <% if( cartItems && cartItems.items.length > 0){ %>
             <div class="row" id="cart-table">
@@ -217,7 +217,7 @@
     window.addEventListener('DOMContentLoaded', () => {
         const qtyInputs = document.querySelectorAll('input[id^="qty-"]');
     qtyInputs.forEach((qtyInput) => {
-        console.log(1111);
+
         const productId = qtyInput.id.split('-')[1];
         const span = document.getElementById(`dec-${productId}`);
         const quantity = parseInt(qtyInput.value);
@@ -352,6 +352,9 @@ const couponForm = document.getElementById( 'coupon-form' )
                     const totalNumber = Number(currentTotal [1])
                     const currentQty = parseInt(qty.val())
                     const response = await axios.post('/decrease-cart',{productId})
+                    if( subtotalCartPrice <= 0 ) {
+                        window.location = '/cart'
+                    }
                     if( response.data.success === true){
                         const updatedQty = currentQty-1
                         const totalPrice = totalNumber - price
@@ -363,14 +366,16 @@ const couponForm = document.getElementById( 'coupon-form' )
                         totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
                         subtotalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
                         qty.val(updatedQty)
-                        console.log(response.data.discounted);
+                        
                         if( response.data.discounted ) {
-                            console.log(222);
+                            
                             totalCartPrice.innerHTML = `₹ ${response.data.discounted.discountedTotal}`
                             couponDiscount.innerHTML =  `-₹ ${response.data.discounted.discountAmount}`
                         } else {
                             totalCartPrice.innerHTML = `₹ ${response.data.totalPrice[0].total}`
                         }
+                        } else {
+                            console.log(response.data);
                         }
                     
                 } catch (error) {
@@ -394,7 +399,12 @@ const couponForm = document.getElementById( 'coupon-form' )
                 if( response.data.removeItem === true ){
                         const count = document.getElementById('cartCount')
                         currentCount = parseInt(count.innerHTML)
-                        updatedCount = currentCount - 1
+                        if( currentCount - 1 <= 0 ){
+                            updatedCount = 0
+                        } else {
+                            updatedCount = currentCount - 1
+                        }
+                        
                         count.innerHTML = updatedCount   
                         if(updatedCount == 0 ){ 
                             console.log(updatedCount, ' updated count');

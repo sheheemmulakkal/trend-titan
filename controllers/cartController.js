@@ -28,9 +28,13 @@ module.exports = {
                     }
                 ]
             });
+            console.log(updatedCart.items.length);
+            
             const totalPrice = await cartHelper.totalCartPrice( user )
 
             if( updatedCart && updatedCart.items > 0 ){
+                console.log(updatedCart.items.length);
+                req.session.productCount = updatedCart.items.length
                 updatedCart.items.forEach(( items ) => {
                 
                     if( items.productId.offer && items.productId.offer.startingDate <= new Date() && items.productId.offer.expiryDate >= new Date() ) {
@@ -41,7 +45,7 @@ module.exports = {
                     
                     return items
                 })
-            }
+            } 
             
             if( updatedCart && updatedCart.coupon && totalPrice && totalPrice.length > 0 ) {
                 discounted = await couponHelper.discountPrice( updatedCart.coupon, totalPrice[0].total )
@@ -151,16 +155,28 @@ module.exports = {
         try {
             const { user } = req.session ;
             const { productId } = req.body;
-            await cartSchema.updateOne({ userId : user, 'items.productId' : productId },
-            { $inc : { 'items.$.quantity' : -1 }}
-            )
+            const updatedCart = await cartSchema.findOneAndUpdate(
+                {
+                  userId: user,
+                  'items': { $elemMatch: { productId: productId, quantity: { $gte: 2 } } }
+                },
+                { $inc: { 'items.$.quantity': -1 } },
+                { new: true }
+              );
+
+            if( updatedCart) {
             const totalPrice = await cartHelper.totalCartPrice( user )
             const cart = await cartSchema.findOne({ userId : user})
+
+            
             let discounted
             if( cart.coupon && totalPrice && totalPrice.length > 0 ) {
                 discounted = await couponHelper.discountPrice( cart.coupon, totalPrice[0].total )
             }
             res.status( 200 ).json({ success : true, message : 'cart item decreased', totalPrice : totalPrice, discounted : discounted });
+        } else {
+            res.json({ success : false , message : 'Cannot decrease the quantity'})
+        }
         } catch ( error ) {
             res.redirect('/500')
 
