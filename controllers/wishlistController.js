@@ -17,7 +17,7 @@ module.exports = {
                             products : productId
                         }
                     })
-                    res.json({message : 'Added to wishlist'})
+                    res.json({ success : true, message : 'Added to wishlist'})
                 } 
             } else {
                 const newWishlist = new wishlistSchema({
@@ -25,7 +25,7 @@ module.exports = {
                     products : [productId]
                 }) 
                 await newWishlist.save()
-                res.status(200).json({message : "Added to wishlist"})
+                res.status(200).json({success : true ,message : "Added to wishlist"})
             }
         } catch (error) {
             res.redirect('/500')

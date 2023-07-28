@@ -142,6 +142,42 @@
         </div>
     </div>
 </section>
+
+<div class="modal fade top rounded-0" style="background-color: #000000a2;" id="successModalcart" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-dialog-centered modal-full-width modal-full-width" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header bg-success rounded-0">
+        <h5 class="modal-title" id="successModalLabel">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Added to cart</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade top rounded-0" style="background-color: #000000a2;" id="successModalwishlist" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+  aria-hidden="true" data-backdrop="true">
+  <div class="modal-dialog modal-dialog-centered modal-full-width modal-full-width" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header bg-success rounded-0">
+        <h5 class="modal-title" id="successModalLabel">Success</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Added to wishlist</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Related Section End -->
 
 
@@ -258,7 +294,24 @@ zIndex: 999
                 const count = document.getElementById('cartCount')
                 currentCount = parseInt(count.innerHTML)
                 updatedCount = currentCount + 1
-                count.innerHTML = updatedCount                 
+                count.innerHTML = updatedCount 
+                
+                const bdy = document.body
+                const modal = document.getElementById('modalCookie1')
+                const successModal = document.getElementById("successModalcart");
+
+                // Show the success modal
+                successModal.classList.add("show");
+                successModal.style.display = "block";
+                bdy.style.overflow = 'hidden'
+                
+                // Hide the success modal when clicked anywhere
+                successModal.addEventListener("click", () => {
+                    successModal.classList.remove("show");
+                    successModal.style.display = "none";
+                    bdy.style.overflow = 'auto'
+                    
+                });
             }
         } catch (error) {
             console.log(response.status);
@@ -267,6 +320,24 @@ zIndex: 999
 
     async function addtoWishlist( productId ){
         const response = await axios.post( '/add-to-wishlist',{ productId })
+        if ( response.data.success ) {
+            const bdy = document.body
+                const modal = document.getElementById('modalCookie1')
+                const successModal = document.getElementById("successModalwishlist");
+
+                // Show the success modal
+                successModal.classList.add("show");
+                successModal.style.display = "block";
+                bdy.style.overflow = 'hidden'
+                
+                // Hide the success modal when clicked anywhere
+                successModal.addEventListener("click", () => {
+                    successModal.classList.remove("show");
+                    successModal.style.display = "none";
+                    bdy.style.overflow = 'auto'
+                    
+                });
+        }
     }
 </script>
 
