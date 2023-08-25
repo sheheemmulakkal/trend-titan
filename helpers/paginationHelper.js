@@ -1,5 +1,5 @@
 //product Items
-const ITEMS_PER_PAGE = 6
+const ITEMS_PER_PAGE = 2
 const USERS_PER_PAGE = 6
 const BANNER_PER_PAGE = 4
 const ORDER_PER_PAGE = 6

@@ -56,7 +56,6 @@ module.exports = {
             res.redirect('/admin/products')
         } catch(error){
             res.redirect('/500')
-
         }
     },
  
@@ -101,7 +100,6 @@ module.exports = {
                 sortOrder : sortOrder,
                 availableOffers : availableOffers
             })
-
         } catch ( error ) { 
             res.redirect('/500')
 

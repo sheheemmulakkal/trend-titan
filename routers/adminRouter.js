@@ -27,6 +27,7 @@ router.get( '/userList', isAuth.adminAuth, adminController.getUserList )
 router.patch( '/block-user/:id', isAuth.adminAuth, adminController.blockUser )
 router.patch( '/unblock-user/:id', isAuth.adminAuth, adminController.unBlockUser )
 
+
 router.get( '/category', isAuth.adminAuth, categoryController.getCategory )
 router.post( '/add-category', isAuth.adminAuth, categoryController.addCategory )
 router.get( '/edit-category/:id', isAuth.adminAuth, categoryController.getEditCategory )

@@ -155,6 +155,8 @@ module.exports = {
         try {
             const { user } = req.session ;
             const { productId } = req.body;
+           
+            
             const updatedCart = await cartSchema.findOneAndUpdate(
                 {
                   userId: user,
@@ -163,6 +165,7 @@ module.exports = {
                 { $inc: { 'items.$.quantity': -1 } },
                 { new: true }
               );
+
 
             if( updatedCart) {
             const totalPrice = await cartHelper.totalCartPrice( user )

@@ -59,7 +59,7 @@ module.exports = {
                     { description : { $regex : search, $options : "i" }},
                 ]
             }
-            const productCount = await productSchema.find({ status : true }).count()
+            const productCount = await productSchema.find(condition).count()
             const products = await productSchema.find( condition )
             .populate({
                 path : 'offer',
